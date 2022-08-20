@@ -20,7 +20,9 @@ class TodolistPlugin extends SidebarPlugin {
         this.styles = [
             './scripts/inlineTodo/inlineTodo.css',
         ];
-        this.scripts = [];
+        this.scripts = [
+            './scripts/inlineTodo/inlineTodo.js',
+        ];
         this.html = "Todo list is under development";
     }
 
@@ -48,6 +50,19 @@ class TodolistPlugin extends SidebarPlugin {
     }
 
     public async panelMsgProcess(msg) {
+        switch (msg.name) {
+            case 'sidebar_todo_item_clicked':
+                if (msg.id) {
+                    const ids = msg.id.split('-');
+                    if (ids.length > 0) {
+                        await joplin.commands.execute('openItem', `:/${ids[0]}`);
+                        return true;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
         return false;
     }
 

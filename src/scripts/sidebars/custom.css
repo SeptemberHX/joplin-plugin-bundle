@@ -4,11 +4,7 @@
 }
 
 div#myTabContent {
-    padding: 2.1em 0;
-    height: calc(100% + 2.1em);
-    width: 100%;
-    position: fixed;
-    overflow-y: scroll;
+    margin-top: 2.1em;
 }
 
 ul#myTab {

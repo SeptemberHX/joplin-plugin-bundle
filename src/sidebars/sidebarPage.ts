@@ -89,7 +89,8 @@ export class Sidebars {
             this.lastActiveTabPluginId = this.plugins[0].id;
         }
 
-        let result = `<ul class="nav nav-tabs fixed-top" id="myTab" role="tablist">`;
+        let result = `<div id="sidebar-bundle">`
+        result += `<ul class="nav nav-tabs fixed-top" id="myTab" role="tablist">`;
         let divResult = `<div class="tab-content" id="myTabContent">`;
         for (let i = 0; i < this.plugins.length; i++) {
             const isLastActive = this.lastActiveTabPluginId ? this.lastActiveTabPluginId === this.plugins[i].id : false;
@@ -106,7 +107,7 @@ export class Sidebars {
             `
         }
         divResult += `</div>`;
-        result += `</ul>` + divResult;
+        result += `</ul>` + divResult + `</div>`;
 
         await joplin.views.panels.setHtml(this.panel, result);
     }
