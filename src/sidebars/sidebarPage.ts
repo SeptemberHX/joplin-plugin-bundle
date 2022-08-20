@@ -1,20 +1,113 @@
-export function createPage() {
-    return `
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">🎬</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">🎊</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">🎱</button>
-          </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-        </div>
-    `
+import joplin from "../../api";
+
+
+export abstract class SidebarPlugin {
+    id: string;
+    name: string;
+    icon: string;
+    html: string;
+    styles: string[];
+    scripts: string[];
+
+    protected constructor() {
+    }
+
+    public async panelMsgProcess(msg: any) {
+        return false;
+    }
+
+    public async init(sidebars: Sidebars) {
+
+    }
+}
+
+
+export class Sidebars {
+    plugins: SidebarPlugin[];
+    panel;
+    lastActiveTabPluginId: string;
+
+    constructor() {
+    }
+
+    public async init(plugins) {
+        this.plugins = plugins;
+        this.panel = await joplin.views.panels.create('sidebar_bundle_panel');
+
+        await joplin.views.panels.onMessage(this.panel, async (msg: any) => {
+            switch (msg.name) {
+                case 'sidebar_tab_item_clicked':
+                    this.lastActiveTabPluginId = msg.id;
+                    break;
+                default:
+                    for (const plugin of this.plugins) {
+                        if (await plugin.panelMsgProcess(msg)) {
+                            break;
+                        }
+                    }
+                    break;
+            }
+        });
+
+        await joplin.views.panels.addScript(this.panel, './scripts/sidebars/bootstrap.min.css');
+
+        for (const plugin of this.plugins) {
+            for (const style of plugin.styles) {
+                await joplin.views.panels.addScript(this.panel, style);
+            }
+            for (const script of plugin.scripts) {
+                await joplin.views.panels.addScript(this.panel, script);
+            }
+        }
+        await this.render();
+        await joplin.views.panels.addScript(this.panel, './scripts/sidebars/custom.css');
+        await joplin.views.panels.addScript(this.panel, './scripts/sidebars/sidebars.js');
+        await joplin.views.panels.addScript(this.panel, './scripts/sidebars/bootstrap.bundle.min.js');
+
+        for (const plugin of this.plugins) {
+            await plugin.init(this);
+        }
+    }
+
+    public async updateHtml(id, html) {
+        for (const existPlugin of this.plugins) {
+            if (existPlugin.id === id) {
+                existPlugin.html = html;
+                break;
+            }
+        }
+
+        await this.render();
+    }
+
+    public async render() {
+        if (this.plugins.length === 0) {
+            return 'Empty';
+        }
+
+        if (!this.lastActiveTabPluginId) {
+            this.lastActiveTabPluginId = this.plugins[0].id;
+        }
+
+        let result = `<ul class="nav nav-tabs" id="myTab" role="tablist">`;
+        let divResult = `<div class="tab-content" id="myTabContent">`;
+        for (let i = 0; i < this.plugins.length; i++) {
+            const isLastActive = this.lastActiveTabPluginId ? this.lastActiveTabPluginId === this.plugins[i].id : false;
+
+            let active = isLastActive ? 'active' : '';
+            let show = isLastActive ? 'show' : '';
+            result += `
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link ${active}" id="${this.plugins[i].id}-tab" onclick="tabItemClicked('${this.plugins[i].id}')" data-bs-toggle="tab" data-bs-target="#${this.plugins[i].id}" type="button" role="tab" aria-controls="${this.plugins[i].id}" aria-selected="true">${this.plugins[i].icon}</button>
+                </li>
+            `;
+            divResult += `
+                <div class="tab-pane fade ${show} ${active}" id="${this.plugins[i].id}" role="tabpanel" aria-labelledby="${this.plugins[i].id}-tab">${this.plugins[i].html}</div>
+            `
+        }
+        divResult += `</div>`;
+        result += `</ul>` + divResult;
+
+        await joplin.views.panels.setHtml(this.panel, result);
+    }
 }

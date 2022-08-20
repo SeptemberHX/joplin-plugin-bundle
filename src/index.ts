@@ -1,13 +1,17 @@
 import joplin from 'api';
-import {createPage} from "./sidebars/sidebarPage";
+import {SidebarPlugin, Sidebars} from "./sidebars/sidebarPage";
+import outlinePlugin from "./outline";
+import todolistPlugin from "./todolist";
 
 joplin.plugins.register({
 	onStart: async function() {
-		const panel = await joplin.views.panels.create('sidebar_bundle_panel');
+		const sidebar = new Sidebars();
 
-		await joplin.views.panels.setHtml(panel, createPage());
-		await joplin.views.panels.addScript(panel, './bootstrap.min.css');
-		await joplin.views.panels.addScript(panel, './custom.css');
-		await joplin.views.panels.addScript(panel, './bootstrap.bundle.min.js');
+		const plugins: SidebarPlugin[] = [
+			outlinePlugin,
+			todolistPlugin
+		];
+
+		await sidebar.init(plugins);
 	},
 });

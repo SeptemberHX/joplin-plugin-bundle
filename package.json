@@ -28,6 +28,7 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "react": "^18.2.0"
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "uslug": "git+https://github.com/laurent22/uslug.git#emoji-support"
   }
 }
