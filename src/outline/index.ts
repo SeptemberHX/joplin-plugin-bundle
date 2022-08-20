@@ -14,7 +14,7 @@ class OutlinePlugin extends SidebarPlugin {
 
         this.id = 'outline';
         this.name = 'outline';
-        this.icon = '🎱';
+        this.icon = 'fas fa-list';
         this.styles = [
             './scripts/outline/webview.css'
         ];

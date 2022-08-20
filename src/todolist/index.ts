@@ -7,7 +7,7 @@ class TodolistPlugin extends SidebarPlugin {
 
         this.id = "todolist";
         this.name = "todolist";
-        this.icon = "🌿";
+        this.icon = "fas fa-clock";
         this.styles = [];
         this.scripts = [];
         this.html = "Todo list is under development";

@@ -35,3 +35,39 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(100, 100, 100, 0.7);
 }
+
+.outline-content {
+    min-height: calc(100vh - 3em);
+    padding: 5px
+}
+
+.outline-content .toc-item-link {
+    padding: 0 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.outline-content .toc-item-link:hover {
+    font-weight: bold;
+}
+
+.outline-content {
+    font-family: var(--joplin-font-family);
+    background-color: var(--joplin-background-color);
+    margin: 10px 0 0 0;
+}
+
+.outline-content .toc-item-link {
+    padding: 4px;
+    font-weight: normal;
+    text-decoration: none;
+    line-height: 1.3em;
+    color: var(--joplin-color);
+    font-size: 0.9em;
+}
+
+.outline-content .toc-item-link:hover {
+    background-color: var(--joplin-selected-color);
+    border-radius: 4px;
+}
