@@ -1,11 +1,8 @@
-# Joplin Plugin
+# Joplin Plugin Bundle
 
-This is a template to create a new Joplin plugin.
+Plugins with panels. Some of the plugins come from other repo, and I modified it to show all the plugin panels in the same panel under different tabs.
 
-The main two files you will want to look at are:
-
-- `/src/index.ts`, which contains the entry point for the plugin source code.
-- `/src/manifest.json`, which is the plugin manifest. It contains information such as the plugin a name, version, etc.
+![](./screenshot/tab-panels.png)
 
 ## Building the plugin
 
