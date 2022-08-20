@@ -89,7 +89,7 @@ export class Sidebars {
             this.lastActiveTabPluginId = this.plugins[0].id;
         }
 
-        let result = `<ul class="nav nav-tabs" id="myTab" role="tablist">`;
+        let result = `<ul class="nav nav-tabs fixed-top" id="myTab" role="tablist">`;
         let divResult = `<div class="tab-content" id="myTabContent">`;
         for (let i = 0; i < this.plugins.length; i++) {
             const isLastActive = this.lastActiveTabPluginId ? this.lastActiveTabPluginId === this.plugins[i].id : false;

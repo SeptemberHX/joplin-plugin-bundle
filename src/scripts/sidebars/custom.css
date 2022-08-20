@@ -2,3 +2,15 @@
     --bs-nav-link-padding-x: 0.6rem;
     --bs-nav-link-padding-y: 0.2rem;
 }
+
+div#myTabContent {
+    padding: 2.1em 0;
+    height: calc(100% + 2.1em);
+    width: 100%;
+    position: fixed;
+    overflow-y: scroll;
+}
+
+ul#myTab {
+    background-color: var(--joplin-background-color);
+}

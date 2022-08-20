@@ -1,0 +1,8 @@
+.inline-todo-div {
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+.inline-todo-div.badge.rounded-pill {
+    vertical-align: middle;
+}

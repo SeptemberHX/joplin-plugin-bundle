@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
-    "uslug": "git+https://github.com/laurent22/uslug.git#emoji-support"
+    "uslug": "git+https://github.com/laurent22/uslug.git#emoji-support",
+    "ts-debounce": "^4.0.0"
   }
 }

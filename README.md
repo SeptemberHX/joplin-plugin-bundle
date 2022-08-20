@@ -2,6 +2,10 @@
 
 Plugins with panels. Some of the plugins come from other repo, and I modified it to show all the plugin panels in the same panel under different tabs.
 
+Current plugins:
+
+* Outline (v1.3.1): https://github.com/cqroot/joplin-outline
+
 ![](./screenshot/tab-panels.png)
 
 ## Building the plugin
