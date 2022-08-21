@@ -6,3 +6,7 @@
 .inline-todo-div.badge.rounded-pill {
     vertical-align: middle;
 }
+
+.inline-todo-div .form-check-label:hover {
+    cursor: pointer;
+}
