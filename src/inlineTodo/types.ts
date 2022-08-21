@@ -16,6 +16,7 @@ export interface Todo {
 	assignee: string;
 	date: string;
 	tags: string[];
+	index: number;
 }
 
 interface Toggle {

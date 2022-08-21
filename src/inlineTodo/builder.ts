@@ -26,6 +26,7 @@ export class SummaryBuilder {
 		// there won't be any data loss
 		let folder = await this.get_parent_title(note.parent_id);
 		let match;
+		let index = 0;
 		const todo_type = this._settings.todo_type;
 		while ((match = todo_type.regex.exec(note.body)) !== null) {
 			matches.push({
@@ -37,7 +38,9 @@ export class SummaryBuilder {
 				assignee: todo_type.assignee(match),
 				date: todo_type.date(match),
 				tags: todo_type.tags(match),
+				index: index,
 			});
+			index += 1;
 		}
 
 		if (matches.length > 0 || this._summary[note.id]?.length > 0) {

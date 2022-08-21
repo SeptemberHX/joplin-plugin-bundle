@@ -1,16 +1,12 @@
 import {Summary} from "./types";
+var md = require('markdown-it')();
 
 
 export default async function panelHtml(summary: Summary) {
-    const noteIdMap = {};
     let todoItems = [];
-    // calculate unique id for each task
     for (const noteId in summary) {
-        let count = 0;
         for (const todoItem of summary[noteId]) {
             todoItems.push(todoItem);
-            noteIdMap[`${noteId}-${count}`] = todoItem;
-            count += 1;
         }
     }
 
@@ -32,9 +28,9 @@ export default async function panelHtml(summary: Summary) {
 
     for (const todoItem of todoItems) {
         result += `
-            <a class="list-group-item list-group-item-action">
-                <input class="form-check-input me-1" type="checkbox" value="" id="${noteIdMap[todoItem]}" onchange="todoItemChanged(this.id, this.checked)">
-                <span class="form-check-label" for="${noteIdMap[todoItem]}" onclick="todoItemClicked('${noteIdMap[todoItem]}')">${todoItem.msg}</span>
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">
+                <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
 
         if (todoItem.date) {
@@ -47,7 +43,7 @@ export default async function panelHtml(summary: Summary) {
             }
         }
 
-        result += `</a>`;
+        result += `</li>`;
     }
 
     result += `</ul>`;

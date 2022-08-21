@@ -10,3 +10,11 @@
 .inline-todo-div .form-check-label:hover {
     cursor: pointer;
 }
+
+.inline-todo-div p {
+    display: inline !important;
+}
+
+.inline-todo-div .form-check-label a {
+    pointer-events: none;
+}
