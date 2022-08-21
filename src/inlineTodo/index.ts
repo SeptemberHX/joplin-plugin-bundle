@@ -5,11 +5,18 @@ import {regexes} from "./common";
 import {SummaryBuilder} from "./builder";
 import panelHtml from "./panelHtml";
 import {debounce} from "ts-debounce";
+import {set_origin_todo} from "./mark_todo";
 
 class TodolistPlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
     summary_map: Summary;
+    builder: SummaryBuilder;
+
+    refresh = debounce(async () => {
+        await this.builder.search_in_all();
+        await this.update_summary(this.builder.summary, this.builder.settings);
+    }, 100);
 
     constructor() {
         super();
@@ -28,25 +35,20 @@ class TodolistPlugin extends SidebarPlugin {
 
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
-        const builder = new SummaryBuilder(await this.getSettings());
+        this.builder = new SummaryBuilder(await this.getSettings());
         await joplin.settings.onChange(async (_) => {
-            builder.settings = await this.getSettings();
+            this.builder.settings = await this.getSettings();
         });
 
-        const refresh = debounce(async () => {
-            await builder.search_in_all();
-            await this.update_summary(builder.summary, builder.settings);
-        }, 100);
-
         await joplin.workspace.onNoteSelectionChange(async () => {
-            await refresh();
+            await this.refresh();
         });
 
         await joplin.workspace.onNoteChange(async () => {
-            await refresh();
+            await this.refresh();
         })
 
-        await refresh();
+        await this.refresh();
     }
 
     public async panelMsgProcess(msg) {
@@ -56,6 +58,16 @@ class TodolistPlugin extends SidebarPlugin {
                     const ids = msg.id.split('-');
                     if (ids.length > 0) {
                         await joplin.commands.execute('openItem', `:/${ids[0]}`);
+                        return true;
+                    }
+                }
+                break;
+            case 'sidebar_todo_item_checked':
+                if (msg.id) {
+                    const ids = msg.id.split('-');
+                    if (ids.length > 0) {
+                        await set_origin_todo(this.summary_map[ids[0]][ids[1]], await this.getSettings());
+                        await this.refresh();
                         return true;
                     }
                 }
