@@ -15,7 +15,7 @@ class TodolistPlugin extends SidebarPlugin {
         super();
 
         this.id = "inline-todo";
-        this.name = "inline-todo";
+        this.name = "Inline Todo";
         this.icon = "fas fa-check";
         this.styles = [
             './scripts/inlineTodo/inlineTodo.css',

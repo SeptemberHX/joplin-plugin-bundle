@@ -13,7 +13,7 @@ class OutlinePlugin extends SidebarPlugin {
         super();
 
         this.id = 'outline';
-        this.name = 'outline';
+        this.name = 'Outline';
         this.icon = 'fas fa-list';
         this.styles = [
             './scripts/outline/webview.css'

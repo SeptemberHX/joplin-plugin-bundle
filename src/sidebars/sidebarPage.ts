@@ -99,7 +99,7 @@ export class Sidebars {
             let show = isLastActive ? 'show' : '';
             result += `
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link ${active}" id="${this.plugins[i].id}-tab" onclick="tabItemClicked('${this.plugins[i].id}')" data-bs-toggle="tab" data-bs-target="#${this.plugins[i].id}" type="button" role="tab" aria-controls="${this.plugins[i].id}" aria-selected="true"><i class="${this.plugins[i].icon}"></i></button>
+                    <button class="nav-link ${active}" id="${this.plugins[i].id}-tab" title="${this.plugins[i].name}" onclick="tabItemClicked('${this.plugins[i].id}')" data-bs-toggle="tab" data-bs-target="#${this.plugins[i].id}" type="button" role="tab" aria-controls="${this.plugins[i].id}" aria-selected="true"><i class="${this.plugins[i].icon}"></i></button>
                 </li>
             `;
             divResult += `
