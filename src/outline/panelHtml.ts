@@ -70,6 +70,15 @@ export default async function panelHtml(headers: any[]) {
       </a>`);
     }
 
+    if (itemHtml.length === 0) {
+        itemHtml.push(`
+            <div class="no-toc-warn">
+                <i class="fas fa-scroll no-toc-warn-icon"></i>
+                <p class="no-toc-warn-text">No table of contents</p>
+            </div>
+        `);
+    }
+
     return `
     <div class="outline-content">
       <div class="container">

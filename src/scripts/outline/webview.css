@@ -71,3 +71,19 @@ html {
     background-color: var(--joplin-selected-color);
     border-radius: 4px;
 }
+
+i.fas.fa-scroll.no-toc-warn-icon {
+    font-size: 500%;
+    opacity: 0.3;
+    margin-top: 1em;
+    margin-bottom: 30px;
+}
+
+p.no-toc-warn-text {
+    font-style: italic;
+    opacity: 0.5;
+}
+
+div.no-toc-warn {
+    text-align: center;
+}
