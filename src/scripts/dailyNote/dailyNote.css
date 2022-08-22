@@ -1,0 +1,38 @@
+table.dailynote-table {
+    text-align: center;
+    font-size: smaller;
+    width: 100%;
+}
+
+table.dailynote-table td {
+    width: 2.5em;
+    height: 3em;
+}
+
+table.dailynote-table .day:hover {
+    background-color: #ececec;
+    border-radius: 4px;
+}
+
+table.dailynote-table .curr-day {
+    background-color: antiquewhite;
+    border-radius: 4px;
+}
+
+table.dailynote-table div.noNote div.dot-container {
+    visibility: hidden;
+}
+
+table.dailynote-table svg.dot {
+    height: 0.6em;
+    fill: yellowgreen;
+}
+
+table.dailynote-table td.prev-month,
+table.dailynote-table td.next-month {
+    color: lightgray;
+}
+
+table.dailynote-table thead {
+    font-weight: bold;
+}
