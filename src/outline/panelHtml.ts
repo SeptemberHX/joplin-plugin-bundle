@@ -1,4 +1,5 @@
 import {settingValue} from "./settings";
+var md = require('markdown-it')();
 
 const uslug = require('uslug');
 
@@ -66,7 +67,7 @@ export default async function panelHtml(headers: any[]) {
       style="display: block; padding-left:${(header.level - 1) * 15}px;">
         <span>${await getHeaderPrefix(header.level)}</span>
         <i style="${numberStyle}">${numberPrefix}</i>
-        <span>${escapeHtml(header.text)}</span>
+        <span>${md.renderInline(header.text)}</span>
       </a>`);
     }
 
