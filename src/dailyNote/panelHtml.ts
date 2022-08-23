@@ -72,5 +72,5 @@ export async function createCalendar() {
     const year = moment().format('YYYY');
     const month = moment().format('MM');
     const t = await getDailyNoteIdsByMonth(year, month);
-    return createCalendarTable(year, month, Object.keys(t));
+    return createCalendarTable(year, moment().month(), Object.keys(t));
 }
