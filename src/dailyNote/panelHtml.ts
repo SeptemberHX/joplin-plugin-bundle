@@ -1,7 +1,7 @@
 import * as moment from "moment";
 
 function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date) {
-    return `<td class="${monthClass}" onclick="calendarCellClicked('${date.year()-date.year()-date.date()}')">
+    return `<td class="${monthClass}" onclick="calendarCellClicked('${date.year()}-${date.month()}-${date.date()}')">
         <div class="day ${hasNote ? 'hasNote' : 'noNote'} ${isToday ? 'curr-day' : ''}">
             ${date.date()}
             <div class="dot-container">
