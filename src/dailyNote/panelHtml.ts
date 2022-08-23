@@ -1,7 +1,8 @@
 import * as moment from "moment";
+import {getDailyNoteIdsByMonth} from "./utils";
 
 function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date) {
-    return `<td class="${monthClass}" onclick="calendarCellClicked('${date.year()}-${date.month()}-${date.date()}')">
+    return `<td class="${monthClass}" onclick="calendarCellClicked('${date.format('YYYY-MM-DD')}')">
         <div class="day ${hasNote ? 'hasNote' : 'noNote'} ${isToday ? 'curr-day' : ''}">
             ${date.date()}
             <div class="dot-container">
@@ -11,7 +12,7 @@ function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date
     </td>`;
 }
 
-function createCalendarTable(year: number, month: number, noteDays: Set<number>) {
+function createCalendarTable(year, month, noteDays: string[]) {
     let table = `
         <table class="dailynote-table">
             <thead>
@@ -41,7 +42,7 @@ function createCalendarTable(year: number, month: number, noteDays: Set<number>)
             lastMonth.add(1, 'day');
         }
         while (currMonth.weekday() > 0 && currMonth.weekday() <= 6) {
-            table += createCell('curr-month', noteDays.has(currMonth.date()), currMonth.date() === moment().date(), currMonth);
+            table += createCell('curr-month', noteDays.includes(currMonth.format('DD')), currMonth.date() === moment().date(), currMonth);
             currMonth.add(1, 'day');
         }
         table += `
@@ -53,9 +54,9 @@ function createCalendarTable(year: number, month: number, noteDays: Set<number>)
                 <tr>`;
         for (let i = 0; i < 7; i++) {
             if (currMonth < nextMonth) {
-                table += createCell('curr-month', noteDays.has(currMonth.date()), currMonth.date() === moment().date(), currMonth);
+                table += createCell('curr-month', noteDays.includes(currMonth.format('DD')), currMonth.date() === moment().date(), currMonth);
             } else {
-                table += createCell('next-month', noteDays.has(currMonth.date()), currMonth.date() === moment().date(), currMonth);
+                table += createCell('next-month', false, currMonth.date() === moment().date(), currMonth);
             }
             currMonth.add(1, 'day');
         }
@@ -67,9 +68,9 @@ function createCalendarTable(year: number, month: number, noteDays: Set<number>)
     return table;
 }
 
-export function createCalendar() {
-    const t = new Set<number>();
-    t.add(1);
-    t.add(15);
-    return createCalendarTable(moment().year(), moment().month(), t);
+export async function createCalendar() {
+    const year = moment().format('YYYY');
+    const month = moment().format('MM');
+    const t = await getDailyNoteIdsByMonth(year, month);
+    return createCalendarTable(year, month, Object.keys(t));
 }

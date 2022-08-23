@@ -1,6 +1,6 @@
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {createCalendar} from "./panelHtml";
-import {getDailyNoteByDate} from "./utils";
+import {createDailyNoteByDate, getDailyNoteByDate} from "./utils";
 import joplin from "../../api";
 
 class DailyNotePlugin extends SidebarPlugin {
@@ -25,7 +25,7 @@ class DailyNotePlugin extends SidebarPlugin {
 
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
-        await this.sidebar.updateHtml(this.id, createCalendar());
+        await this.sidebar.updateHtml(this.id, await createCalendar());
 
         this.createDialog = await joplin.views.dialogs.create('DailyNoteCreateDialog');
     }
@@ -35,8 +35,6 @@ class DailyNotePlugin extends SidebarPlugin {
             case 'sidebar_dailynote_day_clicked':
                 const splits = msg.id.split('-');
                 if (splits.length === 3) {
-                    const year = splits[0];
-                    const month = splits[1];
                     const noteDate = msg.id;
 
                     const noteId = await getDailyNoteByDate(noteDate);
@@ -45,10 +43,12 @@ class DailyNotePlugin extends SidebarPlugin {
                         await joplin.views.dialogs.addScript(this.createDialog, './scripts/dailyNote/dialog.css');
                         const dialogResult = await joplin.views.dialogs.open(this.createDialog);
                         if (dialogResult.id === 'ok') {
-                            console.log('====> Ok clicked');
+                            const createNoteId = await createDailyNoteByDate(noteDate);
+                            await joplin.commands.execute('openItem', `:/${createNoteId}`);
                         }
+                    } else {
+                        await joplin.commands.execute('openItem', `:/${noteId}`);
                     }
-
                     return true;
                 }
                 break;
