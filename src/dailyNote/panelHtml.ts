@@ -13,7 +13,17 @@ function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date
 }
 
 function createCalendarTable(year, month, noteDays: string[]) {
+    const currMonth = moment({year: year, month: month});
+    const lastMonth = moment({year: year, month: month}).add(-1, 'day');
+    const nextMonth = moment({year: year, month: month}).add(1, 'month');
+
     let table = `
+        <div class="month-container">
+            <span class="date-span">${currMonth.format('YYYY-MM')}</span>
+            <button type="button" class="btn btn-previous btn-light"><</button>
+            <button type="button" class="btn btn-current btn-light">Today</button>
+            <button type="button" class="btn btn-next btn-light">></button>
+        </div>
         <table class="dailynote-table">
             <thead>
                 <tr>
@@ -28,9 +38,7 @@ function createCalendarTable(year, month, noteDays: string[]) {
             </thead>
             <tbody>
     `;
-    const currMonth = moment({year: year, month: month});
-    const lastMonth = moment({year: year, month: month}).add(-1, 'day');
-    const nextMonth = moment({year: year, month: month}).add(1, 'month');
+
     while (lastMonth.weekday() > 0 && lastMonth.weekday() <= 5) {
         lastMonth.add(1, 'day');
     }

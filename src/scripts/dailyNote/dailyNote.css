@@ -36,3 +36,19 @@ table.dailynote-table td.next-month {
 table.dailynote-table thead {
     font-weight: bold;
 }
+
+button.btn.btn-current {
+    font-size: small;
+}
+
+div.month-container {
+    padding: 5px 10px;
+    vertical-align: middle;
+}
+
+span.date-span {
+    font-size: 1.4em;
+    width: 50%;
+    color: cornflowerblue;
+    vertical-align: middle;
+}

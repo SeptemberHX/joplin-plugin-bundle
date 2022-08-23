@@ -2,6 +2,7 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {createCalendar} from "./panelHtml";
 import {createDailyNoteByDate, getDailyNoteByDate} from "./utils";
 import joplin from "../../api";
+import {debounce} from "ts-debounce";
 
 class DailyNotePlugin extends SidebarPlugin {
 
@@ -28,6 +29,9 @@ class DailyNotePlugin extends SidebarPlugin {
         await this.sidebar.updateHtml(this.id, await createCalendar());
 
         this.createDialog = await joplin.views.dialogs.create('DailyNoteCreateDialog');
+        const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar()), 100);
+        await joplin.workspace.onSyncComplete(async () => await updateDebounce());
+        await joplin.workspace.onNoteSelectionChange(async () => await updateDebounce());
     }
 
     async panelMsgProcess(msg: any): Promise<boolean> {
