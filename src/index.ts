@@ -3,6 +3,8 @@ import {SidebarPlugin, Sidebars} from "./sidebars/sidebarPage";
 import outlinePlugin from "./outline";
 import todolistPlugin from "./inlineTodo";
 import dailyNotePlugin from "./dailyNote";
+import writingMarkerPlugin from "./writingMarker";
+import noteLinkPlugin from "./noteLink";
 
 joplin.plugins.register({
 	onStart: async function() {
@@ -11,7 +13,9 @@ joplin.plugins.register({
 		const plugins: SidebarPlugin[] = [
 			outlinePlugin,
 			todolistPlugin,
-			dailyNotePlugin
+			dailyNotePlugin,
+			writingMarkerPlugin,
+			noteLinkPlugin
 		];
 
 		await sidebar.init(plugins);
