@@ -61,7 +61,6 @@ export class Sidebars {
         }
         await this.render();
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/custom.css');
-        await joplin.views.panels.addScript(this.panel, './scripts/sidebars/popper.min.js');
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/bootstrap.bundle.min.js');
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/sidebars.js');
 
@@ -101,7 +100,9 @@ export class Sidebars {
             result += `
                 <li class="nav-item" role="presentation">
                     <button class="nav-link ${active}" id="${this.plugins[i].id}-tab" title="${this.plugins[i].name}" onclick="tabItemClicked('${this.plugins[i].id}')" data-bs-toggle="tab" data-bs-target="#${this.plugins[i].id}" type="button" role="tab" aria-controls="${this.plugins[i].id}" aria-selected="true">
-                        <i class="${this.plugins[i].icon}" data-bs-toggle="tooltip" data-bs-title="${this.plugins[i].name}"></i>
+                        <div data-bs-toggle="tooltip" data-bs-title="${this.plugins[i].name}" data-bs-container="body">
+                            <i class="${this.plugins[i].icon}"></i>
+                        </div>
                     </button>
                 </li>
             `;

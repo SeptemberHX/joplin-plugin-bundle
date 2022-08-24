@@ -30,7 +30,7 @@ class TodolistPlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/inlineTodo/inlineTodo.js',
         ];
-        this.html = "Todo list is under development";
+        this.html = '<div class="card"><div class="card-body">Init...</div></div>';
     }
 
     public async init(sidebar: Sidebars) {

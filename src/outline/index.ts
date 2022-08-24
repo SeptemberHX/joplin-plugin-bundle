@@ -21,7 +21,7 @@ class OutlinePlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/outline/webview.js'
         ];
-        this.html = 'Init...';
+        this.html = '<div class="card"><div class="card-body">Init...</div></div>';
     }
 
     public async panelMsgProcess(message: any) {

@@ -12,7 +12,10 @@ export async function getDailyNoteByDate(dateStr) {
 }
 
 export async function getDailyNoteIdsByMonth(year, month) {
-    const monthDirId = await getOrCreateMonthFolder(year, month);
+    const monthDirId = await getOrCreateMonthFolder(year, month, false);
+    if (!monthDirId) {
+        return {};
+    }
 
     const noteIds = {};
     let page = 1;
@@ -42,7 +45,7 @@ export async function getDailyNoteIdsByMonth(year, month) {
 
 export async function createDailyNoteByDate(dateStr: string) {
     const splits = dateStr.split('-');
-    const monthDirId = await getOrCreateMonthFolder(splits[0], splits[1]);
+    const monthDirId = await getOrCreateMonthFolder(splits[0], splits[1], true);
 
     const note = await joplin.data.post(['notes'], null, {
             title: dateStr,
@@ -53,16 +56,26 @@ export async function createDailyNoteByDate(dateStr: string) {
     return note.id;
 }
 
-async function getOrCreateMonthFolder(year, month) {
-    const rootDirId = await getOrCreateDailyNoteRootDir();
-    const subDirMap = await getOrCreateSubFolder(rootDirId, [year]);
-    const yearDirId = subDirMap[year];
+async function getOrCreateMonthFolder(year, month, ifCreate) {
+    const rootDirId = await getOrCreateDailyNoteRootDir(ifCreate);
+    if (!rootDirId) {
+        return null;
+    }
 
-    const monthDirMap = await getOrCreateSubFolder(yearDirId, [month]);
+    const subDirMap = await getOrCreateSubFolder(rootDirId, [year], ifCreate);
+    if (!(year in subDirMap)) {
+        return null;
+    }
+    const yearDirId = subDirMap[year];
+    const monthDirMap = await getOrCreateSubFolder(yearDirId, [month], ifCreate);
+    if (!(month in monthDirMap)) {
+        return null;
+    }
+
     return monthDirMap[month];
 }
 
-async function getOrCreateDailyNoteRootDir() {
+async function getOrCreateDailyNoteRootDir(ifCreate) {
     const folders = await joplin.data.get(['folders']);
     let folder_id;
     for (let folder of folders.items) {
@@ -72,7 +85,7 @@ async function getOrCreateDailyNoteRootDir() {
         }
     }
 
-    if (!folder_id) {
+    if (!folder_id && ifCreate) {
         const folder = await joplin.data.post(['folders'], null, {title: DAILY_NOTE_ROOT_DIR_NAME, parent_id: ''});
         folder_id = folder.id;
     }
@@ -80,7 +93,7 @@ async function getOrCreateDailyNoteRootDir() {
     return folder_id;
 }
 
-async function getOrCreateSubFolder(parentFolderId, subFolderNames) {
+async function getOrCreateSubFolder(parentFolderId, subFolderNames, ifCreate) {
     const folders = await joplin.data.get(['folders']);
     let nameFolderIds = {}
     for (let folder of folders.items) {
@@ -92,10 +105,10 @@ async function getOrCreateSubFolder(parentFolderId, subFolderNames) {
     for (let folderName of subFolderNames) {
         if (folderName in nameFolderIds) {
             continue;
+        } else if (ifCreate) {
+            const subFolder = await joplin.data.post(['folders'], null, {title: folderName, parent_id: parentFolderId});
+            nameFolderIds[folderName] = subFolder.id;
         }
-
-        const subFolder = await joplin.data.post(['folders'], null, {title: folderName, parent_id: parentFolderId});
-        nameFolderIds[folderName] = subFolder.id;
     }
     return nameFolderIds;
 }

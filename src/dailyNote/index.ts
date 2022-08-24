@@ -3,11 +3,14 @@ import {createCalendar} from "./panelHtml";
 import {createDailyNoteByDate, getDailyNoteByDate} from "./utils";
 import joplin from "../../api";
 import {debounce} from "ts-debounce";
+import * as moment from "moment";
 
 class DailyNotePlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
     createDialog;
+    year: number;
+    month: number;
 
     constructor() {
         super();
@@ -21,15 +24,17 @@ class DailyNotePlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/dailyNote/dailyNote.js',
         ];
-        this.html = 'Init...';
+        this.html = '<div class="card"><div class="card-body">Init...</div></div>';
+        this.year = moment().year();
+        this.month = moment().month();
     }
 
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
-        await this.sidebar.updateHtml(this.id, await createCalendar());
+        await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month));
 
         this.createDialog = await joplin.views.dialogs.create('DailyNoteCreateDialog');
-        const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar()), 100);
+        const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month)), 100);
         await joplin.workspace.onSyncComplete(async () => await updateDebounce());
         await joplin.workspace.onNoteSelectionChange(async () => await updateDebounce());
     }
@@ -56,6 +61,11 @@ class DailyNotePlugin extends SidebarPlugin {
                     return true;
                 }
                 break;
+            case 'sidebar_dailynote_show_calendar_for':
+                await this.sidebar.updateHtml(this.id, await createCalendar(msg.id.year, msg.id.month));
+                this.year = msg.id.year;
+                this.month = msg.id.month;
+                return true;
             default:
                 break;
         }

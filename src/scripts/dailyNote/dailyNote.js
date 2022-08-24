@@ -4,3 +4,13 @@ function calendarCellClicked(dateStr) {
         id: dateStr
     })
 }
+
+function showCalendarFor(year, month) {
+    webviewApi.postMessage({
+        name: 'sidebar_dailynote_show_calendar_for',
+        id: {
+            year: year,
+            month: month
+        }
+    })
+}

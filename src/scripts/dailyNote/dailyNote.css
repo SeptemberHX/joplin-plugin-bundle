@@ -44,11 +44,16 @@ button.btn.btn-current {
 div.month-container {
     padding: 5px 10px;
     vertical-align: middle;
+    width: 100%;
 }
 
-span.date-span {
-    font-size: 1.4em;
+button.button-current {
     width: 50%;
     color: cornflowerblue;
     vertical-align: middle;
+}
+
+button.btn.button-next,
+button.btn.button-previous {
+    color: dimgray;
 }

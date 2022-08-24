@@ -18,11 +18,10 @@ function createCalendarTable(year, month, noteDays: string[]) {
     const nextMonth = moment({year: year, month: month}).add(1, 'month');
 
     let table = `
-        <div class="month-container">
-            <span class="date-span">${currMonth.format('YYYY-MM')}</span>
-            <button type="button" class="btn btn-previous btn-light"><</button>
-            <button type="button" class="btn btn-current btn-light">Today</button>
-            <button type="button" class="btn btn-next btn-light">></button>
+        <div class="month-container btn-group" role="group">
+            <button type="button" class="btn button-previous btn-light" onclick="this.blur(); showCalendarFor(${lastMonth.year()}, ${lastMonth.month()});"><</button>
+            <button type="button" class="btn button-current btn-light btn-lg" onclick="this.blur(); showCalendarFor(${moment().year()}, ${moment().month()});">${currMonth.format('YYYY-MM')}</button>
+            <button type="button" class="btn button-next btn-light" onclick="this.blur(); showCalendarFor(${nextMonth.year()}, ${nextMonth.month()});">></button>
         </div>
         <table class="dailynote-table">
             <thead>
@@ -40,7 +39,7 @@ function createCalendarTable(year, month, noteDays: string[]) {
     `;
 
     while (lastMonth.weekday() > 0 && lastMonth.weekday() <= 5) {
-        lastMonth.add(1, 'day');
+        lastMonth.add(-1, 'day');
     }
     if (lastMonth.weekday() === 0) {
         table += `
@@ -50,7 +49,9 @@ function createCalendarTable(year, month, noteDays: string[]) {
             lastMonth.add(1, 'day');
         }
         while (currMonth.weekday() > 0 && currMonth.weekday() <= 6) {
-            table += createCell('curr-month', noteDays.includes(currMonth.format('DD')), currMonth.date() === moment().date(), currMonth);
+            table += createCell('curr-month', noteDays.includes(currMonth.format('DD')),
+                currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),
+                currMonth);
             currMonth.add(1, 'day');
         }
         table += `
@@ -62,9 +63,13 @@ function createCalendarTable(year, month, noteDays: string[]) {
                 <tr>`;
         for (let i = 0; i < 7; i++) {
             if (currMonth < nextMonth) {
-                table += createCell('curr-month', noteDays.includes(currMonth.format('DD')), currMonth.date() === moment().date(), currMonth);
+                table += createCell('curr-month', noteDays.includes(currMonth.format('DD')),
+                    currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),
+                    currMonth);
             } else {
-                table += createCell('next-month', false, currMonth.date() === moment().date(), currMonth);
+                table += createCell('next-month', false,
+                    currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),
+                    currMonth);
             }
             currMonth.add(1, 'day');
         }
@@ -76,9 +81,12 @@ function createCalendarTable(year, month, noteDays: string[]) {
     return table;
 }
 
-export async function createCalendar() {
-    const year = moment().format('YYYY');
-    const month = moment().format('MM');
-    const t = await getDailyNoteIdsByMonth(year, month);
-    return createCalendarTable(year, moment().month(), Object.keys(t));
+export async function createCalendar(year, month) {
+    const yearStr = `${year}`;
+    let monthStr = `${month + 1}`;
+    if (monthStr.length === 1) {
+        monthStr = `0${monthStr}`;
+    }
+    const t = await getDailyNoteIdsByMonth(yearStr, monthStr);
+    return createCalendarTable(year, month, Object.keys(t));
 }
