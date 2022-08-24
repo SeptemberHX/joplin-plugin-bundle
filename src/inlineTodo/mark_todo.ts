@@ -14,7 +14,6 @@ export async function set_origin_todo(todo: Todo, settings: Settings): Promise<b
         if (match === null) { continue; }
 
         if (!((parser.msg(match) == todo.msg) &&
-            (parser.date(match) == todo.date) &&
             (parser.assignee(match) == todo.assignee) &&
             (JSON.stringify(parser.tags(match)) == JSON.stringify(todo.tags)))) {
             continue;

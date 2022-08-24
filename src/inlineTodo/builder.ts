@@ -1,6 +1,8 @@
 import joplin from 'api';
 import { Note, Settings, Todo, Summary } from './types';
 
+const dateStrReg = /^\d{4}-\d{2}-\d{2}$/;
+
 export class SummaryBuilder {
 	_summary: Summary = {};
 	// Maps folder ids to folder name
@@ -29,6 +31,11 @@ export class SummaryBuilder {
 		let index = 0;
 		const todo_type = this._settings.todo_type;
 		while ((match = todo_type.regex.exec(note.body)) !== null) {
+			// For todoitems in daily notes, we consider the note date as the default task date
+			let matchedDate = todo_type.date(match);
+			if (matchedDate.length === 0 && dateStrReg.test(note.title)) {
+				matchedDate = note.title;
+			}
 			matches.push({
 				note: note.id,
 				note_title: note.title,
@@ -36,7 +43,7 @@ export class SummaryBuilder {
 				parent_title: folder,
 				msg: todo_type.msg(match),
 				assignee: todo_type.assignee(match),
-				date: todo_type.date(match),
+				date: matchedDate,
 				tags: todo_type.tags(match),
 				index: index,
 			});

@@ -33,6 +33,7 @@ export default async function panelHtml(summary: Summary) {
                 <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
 
+        result += `<div class="task-badge">`
         if (todoItem.date) {
             result += `<span class="badge rounded-pill bg-primary">${todoItem.date}</span>`
         }
@@ -43,7 +44,7 @@ export default async function panelHtml(summary: Summary) {
             }
         }
 
-        result += `</li>`;
+        result += `</div></li>`;
     }
 
     result += `</ul>`;

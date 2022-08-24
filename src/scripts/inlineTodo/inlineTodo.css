@@ -18,3 +18,12 @@
 .inline-todo-div .form-check-label a {
     pointer-events: none;
 }
+
+.inline-todo-div div.task-badge {
+    display: flex;
+    float: right;
+}
+
+.inline-todo-div span.badge.rounded-pill {
+    opacity: 0.75;
+}
