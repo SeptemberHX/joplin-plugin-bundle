@@ -10,6 +10,15 @@ const isToday = (someDate) => {
         someDate.getFullYear() == today.getFullYear()
 }
 
+const emptyTaskCheer = () => {
+    return `
+            <div class="no-task-cheer">
+                <i class="fas fa-glass-cheers no-task-icon"></i>
+                <p class="no-task-text">All Done. Good Work!</p>
+            </div>
+        `;
+}
+
 export default async function panelHtml(summary: Summary, activedTab: number) {
     let todoItems = [];
     for (const noteId in summary) {
@@ -49,27 +58,46 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     result += `<div class="tab-content" id="pills-tabContent">`;
 
     // ====> build today tab div <====
-    result += `<div class="tab-pane fade show ${activedTab === 0 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0">`;
-    result += `<ul class="list-group">`;
-
+    result += `<div class="tab-pane fade show ${activedTab === 0 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0"><ul class="list-group">`;
     let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0"><ul class="list-group">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
+
+    let emptyToday = true;
+    let emptyScheduled = true;
+    let emptyInbox = true;
     for (const todoItem of todoItems) {
         if (todoItem.date && todoItem.date.length > 0) {
             const todoItemDate = chrono.parseDate(todoItem.date);
             if (todoItemDate) {
                 if (isToday(todoItemDate)) {
                     result += createHTMLForTodoItem(todoItem);
+                    emptyToday = false;
                 } else {
                     scheduledDiv += createHTMLForTodoItem(todoItem);
+                    emptyScheduled = false;
                 }
             } else {
                 inboxDiv += createHTMLForTodoItem(todoItem);
+                emptyInbox = false;
             }
         } else {
             inboxDiv += createHTMLForTodoItem(todoItem);
+            emptyInbox = false;
         }
     }
+
+    if (emptyToday) {
+        result += emptyTaskCheer();
+    }
+
+    if (emptyScheduled) {
+        scheduledDiv += emptyTaskCheer();
+    }
+
+    if (emptyInbox) {
+        inboxDiv += emptyTaskCheer();
+    }
+
     inboxDiv += `</ul></div>`;
     scheduledDiv += `</ul></div>`;
     result += `</ul></div>`;

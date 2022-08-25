@@ -31,3 +31,20 @@
 .inline-todo-div ul#pills-tab {
     padding-top: 1em;
 }
+
+i.fas.no-task-icon {
+    font-size: 500%;
+    opacity: 0.3;
+    margin-top: 1em;
+    margin-bottom: 30px;
+    display: block;
+}
+
+p.no-task-text {
+    font-style: italic;
+    opacity: 0.5;
+}
+
+div.no-task-cheer {
+    text-align: center;
+}
