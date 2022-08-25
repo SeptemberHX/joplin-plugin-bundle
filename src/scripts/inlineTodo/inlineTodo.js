@@ -13,3 +13,10 @@ function todoItemChanged(id, checked) {
         })
     }
 }
+
+function todoTypeTabItemClicked(id) {
+    webviewApi.postMessage({
+        name: 'sidebar_todo_type_tab_item_clicked',
+        id: id
+    });
+}

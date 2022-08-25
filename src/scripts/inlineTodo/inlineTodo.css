@@ -27,3 +27,7 @@
 .inline-todo-div span.badge.rounded-pill {
     opacity: 0.75;
 }
+
+.inline-todo-div ul#pills-tab {
+    padding-top: 1em;
+}

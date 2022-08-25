@@ -12,6 +12,7 @@ class TodolistPlugin extends SidebarPlugin {
     sidebar: Sidebars;
     summary_map: Summary;
     builder: SummaryBuilder;
+    todoTypeClicked: number = 0;
 
     refresh = debounce(async () => {
         await this.builder.search_in_all();
@@ -72,6 +73,11 @@ class TodolistPlugin extends SidebarPlugin {
                     }
                 }
                 break;
+            case 'sidebar_todo_type_tab_item_clicked':
+                if (msg.id) {
+                    this.todoTypeClicked = msg.id;
+                }
+                return true;
             default:
                 break;
         }
@@ -91,7 +97,7 @@ class TodolistPlugin extends SidebarPlugin {
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
         console.log(summary_map);
-        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map));
+        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked));
     }
 }
 
