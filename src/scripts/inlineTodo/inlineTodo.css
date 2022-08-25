@@ -48,3 +48,8 @@ p.no-task-text {
 div.no-task-cheer {
     text-align: center;
 }
+
+div.inline-todo-div li.nav-item {
+    margin-left: 1em;
+    margin-right: 1em;
+}

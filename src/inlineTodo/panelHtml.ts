@@ -40,17 +40,55 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
         }
     });
 
+    const todayItems = [];
+    const scheduledItems = [];
+    const inboxItems = [];
+    for (const todoItem of todoItems) {
+        if (todoItem.date && todoItem.date.length > 0) {
+            const todoItemDate = chrono.parseDate(todoItem.date);
+            if (todoItemDate) {
+                if (isToday(todoItemDate)) {
+                    todayItems.push(todoItem);
+                } else {
+                    scheduledItems.push(todoItem);
+                }
+            } else {
+                inboxItems.push(todoItem);
+            }
+        } else {
+            inboxItems.push(todoItem);
+        }
+    }
+
     let result = `<div class="inline-todo-div">`;
     result += `
       <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link ${activedTab === 0 ? 'active' : ''}" onclick="todoTypeTabItemClicked(0);" id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button" role="tab" aria-controls="pills-today" aria-selected="true">Today</button>
+        <button class="position-relative nav-link ${activedTab === 0 ? 'active' : ''}" onclick="todoTypeTabItemClicked(0);" id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button" role="tab" aria-controls="pills-today" aria-selected="true">
+          <i class="fas fa-star"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${todayItems.length === 0 ? 'invisible' : ''}">
+            ${todoItems.length}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link ${activedTab === 1 ? 'active' : ''}" onclick="todoTypeTabItemClicked(1);" id="pills-scheduled-tab" data-bs-toggle="pill" data-bs-target="#pills-scheduled" type="button" role="tab" aria-controls="pills-scheduled" aria-selected="false">Scheduled</button>
+        <button class="position-relative nav-link ${activedTab === 1 ? 'active' : ''}" onclick="todoTypeTabItemClicked(1);" id="pills-scheduled-tab" data-bs-toggle="pill" data-bs-target="#pills-scheduled" type="button" role="tab" aria-controls="pills-scheduled" aria-selected="false">
+          <i class="fas fa-calendar-day"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${scheduledItems.length === 0 ? 'invisible' : ''}">
+            ${scheduledItems.length}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link ${activedTab === 2 ? 'active' : ''}" onclick="todoTypeTabItemClicked(2);" id="pills-inbox-tab" data-bs-toggle="pill" data-bs-target="#pills-inbox" type="button" role="tab" aria-controls="pills-inbox" aria-selected="false">Inbox</button>
+        <button class="position-relative nav-link ${activedTab === 2 ? 'active' : ''}" onclick="todoTypeTabItemClicked(2);" id="pills-inbox-tab" data-bs-toggle="pill" data-bs-target="#pills-inbox" type="button" role="tab" aria-controls="pills-inbox" aria-selected="false">
+          <i class="fas fa-inbox"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${inboxItems.length === 0 ? 'invisible' : ''}">
+            ${inboxItems.length}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
       </li>
     </ul>
     `;
@@ -62,39 +100,27 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0"><ul class="list-group">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
 
-    let emptyToday = true;
-    let emptyScheduled = true;
-    let emptyInbox = true;
-    for (const todoItem of todoItems) {
-        if (todoItem.date && todoItem.date.length > 0) {
-            const todoItemDate = chrono.parseDate(todoItem.date);
-            if (todoItemDate) {
-                if (isToday(todoItemDate)) {
-                    result += createHTMLForTodoItem(todoItem);
-                    emptyToday = false;
-                } else {
-                    scheduledDiv += createHTMLForTodoItem(todoItem);
-                    emptyScheduled = false;
-                }
-            } else {
-                inboxDiv += createHTMLForTodoItem(todoItem);
-                emptyInbox = false;
-            }
-        } else {
-            inboxDiv += createHTMLForTodoItem(todoItem);
-            emptyInbox = false;
-        }
+    for (const todoItem of todayItems) {
+        result += createHTMLForTodoItem(todoItem);
     }
 
-    if (emptyToday) {
+    for (const inboxItem of inboxItems) {
+        inboxDiv += createHTMLForTodoItem(inboxItem);
+    }
+
+    for (const scheduledItem of scheduledItems) {
+        scheduledDiv += createHTMLForTodoItem(scheduledItem);
+    }
+
+    if (todayItems.length === 0) {
         result += emptyTaskCheer();
     }
 
-    if (emptyScheduled) {
+    if (scheduledItems.length === 0) {
         scheduledDiv += emptyTaskCheer();
     }
 
-    if (emptyInbox) {
+    if (inboxItems.length === 0) {
         inboxDiv += emptyTaskCheer();
     }
 
