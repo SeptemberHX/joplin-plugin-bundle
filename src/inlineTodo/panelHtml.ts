@@ -64,10 +64,10 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     result += `
       <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${activedTab === 0 ? 'active' : ''}" onclick="todoTypeTabItemClicked(0);" id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button" role="tab" aria-controls="pills-today" aria-selected="true">
+        <button class="position-relative nav-link ${activedTab === 3 ? 'active' : ''}" onclick="todoTypeTabItemClicked(3);" id="pills-today-tab" data-bs-toggle="pill" data-bs-target="#pills-today" type="button" role="tab" aria-controls="pills-today" aria-selected="true">
           <i class="fas fa-star"></i>
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${todayItems.length === 0 ? 'invisible' : ''}">
-            ${todoItems.length}
+            ${todayItems.length}
             <span class="visually-hidden">unread messages</span>
           </span>
         </button>
@@ -96,7 +96,7 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     result += `<div class="tab-content" id="pills-tabContent">`;
 
     // ====> build today tab div <====
-    result += `<div class="tab-pane fade show ${activedTab === 0 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0"><ul class="list-group">`;
+    result += `<div class="tab-pane fade show ${activedTab === 3 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0"><ul class="list-group">`;
     let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0"><ul class="list-group">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
 

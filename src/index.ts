@@ -15,9 +15,9 @@ joplin.plugins.register({
 			outlinePlugin,
 			todolistPlugin,
 			dailyNotePlugin,
-			writingMarkerPlugin,
-			noteLinkPlugin,
-			aggregateSearchPlugin
+			// writingMarkerPlugin,
+			// noteLinkPlugin,
+			// aggregateSearchPlugin
 		];
 
 		await sidebar.init(plugins);

@@ -12,7 +12,7 @@ class TodolistPlugin extends SidebarPlugin {
     sidebar: Sidebars;
     summary_map: Summary;
     builder: SummaryBuilder;
-    todoTypeClicked: number = 0;
+    todoTypeClicked: number = 3;
 
     refresh = debounce(async () => {
         await this.builder.search_in_all();
@@ -96,7 +96,6 @@ class TodolistPlugin extends SidebarPlugin {
 
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
-        console.log(summary_map);
         await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked));
     }
 }
