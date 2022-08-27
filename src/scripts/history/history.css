@@ -87,3 +87,7 @@ div.history-container ::-webkit-scrollbar-thumb:hover {
 div.history-container button.accordion-button {
     height: 2.5em;
 }
+
+div.history-container .hist-item strong a {
+    color: var(--bs-accordion-active-color);
+}
