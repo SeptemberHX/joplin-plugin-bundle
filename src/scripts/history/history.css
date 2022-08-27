@@ -1,0 +1,85 @@
+div.history-container {
+    overflow: auto;
+    text-overflow: clip;
+    background-color: var(--joplin-background-color);
+    color: var(--joplin-color);
+    font-size: var(--joplin-font-size);
+    font-family: var(--joplin-font-family);
+}
+
+div.history-container .hist-title {
+    color: var(--joplin-color);
+    font-weight: bold;
+    text-decoration: none;
+    margin: 5px;
+}
+
+div.history-container .hist-section {
+    margin: 5px;
+}
+
+div.history-container .hist-item {
+    margin: 0px;
+    text-overflow: clip;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+div.history-container .hist-item a {
+    color: var(--joplin-color);
+    text-decoration: none;
+}
+
+div.history-container .hist-item a:active, a:hover {
+    font-weight: bold;
+}
+
+div.history-container .hist-loader {
+    text-align: center;
+    margin: 0px;
+    text-overflow: clip;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+div.history-container .hist-loader a {
+    color: var(--joplin-color);
+    text-decoration: none;
+}
+
+div.history-container .hist-loader a:active, a:hover {
+    font-weight: bold;
+}
+
+div.history-container .hist-plot {
+    vertical-align: text-top;
+    stroke-width: 2px;
+}
+
+div.history-container ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+div.history-container ::-webkit-scrollbar-corner {
+    background: none;
+}
+
+div.history-container ::-webkit-scrollbar-track {
+    border: none;
+}
+
+div.history-container ::-webkit-scrollbar-thumb {
+    background: rgba(100, 100, 100, 0.3);
+    border-radius: 5px;
+}
+
+div.history-container ::-webkit-scrollbar-track:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+div.history-container ::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 100, 100, 0.7);
+}

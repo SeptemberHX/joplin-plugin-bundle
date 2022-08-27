@@ -6,6 +6,7 @@ import dailyNotePlugin from "./dailyNote";
 import writingMarkerPlugin from "./writingMarker";
 import noteLinkPlugin from "./noteLink";
 import aggregateSearchPlugin from "./aggregateSearch";
+import historyPlugin from "./history";
 
 joplin.plugins.register({
 	onStart: async function() {
@@ -15,6 +16,7 @@ joplin.plugins.register({
 			outlinePlugin,
 			todolistPlugin,
 			dailyNotePlugin,
+			historyPlugin,
 			// writingMarkerPlugin,
 			// noteLinkPlugin,
 			// aggregateSearchPlugin
