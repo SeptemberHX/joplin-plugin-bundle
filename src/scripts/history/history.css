@@ -3,8 +3,6 @@ div.history-container {
     text-overflow: clip;
     background-color: var(--joplin-background-color);
     color: var(--joplin-color);
-    font-size: var(--joplin-font-size);
-    font-family: var(--joplin-font-family);
 }
 
 div.history-container .hist-title {
@@ -56,6 +54,8 @@ div.history-container .hist-loader a:active, a:hover {
 div.history-container .hist-plot {
     vertical-align: text-top;
     stroke-width: 2px;
+    width: 1.5em;
+    height: 1em;
 }
 
 div.history-container ::-webkit-scrollbar {

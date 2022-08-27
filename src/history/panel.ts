@@ -44,7 +44,7 @@ function getItemHtml(lines: string[], itemMap: Map<string,
     const sectIndex: number[] = [];  // keep a tab on all array indices that contain sections
     const N = Math.min(maxItems, lines.length);
 
-    itemHtml.push(`<details open class="hist-section"><summary class="hist-section" style="font-size: ${params.panelTextSize}px">Today</summary>`);
+    itemHtml.push(`<details open class="hist-section"><summary class="hist-section">Today</summary>`);
     sectIndex.push(0);
 
     for (let i = 0; i < N; i++) {
@@ -60,7 +60,7 @@ function getItemHtml(lines: string[], itemMap: Map<string,
 
         itemHtml.push(`
             ${foldTag}
-            <p class="hist-item" style="font-size: ${params.panelTextSize}px; height: ${params.plotSize[1]}px">
+            <p class="hist-item">
               ${plotTag}
               ${backTagStart}
               <a class="hist-item" href="#" data-slug="${item.id}" data-line="${i}">
@@ -92,13 +92,13 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
     if (!dateScope.has('yesterday') && (dayDiff == 1)) {
         dateScope.add('yesterday');
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section" style="font-size: ${params.panelTextSize}px">Yesterday</summary>`;
+        return `</details><details ${state} class="hist-section"><summary class="hist-section">Yesterday</summary>`;
     }
     if (!dateScope.has('week') &&
         (dayDiff > 1) && (dayDiff <= 6)) {
         dateScope.add('week');
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section" style="font-size: ${params.panelTextSize}px">Last 7 days</summary>`;
+        return `</details><details ${state} class="hist-section"><summary class="hist-section">Last 7 days</summary>`;
     }
 
     let strMonth = getMonthString(item.date);
@@ -107,7 +107,7 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
     if (!dateScope.has(strMonth) && (dayDiff > 6)) {
         dateScope.add(strMonth);
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section" style="font-size: ${params.panelTextSize}px">${strMonth}</summary>`;
+        return `</details><details ${state} class="hist-section"><summary class="hist-section">${strMonth}</summary>`;
     }
 
     return '';
@@ -203,7 +203,7 @@ function getStatsHtml(itemCounter: Map<string, number>,
         strOpen = ' open';
     itemHtml.push(`
     <details class="hist-section"${strOpen}>
-      <summary class="hist-section" style="font-size: ${params.panelTextSize}px">
+      <summary class="hist-section">
       Frequent notes</summary>`);
 
     let i = 0;
@@ -213,8 +213,8 @@ function getStatsHtml(itemCounter: Map<string, number>,
             return
         const r = Math.max(minR, maxR * count / maxCount);
         itemHtml.push(`
-      <p class="hist-item" style="font-size: ${params.panelTextSize}px; height: ${params.plotSize[1]}px">
-      <svg class="hist-plot" style="width: ${params.plotSize[0]}px; height: ${params.plotSize[1]}px">
+      <p class="hist-item">
+      <svg class="hist-plot">
         <circle r="${r}" cx="${0.9*params.plotSize[0] - maxR}"
             cy="${params.plotSize[1] / 2}"
             stroke="none" fill="${params.trailColors[0]}" />
@@ -266,8 +266,7 @@ export default async function updateHistView(params: HistSettings, loadAll: bool
   </style>
   <div class="history-container">
     <p class="hist-title">
-      <a class="hist-title" href="#" data-slug="${params.histNoteId}"
-        style="font-size:${params.panelTitleSize}px">
+      <a class="hist-title" href="#" data-slug="${params.histNoteId}">
         ${params.panelTitle}</a></p>
     ${itemHtml}
   </div>
