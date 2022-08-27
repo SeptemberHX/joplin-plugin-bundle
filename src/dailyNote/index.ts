@@ -24,7 +24,6 @@ class DailyNotePlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/dailyNote/dailyNote.js',
         ];
-        this.html = '<div class="card"><div class="card-body">Init...</div></div>';
         this.year = moment().year();
         this.month = moment().month();
     }

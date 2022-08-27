@@ -10,6 +10,13 @@ export abstract class SidebarPlugin {
     scripts: string[];
 
     protected constructor() {
+        this.html = `
+            <div class="card"><div class="card-body">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            </div></div>
+        `;
     }
 
     public async panelMsgProcess(msg: any) {
