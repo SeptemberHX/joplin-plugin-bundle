@@ -1,6 +1,7 @@
 import {Summary} from "./types";
 import * as chrono from 'chrono-node';
-var md = require('markdown-it')();
+var md = require('markdown-it')()
+            .use(require('markdown-it-mark'));
 
 
 const isToday = (someDate) => {

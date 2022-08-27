@@ -1,5 +1,6 @@
 import {settingValue} from "./settings";
-var md = require('markdown-it')();
+var md = require('markdown-it')()
+            .use(require('markdown-it-mark'));
 
 const uslug = require('uslug');
 
