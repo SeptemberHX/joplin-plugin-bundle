@@ -17,7 +17,7 @@ div.history-container .hist-section {
 }
 
 div.history-container .hist-item {
-    margin: 0px;
+    margin: 2px 6px;
     text-overflow: clip;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -82,4 +82,8 @@ div.history-container ::-webkit-scrollbar-track:hover {
 
 div.history-container ::-webkit-scrollbar-thumb:hover {
     background: rgba(100, 100, 100, 0.7);
+}
+
+div.history-container button.accordion-button {
+    height: 2.5em;
 }

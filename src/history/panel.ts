@@ -1,13 +1,13 @@
 import joplin from 'api';
-import { HistItem, parseItem } from './history';
-import { HistSettings, freqScope, freqLoc, freqOpen } from './settings';
+import {HistItem, parseItem} from './history';
+import {HistSettings, freqScope, freqLoc, freqOpen} from './settings';
 
 const DEBUG = false;
 
 async function getHistHtml(maxItems: number, params: HistSettings): Promise<string> {
     let histNote;
     try {
-        histNote = await joplin.data.get(['notes', params.histNoteId], { fields: ['body'] });
+        histNote = await joplin.data.get(['notes', params.histNoteId], {fields: ['body']});
     } catch {
         return 'Please set a history note (from the Tools menu) to start logging';
     }
@@ -18,10 +18,13 @@ async function getHistHtml(maxItems: number, params: HistSettings): Promise<stri
     const [itemHtml, itemCounter] = getItemHtml(lines, itemMap, maxItems, params);
 
     let statsHtml = '';
-    if (params.freqLoc != freqLoc.hide)
+    if (params.freqLoc != freqLoc.hide) {
         statsHtml = getStatsHtml(itemCounter, itemMap, params);
+    }
 
-    let allHtml: string[] = [];
+    let allHtml: string[] = [
+        `<div class="accordion" id="historyAccordion">`
+    ];
     if (params.freqLoc == freqLoc.top)
         allHtml.push(statsHtml);
     allHtml = allHtml.concat(itemHtml);
@@ -31,12 +34,12 @@ async function getHistHtml(maxItems: number, params: HistSettings): Promise<stri
     if (maxItems < lines.length)
         allHtml.push(`<p class="hist-loader"><a class="hist-loader" href="#">Load more items</a><br><br></p>`);
 
+    allHtml.push(`</div>`);
+
     return allHtml.join('\n')
 }
 
-function getItemHtml(lines: string[], itemMap: Map<string,
-    string>, maxItems: number, params: HistSettings):
-    [string[], Map<string, number>] {
+function getItemHtml(lines: string[], itemMap: Map<string, string>, maxItems: number, params: HistSettings): [string[], Map<string, number>] {
     const dateScope = new Set(['today']);
     const activeTrail = new Set() as Set<number>;
     let itemCounter = new Map<string, number>();
@@ -44,7 +47,19 @@ function getItemHtml(lines: string[], itemMap: Map<string,
     const sectIndex: number[] = [];  // keep a tab on all array indices that contain sections
     const N = Math.min(maxItems, lines.length);
 
-    itemHtml.push(`<details open class="hist-section"><summary class="hist-section">Today</summary>`);
+    itemHtml.push(`<div class="accordion-item" id="accordionToday">`)
+    itemHtml.push(`
+        <h2 class="accordion-header" id="headingFrequent">
+          <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToday" aria-expanded="true" aria-controls="collapseOne">
+            Today
+          </button>
+        </h2>
+    `);
+    itemHtml.push(`
+        <div id="collapseToday" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+          <div class="accordion-body">
+    `);
+
     sectIndex.push(0);
 
     for (let i = 0; i < N; i++) {
@@ -70,13 +85,15 @@ function getItemHtml(lines: string[], itemMap: Map<string,
             </p>
           `);
     }
-    itemHtml.push('</details>');
+    itemHtml.push('</div></div>');
+    itemHtml.push('</div>');
 
     // close all sections except the one that contains currentLine
-    for (let i=0; i<sectIndex.length-1; i++) {
-        if (sectIndex[i+1] > params.currentLine + 1)
+    for (let i = 0; i < sectIndex.length - 1; i++) {
+        if (sectIndex[i + 1] > params.currentLine + 1)
             break
-        itemHtml[sectIndex[i]] = itemHtml[sectIndex[i]].replace('details open', 'details')
+        itemHtml[sectIndex[i]] = itemHtml[sectIndex[i]].replace('collapse show', 'collapse collapsed');
+        itemHtml[sectIndex[i]] = itemHtml[sectIndex[i]].replace('accordion-button show', 'accordion-button collapsed');
     }
 
     return [itemHtml, itemCounter];
@@ -88,7 +105,7 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
        and start a new one */
     const now = new Date();
     const dayDiff = getDateDay(now) - getDateDay(item.date);
-    const state = (currentInd <= params.currentLine)? 'open':'';
+    const state = (currentInd <= params.currentLine) ? 'open' : '';
     if (!dateScope.has('yesterday') && (dayDiff == 1)) {
         dateScope.add('yesterday');
         sectIndex.push(currentInd + 1);
@@ -115,15 +132,15 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
 
 function getPlotTag(trail: number[], activeTrail: Set<number>, params: HistSettings): string {
     const yDot = params.plotSize[1] / 2;  // connector pos
-    const rDotMax = 0.5*params.trailDisplay + 2;
+    const rDotMax = 0.5 * params.trailDisplay + 2;
     const xBase = params.plotSize[0] - rDotMax;
     const yControl = yDot;
     let plot = `<svg class="hist-plot" style="width: ${params.plotSize[0]}px; height: ${params.plotSize[1]}px">`;
 
     for (let i = 1; i <= params.trailDisplay; i++) {
-        const color = params.trailColors[(i-1) % params.trailColors.length];
-        const xLevel = xBase * (1 - (i-1)/(params.trailDisplay));
-        const rLevel = rDotMax - (i-1)/2;
+        const color = params.trailColors[(i - 1) % params.trailColors.length];
+        const xLevel = xBase * (1 - (i - 1) / (params.trailDisplay));
+        const rLevel = rDotMax - (i - 1) / 2;
 
         if (trail.includes(i)) {
             if (activeTrail.has(i))  // continue trail
@@ -140,7 +157,7 @@ function getPlotTag(trail: number[], activeTrail: Set<number>, params: HistSetti
             stroke="none" fill="${color}" />
           `;
             }
-        } else if (activeTrail.has(i)){ // end trail
+        } else if (activeTrail.has(i)) { // end trail
             activeTrail.delete(i);
             plot += `
           <path d="M ${xLevel} 0 C ${xLevel} ${yControl}, ${xBase} ${yControl}, ${xBase} ${yDot}"
@@ -190,24 +207,36 @@ function updateStats(item: HistItem, itemCounter: Map<string, number>,
     itemCounter.set(item.id, itemCounter.get(item.id) + 1);
 }
 
+/**
+ * Generate frequent notes element
+ */
 function getStatsHtml(itemCounter: Map<string, number>,
                       itemMap: Map<string, string>, params: HistSettings): string {
-    const maxR = 0.9*Math.min(params.panelTextSize, params.plotSize[0]) / 2;  // px, leaving 10% margin
+    const maxR = 0.9 * Math.min(params.panelTextSize, params.plotSize[0]) / 2;  // px, leaving 10% margin
     const minR = 1;
     const itemHtml: string[] = [];
     const noteOrder = new Map([...itemCounter.entries()].sort((a, b) => b[1] - a[1]));
     const maxCount = Math.max(...itemCounter.values());
 
-    let strOpen = '';
+    let strOpen = 'collapsed';
     if (params.freqOpen == freqOpen.open)
-        strOpen = ' open';
+        strOpen = 'show';
+
+    itemHtml.push(`<div class="accordion-item" id="accordionFrequent">`)
     itemHtml.push(`
-    <details class="hist-section"${strOpen}>
-      <summary class="hist-section">
-      Frequent notes</summary>`);
+        <h2 class="accordion-header" id="headingFrequent">
+          <button class="accordion-button ${strOpen}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFrequent" aria-expanded="true" aria-controls="collapseOne">
+            Frequent Notes
+          </button>
+        </h2>
+    `);
+    itemHtml.push(`
+        <div id="collapseFrequent" class="accordion-collapse collapse ${strOpen}" aria-labelledby="headingOne">
+          <div class="accordion-body">
+    `)
 
     let i = 0;
-    noteOrder.forEach( (count, id) => {
+    noteOrder.forEach((count, id) => {
         i += 1;
         if (i > params.freqDisplay)
             return
@@ -215,7 +244,7 @@ function getStatsHtml(itemCounter: Map<string, number>,
         itemHtml.push(`
       <p class="hist-item">
       <svg class="hist-plot">
-        <circle r="${r}" cx="${0.9*params.plotSize[0] - maxR}"
+        <circle r="${r}" cx="${0.9 * params.plotSize[0] - maxR}"
             cy="${params.plotSize[1] / 2}"
             stroke="none" fill="${params.trailColors[0]}" />
       </svg>
@@ -225,12 +254,13 @@ function getStatsHtml(itemCounter: Map<string, number>,
       </p>
     `);
     });
-    itemHtml.push('</details>');
+    itemHtml.push('</div></div>');
+    itemHtml.push(`</div>`)
     return itemHtml.join('\n');
 }
 
 function getDateDay(date: Date): number {
-    return Math.ceil((date.getTime() - 1000*60*date.getTimezoneOffset()) / 86400000);
+    return Math.ceil((date.getTime() - 1000 * 60 * date.getTimezoneOffset()) / 86400000);
 }
 
 function getMonthString(date: Date): string {
@@ -242,7 +272,7 @@ function getYearString(date: Date): string {
 }
 
 // From https://stackoverflow.com/a/6234804/561309
-function escapeHtml(unsafe:string): string {
+function escapeHtml(unsafe: string): string {
     return unsafe
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -255,23 +285,16 @@ export default async function updateHistView(params: HistSettings, loadAll: bool
     const start = new Date().getTime();
 
     // First create the HTML for each history item:
-    const N = (loadAll) ? Infinity:params.panelMaxItems;
+    const N = (loadAll) ? Infinity : params.panelMaxItems;
     const itemHtml = await getHistHtml(N, params);
 
     // Finally, insert all the items in a container and set the webview HTML:
     const htmlResult = `
-  <html>
-  <style>
-  ${params.userStyle}
-  </style>
-  <div class="history-container">
-    <p class="hist-title">
-      <a class="hist-title" href="#" data-slug="${params.histNoteId}">
-        ${params.panelTitle}</a></p>
-    ${itemHtml}
-  </div>
+      <div class="history-container">
+        ${itemHtml}
+      </div>
   `;
     const finish = new Date().getTime();
-    if (DEBUG) console.log('updateHistView: ' + (finish-start) + 'ms');
+    if (DEBUG) console.log('updateHistView: ' + (finish - start) + 'ms');
     return htmlResult;
 }
