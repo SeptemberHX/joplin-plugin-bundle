@@ -12,8 +12,6 @@ export interface HistSettings {
     markCurrentLine: boolean;
     secBetweenItems: number;
     maxDays: number;
-    panelTitle: string;
-    panelTitleSize: number;
     panelTextSize: number;
     panelTextSpace: number;
     panelMaxItems: number;
@@ -72,8 +70,6 @@ export async function updateSettings(settings: HistSettings) {
     settings.markCurrentLine = (await joplin.settings.value('histMarkCurrentLine'));
     settings.secBetweenItems = await joplin.settings.value('histSecBetweenItems');
     settings.maxDays = await joplin.settings.value('histMaxDays');
-    settings.panelTitle = await joplin.settings.value('histPanelTitle');
-    settings.panelTitleSize = await joplin.settings.value('histPanelTitleSize');
     settings.panelTextSize = await joplin.settings.value('histPanelTextSize');
     settings.trailDisplay = await joplin.settings.value('histTrailDisplay');
     settings.trailRecords = await joplin.settings.value('histTrailRecords');
@@ -142,32 +138,6 @@ export function getSettingsSection(settings: HistSettings): Record<string, Setti
             public: true,
             label: 'Panel: Highlight clicked item',
             description: 'Backtracking must be activated'
-        },
-
-        'histPanelTitle': {
-            value: settings.panelTitle,
-            type: SettingItemType.String,
-            section: 'HistoryPanel',
-            public: true,
-            label: 'Panel: Title',
-        },
-
-        'histPanelTitleSize': {
-            value: settings.panelTitleSize,
-            type: SettingItemType.Int,
-            minimum: 1,
-            section: 'HistoryPanel',
-            public: true,
-            label: 'Panel: Title font size (px)',
-        },
-
-        'histPanelTextSize': {
-            value: settings.panelTextSize,
-            type: SettingItemType.Int,
-            minimum: 1,
-            section: 'HistoryPanel',
-            public: true,
-            label: 'Panel: Text font size (px)',
         },
 
         'histTrailDisplay': {
