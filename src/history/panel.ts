@@ -105,17 +105,37 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
        and start a new one */
     const now = new Date();
     const dayDiff = getDateDay(now) - getDateDay(item.date);
-    const state = (currentInd <= params.currentLine) ? 'open' : '';
+    const state = (currentInd <= params.currentLine) ? 'show' : 'collapsed';
     if (!dateScope.has('yesterday') && (dayDiff == 1)) {
         dateScope.add('yesterday');
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section">Yesterday</summary>`;
+        return `
+            </div></div></div>
+            <div class="accordion-item" id="accordionYesterday">
+            <h2 class="accordion-header">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYesterday" aria-expanded="true" aria-controls="collapseOne">
+                Yesterday
+              </button>
+            </h2>
+            <div id="collapseYesterday" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
+              <div class="accordion-body">
+        `;
     }
     if (!dateScope.has('week') &&
         (dayDiff > 1) && (dayDiff <= 6)) {
         dateScope.add('week');
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section">Last 7 days</summary>`;
+        return `
+            </div></div></div>
+            <div class="accordion-item" id="accordionWeek">
+            <h2 class="accordion-header">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeek" aria-expanded="true" aria-controls="collapseOne">
+                Last 7 Days
+              </button>
+            </h2>
+            <div id="collapseWeek" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
+              <div class="accordion-body">
+        `;
     }
 
     let strMonth = getMonthString(item.date);
@@ -124,7 +144,17 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
     if (!dateScope.has(strMonth) && (dayDiff > 6)) {
         dateScope.add(strMonth);
         sectIndex.push(currentInd + 1);
-        return `</details><details ${state} class="hist-section"><summary class="hist-section">${strMonth}</summary>`;
+        return `
+            </div></div></div>
+            <div class="accordion-item" id="accordionMonth">
+            <h2 class="accordion-header">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonth" aria-expanded="true" aria-controls="collapseOne">
+                ${strMonth}
+              </button>
+            </h2>
+            <div id="collapseMonth" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
+              <div class="accordion-body">
+        `;
     }
 
     return '';
@@ -178,7 +208,7 @@ function getBackTag(lineInd: number, params: HistSettings): [string, string] {
 
 function getTodoTag(item: HistItem, params: HistSettings) {
     if (item.is_todo)
-        return '☑︎ ';
+        return '<i class="far fa-square"></i> ';
     return '';
 }
 
