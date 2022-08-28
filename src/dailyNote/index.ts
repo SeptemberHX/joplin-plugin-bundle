@@ -4,6 +4,7 @@ import {createDailyNoteByDate, getDailyNoteByDate} from "./utils";
 import joplin from "../../api";
 import {debounce} from "ts-debounce";
 import * as moment from "moment";
+import {settings} from "./settings";
 
 class DailyNotePlugin extends SidebarPlugin {
 
@@ -29,6 +30,8 @@ class DailyNotePlugin extends SidebarPlugin {
     }
 
     public async init(sidebar: Sidebars) {
+        await settings.register();
+
         this.sidebar = sidebar;
         await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month));
 

@@ -1,6 +1,6 @@
 import joplin from "../../api";
+import {DAILY_NOTE_ROOT_DIR_NAME, DAILY_NOTE_TEMPLATE} from "./settings";
 
-const DAILY_NOTE_ROOT_DIR_NAME = 'Daily Note';
 
 export async function getDailyNoteByDate(dateStr) {
     const splits = dateStr.split('-');
@@ -50,7 +50,7 @@ export async function createDailyNoteByDate(dateStr: string) {
     const note = await joplin.data.post(['notes'], null, {
             title: dateStr,
             parent_id: monthDirId,
-            body: '',
+            body: (await joplin.settings.value(DAILY_NOTE_TEMPLATE)).split(`\\n`).join('\n'),
         }
     );
     return note.id;
@@ -76,17 +76,21 @@ async function getOrCreateMonthFolder(year, month, ifCreate) {
 }
 
 async function getOrCreateDailyNoteRootDir(ifCreate) {
+    let rootDirName = await joplin.settings.value(DAILY_NOTE_ROOT_DIR_NAME);
+    if (rootDirName.length === 0) {
+        rootDirName = 'Daily Note';
+    }
     const folders = await joplin.data.get(['folders']);
     let folder_id;
     for (let folder of folders.items) {
-        if (folder.parent_id === '' && folder.title === DAILY_NOTE_ROOT_DIR_NAME) {
+        if (folder.parent_id === '' && folder.title === rootDirName) {
             folder_id = folder.id;
             break;
         }
     }
 
     if (!folder_id && ifCreate) {
-        const folder = await joplin.data.post(['folders'], null, {title: DAILY_NOTE_ROOT_DIR_NAME, parent_id: ''});
+        const folder = await joplin.data.post(['folders'], null, {title: rootDirName, parent_id: ''});
         folder_id = folder.id;
     }
 
