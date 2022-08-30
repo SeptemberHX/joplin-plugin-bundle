@@ -69,3 +69,8 @@ div.inline-todo-div li.list-group-item.priority-2 {
 div.inline-todo-div li.list-group-item.priority-1 {
     border-left: 5px solid #e33e2f;
 }
+
+div.inline-todo-div span.badge.bg-primary,
+div.inline-todo-div span.badge.rounded-pill.bg-info {
+    opacity: 0.75;
+}

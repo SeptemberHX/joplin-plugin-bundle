@@ -165,7 +165,7 @@ function createHTMLForTodoItem(todoItem) {
 
     if (todoItem.tags) {
         for (const tag of todoItem.tags){
-            result += `<span class="badge rounded-pill bg-success">${tag}</span>`;
+            result += `<span class="badge rounded-pill bg-info">${tag}</span>`;
         }
     }
     if (todoItem.date) {
