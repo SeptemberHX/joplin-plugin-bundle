@@ -53,3 +53,19 @@ div.inline-todo-div li.nav-item {
     margin-left: 1em;
     margin-right: 1em;
 }
+
+div.inline-todo-div li.list-group-item.priority-4 {
+    border-left: 5px solid transparent;
+}
+
+div.inline-todo-div li.list-group-item.priority-3 {
+    border-left: 5px solid #7a94df;
+}
+
+div.inline-todo-div li.list-group-item.priority-2 {
+    border-left: 5px solid #f8d15f;
+}
+
+div.inline-todo-div li.list-group-item.priority-1 {
+    border-left: 5px solid #d86050;
+}

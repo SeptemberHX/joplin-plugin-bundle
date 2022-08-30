@@ -1,8 +1,9 @@
 import {Summary} from "./types";
 import * as chrono from 'chrono-node';
+import dateFormat  from "dateformat";
+
 var md = require('markdown-it')()
             .use(require('markdown-it-mark'));
-
 
 const isToday = (someDate) => {
     const today = new Date()
@@ -35,9 +36,26 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
         } else if (!a.date && b.date) {
             return 1;
         } else if (a.date && b.date) {
-            return a.date.localeCompare(b.date);
+            const r = a.date.localeCompare(b.date);
+            if (r !== 0) {
+                return r;
+            }  else {
+                if (a.priority < b.priority) {
+                    return -1;
+                } else if (a.priority > b.priority) {
+                    return 1;
+                } else {
+                    return a.msg.localeCompare(b.msg);
+                }
+            }
         } else {
-            return a.msg.localeCompare(b.msg);
+            if (a.priority < b.priority) {
+                return -1;
+            } else if (a.priority > b.priority) {
+                return 1;
+            } else {
+                return a.msg.localeCompare(b.msg);
+            }
         }
     });
 
@@ -138,21 +156,27 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
 
 function createHTMLForTodoItem(todoItem) {
     let result = `
-            <li class="list-group-item">
+            <li class="list-group-item priority-${todoItem.priority}">
                 <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">
                 <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
 
     result += `<div class="task-badge">`
-    if (todoItem.date) {
-        result += `<span class="badge rounded-pill bg-primary">${todoItem.date}</span>`
-    }
 
     if (todoItem.tags) {
         for (const tag of todoItem.tags){
             result += `<span class="badge rounded-pill bg-success">${tag}</span>`;
         }
     }
+    if (todoItem.date) {
+        const todoItemDate = chrono.parseDate(todoItem.date);
+        let dateString = todoItem.date;
+        if (todoItemDate) {
+            dateString = dateFormat(todoItemDate, 'mm-dd');
+        }
+        result += `<span class="badge bg-primary">${dateString}</span>`
+    }
+
     result += `</div></li>`;
     return result;
 }

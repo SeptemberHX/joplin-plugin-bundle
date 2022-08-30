@@ -9,7 +9,7 @@
 export const regexes = {
     list: {
         title: 'Confluence Style',
-        regex: /^\s*- \[ \]\s.*(?<=\s)(?:(@[^\s]+)|(\/\/[^\s]+)|(\+[^\s]+)|())(?:[^\n]*)?$/gm,
+        regex: /^\s*- \[ \]\s.*(?<=\s)(?:(@[^\s]+)|(\/\/[^\s]+)|(\+[^\s]+)|(![1234](?=\s))|())(?:[^\n]*)?$/gm,
         query: '/"- [ ]"',
         assignee: (todo: string[]) => {
             const result = todo[0].match(/(?<=\s@)([^\s]+)/);
@@ -29,29 +29,14 @@ export const regexes = {
             result = result.split(/\s\/\/[^\s]+/).join('');
             result = result.split(/\s\+[^\s]+/).join('');
             result = result.split(/- \[ \]/).join('');
+            result = result.split(/(?<=\s)![1234]/).join('');
 
             return result.trim();
         },
+        priority: (todo: string[]) => {
+            const result = todo[0].match(/(?<=\s!)([1234])/g);
+            return result ? Number(result[0]) : 4;
+        },
         toggle: { open: '- [ ]', closed: '- [x]' },
-    },
-    link: {
-        title: 'Link Style',
-        regex: /\[(TODO)\]\((.*?)\)([^\n]+)$/gmi,
-        query: '/"[TODO]"',
-        assignee: (todo: string[]) => { return todo[1]; },
-        date: (todo: string[]) => { return todo[2]; },
-        tags: (todo: string[]) => { return []; },
-        msg: (todo: string[]) => { return todo[3]; },
-        toggle: { open: '- [ ]', closed: '- [x]' },
-    },
-    plain: {
-        title: 'List Style',
-        regex: /^\s*- \[ \] ()()([^\n]*)$/gm,
-        query: '/"- [ ]"',
-        assignee: (todo: string[]) => { return ''; },
-        date: (todo: string[]) => { return ''; },
-        tags: (todo: string[]) => { return []; },
-        msg: (todo: string[]) => { return todo[3]; },
-        toggle: { open: '[TODO]', closed: '[DONE]' },
-    },
+    }
 }

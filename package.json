@@ -31,6 +31,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "chrono-node": "^2.4.1",
+    "dateformat": "^5.0.3",
     "markdown-it": "^13.0.1",
     "markdown-it-mark": "^3.0.1",
     "moment": "^2.29.4",

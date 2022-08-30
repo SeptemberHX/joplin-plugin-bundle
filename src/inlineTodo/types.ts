@@ -32,6 +32,7 @@ interface RegexEntry {
 	assignee: (s: string[]) => string;
 	date: (s: string[]) => string;
 	tags: (s: string[]) => string[];
+	priority: (s: string[]) => number;
 	toggle: Toggle;
 }
 

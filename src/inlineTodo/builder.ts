@@ -46,6 +46,7 @@ export class SummaryBuilder {
 				date: matchedDate,
 				tags: todo_type.tags(match),
 				index: index,
+				priority: todo_type.priority(match)
 			});
 			index += 1;
 		}
