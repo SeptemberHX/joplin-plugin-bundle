@@ -59,7 +59,7 @@ div.inline-todo-div li.list-group-item.priority-4 {
 }
 
 div.inline-todo-div li.list-group-item.priority-3 {
-    border-left: 5px solid #7a94df;
+    border-left: 5px solid #549644;
 }
 
 div.inline-todo-div li.list-group-item.priority-2 {
@@ -67,5 +67,5 @@ div.inline-todo-div li.list-group-item.priority-2 {
 }
 
 div.inline-todo-div li.list-group-item.priority-1 {
-    border-left: 5px solid #d86050;
+    border-left: 5px solid #e33e2f;
 }
