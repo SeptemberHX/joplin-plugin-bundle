@@ -12,6 +12,12 @@ const isToday = (someDate) => {
         someDate.getFullYear() == today.getFullYear()
 }
 
+// https://stackoverflow.com/a/7763654/5513120
+function daysDifference(d0, d1) {
+    const diff = new Date(+d1).setHours(12) - new Date(+d0).setHours(12);
+    return Math.round(diff / 8.64e7);
+}
+
 const emptyTaskCheer = () => {
     return `
             <div class="no-task-cheer">
@@ -61,6 +67,9 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
 
     const todayItems = [];
     const scheduledItems = [];
+    const scheduledExpiredItems = [];
+    const scheduledIn7DaysItems = [];
+    const scheduledOtherItems = [];
     const inboxItems = [];
     for (const todoItem of todoItems) {
         if (todoItem.date && todoItem.date.length > 0) {
@@ -70,6 +79,15 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
                     todayItems.push(todoItem);
                 } else {
                     scheduledItems.push(todoItem);
+
+                    const diffs = daysDifference(new Date(), todoItemDate);
+                    if (diffs < 0) {
+                        scheduledExpiredItems.push(todoItem);
+                    } else if (diffs <= 7) {
+                        scheduledIn7DaysItems.push(todoItem);
+                    } else {
+                        scheduledOtherItems.push(todoItem);
+                    }
                 }
             } else {
                 inboxItems.push(todoItem);
@@ -116,7 +134,7 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
 
     // ====> build today tab div <====
     result += `<div class="tab-pane fade show ${activedTab === 3 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0"><ul class="list-group">`;
-    let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0"><ul class="list-group">`;
+    let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
 
     for (const todoItem of todayItems) {
@@ -127,8 +145,45 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
         inboxDiv += createHTMLForTodoItem(inboxItem);
     }
 
-    for (const scheduledItem of scheduledItems) {
-        scheduledDiv += createHTMLForTodoItem(scheduledItem);
+    // for (const scheduledItem of scheduledItems) {
+    //     scheduledDiv += createHTMLForTodoItem(scheduledItem);
+    // }
+
+    function createTaskCollapse(typeStr: string, displayText, items: any[]) {
+        let result = `
+          <div class="accordion-item" id="accordion${typeStr}">
+            <h2 class="accordion-header">
+              <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${typeStr}" aria-expanded="true" aria-controls="collapseOne">
+                ${displayText}
+              </button>
+            </h2>
+            <div id="collapse${typeStr}" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+              <div class="accordion-body">
+        `;
+
+        result += `<ul class="list-group">`;
+        for (const item of items) {
+            result += createHTMLForTodoItem(item);
+        }
+        result += `</ul></div></div></div>`;
+        return result;
+    }
+
+    if (scheduledItems.length > 0) {
+        scheduledDiv += `<div class="accordion" id="scheduledTasksAccordion">`
+        if (scheduledExpiredItems.length > 0) {
+            scheduledDiv += createTaskCollapse('ExpiredTask', 'Expired', scheduledExpiredItems);
+        }
+
+        if (scheduledIn7DaysItems.length > 0) {
+            scheduledDiv += createTaskCollapse('In7Days', 'In 7 Days', scheduledIn7DaysItems);
+        }
+
+        if (scheduledOtherItems.length > 0) {
+            scheduledDiv += createTaskCollapse('Future', 'Future', scheduledOtherItems);
+        }
+
+        scheduledDiv += `</div>`
     }
 
     if (todayItems.length === 0) {
@@ -144,7 +199,7 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     }
 
     inboxDiv += `</ul></div>`;
-    scheduledDiv += `</ul></div>`;
+    scheduledDiv += `</div>`;
     result += `</ul></div>`;
     result += scheduledDiv + inboxDiv;
     // ====> today tab div building ends <===

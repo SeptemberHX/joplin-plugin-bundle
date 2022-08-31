@@ -91,3 +91,7 @@ div.history-container button.accordion-button {
 div.history-container .hist-item strong a {
     color: var(--bs-accordion-active-color);
 }
+
+div.history-container button.accordion-button {
+    font-weight: bold;
+}

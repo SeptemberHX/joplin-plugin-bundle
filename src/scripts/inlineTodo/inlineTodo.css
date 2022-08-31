@@ -74,3 +74,20 @@ div.inline-todo-div span.badge.bg-primary,
 div.inline-todo-div span.badge.rounded-pill.bg-info {
     opacity: 0.75;
 }
+
+div.inline-todo-div button.accordion-button {
+    height: 2.5em;
+}
+
+div.inline-todo-div .accordion-body {
+    padding: 0;
+}
+
+div.inline-todo-div #accordionExpiredTask button.accordion-button {
+    color: crimson;
+    font-weight: bold;
+}
+
+div.inline-todo-div button.accordion-button {
+    font-weight: bold;
+}
