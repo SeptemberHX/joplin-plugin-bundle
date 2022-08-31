@@ -4,7 +4,7 @@
 	"app_min_version": "2.8",
 	"version": "0.4.0",
 	"name": "Plugin Bundle",
-	"description": "My daily plugins in a more unified way",
+	"description": "Table of Contents, Inline Todos, Daily Notes, and History aggregated in one panel with more eye-candy UI design.",
 	"author": "SeptemberHX",
 	"homepage_url": "https://github.com/SeptemberHX/joplin-plugin-bundle.git",
 	"repository_url": "https://github.com/SeptemberHX/joplin-plugin-bundle.git",

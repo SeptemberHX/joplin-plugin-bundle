@@ -10,7 +10,17 @@ Current plugins:
 
 * Outline (v1.3.1): https://github.com/cqroot/joplin-outline
 * Inline Todo (v1.4.0): https://github.com/CalebJohn/joplin-inline-todo
+  * Four different categories: Today, Scheduled, Inbox, and Filter
+  * Click the todo items to open corresponding notes
+  * Show task priority in different colors
+  * Syntax:
+    * @Project
+    * +tag
+    * //date
+    * !1 !2 !3 !4: Four level task priority. 1 > 2 > 3 > 4. Default is 4.
 * Daily Note: Idea from https://github.com/liamcain/obsidian-calendar-plugin
+  * Show whether there is a note for each day in month calendar
+  * Click on any day to create a note or open the existing note
 * History Panel (v1.0.): https://github.com/alondmnt/joplin-plugin-history-panel
 
 Under development:
@@ -30,6 +40,7 @@ Under development:
 ![Imgur](https://i.imgur.com/yfcsNDb.gif)
 <img src="https://i.imgur.com/7cMUBOj.gif" width="200px"></img>
 ![Imgur](https://i.imgur.com/h7fP8iq.gif)
+<img src="./screenshot/history.png" width="200px"></img>
 
 ## Building the plugin
 
