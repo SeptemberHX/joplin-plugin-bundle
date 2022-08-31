@@ -223,6 +223,11 @@ function createHTMLForTodoItem(todoItem) {
             result += `<span class="badge rounded-pill bg-info">${tag}</span>`;
         }
     }
+
+    if (todoItem.assignee && todoItem.assignee.length > 0) {
+        result += `<span class="badge assignee">${todoItem.assignee}</span>`;
+    }
+
     if (todoItem.date) {
         const todoItemDate = chrono.parseDate(todoItem.date);
         let dateString = todoItem.date;

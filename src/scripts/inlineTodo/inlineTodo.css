@@ -91,3 +91,7 @@ div.inline-todo-div #accordionExpiredTask button.accordion-button {
 div.inline-todo-div button.accordion-button {
     font-weight: bold;
 }
+
+div.inline-todo-div span.badge.assignee {
+    background: coral;
+}
