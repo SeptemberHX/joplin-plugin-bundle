@@ -3,7 +3,7 @@ import {Settings, Summary} from "./types";
 import joplin from "api";
 import {regexes} from "./common";
 import {SummaryBuilder} from "./builder";
-import panelHtml from "./panelHtml";
+import panelHtml, {allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 
@@ -13,11 +13,17 @@ class TodolistPlugin extends SidebarPlugin {
     summary_map: Summary;
     builder: SummaryBuilder;
     todoTypeClicked: number = 3;
+    filterProject: string = allProjectsStr;
+    filterTag: string = allTagsStr;
 
-    refresh = debounce(async () => {
+    debounceRefresh = debounce(async () => {
+        await this.refresh();
+    }, 100);
+
+    refresh = async () => {
         await this.builder.search_in_all();
         await this.update_summary(this.builder.summary, this.builder.settings);
-    }, 100);
+    };
 
     constructor() {
         super();
@@ -41,14 +47,14 @@ class TodolistPlugin extends SidebarPlugin {
         });
 
         await joplin.workspace.onNoteSelectionChange(async () => {
-            await this.refresh();
+            await this.debounceRefresh();
         });
 
         await joplin.workspace.onNoteChange(async () => {
-            await this.refresh();
+            await this.debounceRefresh();
         })
 
-        await this.refresh();
+        await this.debounceRefresh();
     }
 
     public async panelMsgProcess(msg) {
@@ -67,7 +73,7 @@ class TodolistPlugin extends SidebarPlugin {
                     const ids = msg.id.split('-');
                     if (ids.length > 0) {
                         await set_origin_todo(this.summary_map[ids[0]][ids[1]], await this.getSettings());
-                        await this.refresh();
+                        await this.debounceRefresh();
                         return true;
                     }
                 }
@@ -77,6 +83,20 @@ class TodolistPlugin extends SidebarPlugin {
                     this.todoTypeClicked = msg.id;
                 }
                 return true;
+            case 'sidebar_todo_filter_project_changed':
+                if (msg.id) {
+                    this.filterProject = msg.id;
+                    await this.refresh();
+                    return true;
+                }
+                break;
+            case 'sidebar_todo_filter_tag_changed':
+                if (msg.id) {
+                    this.filterTag = msg.id;
+                    await this.refresh();
+                    return true;
+                }
+                break;
             default:
                 break;
         }
@@ -95,7 +115,7 @@ class TodolistPlugin extends SidebarPlugin {
 
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
-        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked));
+        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag));
     }
 }
 

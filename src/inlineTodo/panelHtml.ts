@@ -12,6 +12,9 @@ const isToday = (someDate) => {
         someDate.getFullYear() == today.getFullYear()
 }
 
+export const allProjectsStr = 'All Projects';
+export const allTagsStr = 'All Tags';
+
 // https://stackoverflow.com/a/7763654/5513120
 function daysDifference(d0, d1) {
     const diff = new Date(+d1).setHours(12) - new Date(+d0).setHours(12);
@@ -27,7 +30,7 @@ const emptyTaskCheer = () => {
         `;
 }
 
-export default async function panelHtml(summary: Summary, activedTab: number) {
+export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag) {
     let todoItems = [];
     for (const noteId in summary) {
         for (const todoItem of summary[noteId]) {
@@ -127,6 +130,11 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
           </span>
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="position-relative nav-link ${activedTab === 4 ? 'active' : ''}" onclick="todoTypeTabItemClicked(4);" id="pills-filter-tab" data-bs-toggle="pill" data-bs-target="#pills-filter" type="button" role="tab" aria-controls="pills-inbox" aria-selected="false">
+          <i class="fas fa-filter"></i>
+        </button>
+      </li>
     </ul>
     `;
 
@@ -136,6 +144,7 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     result += `<div class="tab-pane fade show ${activedTab === 3 ? 'active' : ''}" id="pills-today" role="tabpanel" aria-labelledby="pills-today-tab" tabindex="0"><ul class="list-group">`;
     let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
+    let filterDiv = `<div class="tab-pane fade show ${activedTab === 4 ? 'active' : ''}" id="pills-filter" role="tabpanel" aria-labelledby="pills-filter-tab" tabindex="0">`;
 
     for (const todoItem of todayItems) {
         result += createHTMLForTodoItem(todoItem);
@@ -144,10 +153,6 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
     for (const inboxItem of inboxItems) {
         inboxDiv += createHTMLForTodoItem(inboxItem);
     }
-
-    // for (const scheduledItem of scheduledItems) {
-    //     scheduledDiv += createHTMLForTodoItem(scheduledItem);
-    // }
 
     function createTaskCollapse(typeStr: string, displayText, items: any[]) {
         let result = `
@@ -198,14 +203,77 @@ export default async function panelHtml(summary: Summary, activedTab: number) {
         inboxDiv += emptyTaskCheer();
     }
 
+    filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag);
+
     inboxDiv += `</ul></div>`;
     scheduledDiv += `</div>`;
+    filterDiv += `</div>`;
     result += `</ul></div>`;
-    result += scheduledDiv + inboxDiv;
-    // ====> today tab div building ends <===
-
+    result += scheduledDiv + inboxDiv + filterDiv;
 
     result += `</div></div>`;
+    return result;
+}
+
+function createFilterPanel(items: any[], selectedProject, selectedTag) {
+    let result = `<div id="taskSelectorsDiv">`;
+    let assigneeSelector = `<select id="assignee-selector" class="form-select" onchange="onFilterProjectChanged()" aria-label="Assignee Selector">`;
+    let tagSelector = `<select id="tag-selector" class="form-select" onchange="onFilterTagChanged()" aria-label="Tag Selector">`;
+
+    const existAssignee = new Set<string>();
+    const existTag = new Set<string>();
+    for (const item of items) {
+        if (item.assignee && item.assignee.length > 0) {
+            existAssignee.add(item.assignee);
+        }
+
+        if (item.tags) {
+            for (const tag of item.tags) {
+                existTag.add(tag);
+            }
+        }
+    }
+
+    const sortedAssignees = Array.from(existAssignee).sort();
+    const sortedTags = Array.from(existTag).sort();
+
+    assigneeSelector += `<option value="${allProjectsStr}">${allProjectsStr}</option>`;
+    for (const assignee of sortedAssignees) {
+        assigneeSelector += `<option value="${assignee}" ${assignee === selectedProject ? 'selected' : ''}>${assignee}</option>`;
+    }
+    tagSelector += `<option value="${allTagsStr}">${allTagsStr}</option>`;
+    for (const tag of sortedTags) {
+        tagSelector += `<option value="${tag}" ${tag === selectedTag ? 'selected' : ''}>${tag}</option>`;
+    }
+
+    assigneeSelector += `</select>`;
+    tagSelector += `</select>`;
+
+    return result + assigneeSelector + tagSelector + `</div>` + createFilterPanelBody(selectedProject, selectedTag, items);
+}
+
+function createFilterPanelBody(project: string, tag: string, items: any[]) {
+    let result = '<ul class="list-group">';
+    for (const item of items) {
+        if (project !== allProjectsStr && item.assignee && item.assignee !== project) {
+            continue;
+        }
+
+        if (!item.assignee && project !== allProjectsStr) {
+            continue;
+        }
+
+        if (tag !== allTagsStr && item.tags && !item.tags.includes(tag)) {
+            continue;
+        }
+
+        if (!item.tags && tag !== allTagsStr) {
+            continue;
+        }
+
+        result += createHTMLForTodoItem(item);
+    }
+    result += `</ul>`;
     return result;
 }
 

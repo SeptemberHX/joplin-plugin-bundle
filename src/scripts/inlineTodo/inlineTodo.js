@@ -20,3 +20,19 @@ function todoTypeTabItemClicked(id) {
         id: id
     });
 }
+
+function onFilterProjectChanged() {
+    var x = document.getElementById("assignee-selector").value;
+    webviewApi.postMessage({
+        name: 'sidebar_todo_filter_project_changed',
+        id: x
+    });
+}
+
+function onFilterTagChanged() {
+    var x = document.getElementById("tag-selector").value;
+    webviewApi.postMessage({
+        name: 'sidebar_todo_filter_tag_changed',
+        id: x
+    });
+}
