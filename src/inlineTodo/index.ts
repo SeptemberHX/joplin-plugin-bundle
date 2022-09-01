@@ -73,6 +73,10 @@ class TodolistPlugin extends SidebarPlugin {
                     const ids = msg.id.split('-');
                     if (ids.length > 0) {
                         await set_origin_todo(this.summary_map[ids[0]][ids[1]], await this.getSettings());
+                        const currentNote = await joplin.workspace.selectedNote();
+                        if (currentNote.id === ids[0]) {
+                            await joplin.commands.execute('editor.setText', currentNote.body);
+                        }
                         await this.debounceRefresh();
                         return true;
                     }
