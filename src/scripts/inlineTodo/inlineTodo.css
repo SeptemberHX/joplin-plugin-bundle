@@ -71,7 +71,8 @@ div.inline-todo-div li.list-group-item.priority-1 {
 }
 
 div.inline-todo-div span.badge.bg-primary,
-div.inline-todo-div span.badge.rounded-pill.bg-info {
+div.inline-todo-div span.badge.rounded-pill.bg-info,
+div.inline-todo-div span.badge.assignee {
     opacity: 0.75;
 }
 
@@ -102,9 +103,10 @@ div#taskSelectorsDiv {
 }
 
 select#assignee-selector,
-select#tag-selector {
-    width: 40%;
-    margin: 0 5px;
+select#tag-selector,
+select#due-selector {
+    width: 30%;
+    margin: 0 2px;
     display: inline;
-    font-size: revert;
+    font-size: smaller;
 }

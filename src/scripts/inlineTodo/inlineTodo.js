@@ -36,3 +36,11 @@ function onFilterTagChanged() {
         id: x
     });
 }
+
+function onFilterDueChanged() {
+    var x = document.getElementById("due-selector").value;
+    webviewApi.postMessage({
+        name: 'sidebar_todo_filter_due_changed',
+        id: x
+    });
+}

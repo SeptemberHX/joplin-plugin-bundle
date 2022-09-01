@@ -3,7 +3,7 @@ import {Settings, Summary} from "./types";
 import joplin from "api";
 import {regexes} from "./common";
 import {SummaryBuilder} from "./builder";
-import panelHtml, {allProjectsStr, allTagsStr} from "./panelHtml";
+import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 
@@ -15,6 +15,7 @@ class TodolistPlugin extends SidebarPlugin {
     todoTypeClicked: number = 3;
     filterProject: string = allProjectsStr;
     filterTag: string = allTagsStr;
+    filterDue: string = allDue;
 
     debounceRefresh = debounce(async () => {
         await this.refresh();
@@ -101,6 +102,13 @@ class TodolistPlugin extends SidebarPlugin {
                     return true;
                 }
                 break;
+            case 'sidebar_todo_filter_due_changed':
+                if (msg.id) {
+                    this.filterDue = msg.id;
+                    await this.refresh();
+                    return true;
+                }
+                break;
             default:
                 break;
         }
@@ -119,7 +127,7 @@ class TodolistPlugin extends SidebarPlugin {
 
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
-        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag));
+        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag, this.filterDue));
     }
 }
 

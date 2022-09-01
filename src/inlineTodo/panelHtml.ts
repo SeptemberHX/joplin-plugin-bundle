@@ -13,7 +13,12 @@ const isToday = (someDate) => {
 }
 
 export const allProjectsStr = 'All Projects';
+export const noProjectStr = 'No Project';
 export const allTagsStr = 'All Tags';
+export const noTag = 'No Tag';
+export const allDue = 'All Date';
+export const withDue = 'With Date';
+export const withoutDue = 'Without Date';
 
 // https://stackoverflow.com/a/7763654/5513120
 function daysDifference(d0, d1) {
@@ -30,7 +35,7 @@ const emptyTaskCheer = () => {
         `;
 }
 
-export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag) {
+export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag, selectedDue) {
     let todoItems = [];
     for (const noteId in summary) {
         for (const todoItem of summary[noteId]) {
@@ -203,7 +208,7 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
         inboxDiv += emptyTaskCheer();
     }
 
-    filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag);
+    filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag, selectedDue);
 
     inboxDiv += `</ul></div>`;
     scheduledDiv += `</div>`;
@@ -215,10 +220,11 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     return result;
 }
 
-function createFilterPanel(items: any[], selectedProject, selectedTag) {
+function createFilterPanel(items: any[], selectedProject, selectedTag, selectedDue) {
     let result = `<div id="taskSelectorsDiv">`;
-    let assigneeSelector = `<select id="assignee-selector" class="form-select" onchange="onFilterProjectChanged()" aria-label="Assignee Selector">`;
-    let tagSelector = `<select id="tag-selector" class="form-select" onchange="onFilterTagChanged()" aria-label="Tag Selector">`;
+    let assigneeSelector = `<select id="assignee-selector" class="form-select form-select-sm" onchange="onFilterProjectChanged()" aria-label="Assignee Selector">`;
+    let tagSelector = `<select id="tag-selector" class="form-select form-select-sm" onchange="onFilterTagChanged()" aria-label="Tag Selector">`;
+    let dueSelector = `<select id="due-selector" class="form-select form-select-sm" onchange="onFilterDueChanged()" aria-label="Due Selector">`;
 
     const existAssignee = new Set<string>();
     const existTag = new Set<string>();
@@ -238,36 +244,51 @@ function createFilterPanel(items: any[], selectedProject, selectedTag) {
     const sortedTags = Array.from(existTag).sort();
 
     assigneeSelector += `<option value="${allProjectsStr}">${allProjectsStr}</option>`;
+    assigneeSelector += `<option value="${noProjectStr}" ${selectedProject === noProjectStr ? 'selected' : ''}>${noProjectStr}</option>`;
     for (const assignee of sortedAssignees) {
         assigneeSelector += `<option value="${assignee}" ${assignee === selectedProject ? 'selected' : ''}>${assignee}</option>`;
     }
     tagSelector += `<option value="${allTagsStr}">${allTagsStr}</option>`;
+    tagSelector += `<option value="${noTag}" ${selectedTag === noTag ? 'selected' : ''}>${noTag}</option>`;
     for (const tag of sortedTags) {
         tagSelector += `<option value="${tag}" ${tag === selectedTag ? 'selected' : ''}>${tag}</option>`;
     }
 
+    dueSelector += `<option value="${allDue}" ${selectedDue === allDue ? 'selected' : ''}>${allDue}</option>`;
+    dueSelector += `<option value="${withDue}" ${selectedDue === withDue ? 'selected' : ''}>${withDue}</option>`;
+    dueSelector += `<option value="${withoutDue}" ${selectedDue === withoutDue ? 'selected' : ''}>${withoutDue}</option>`;
+
     assigneeSelector += `</select>`;
     tagSelector += `</select>`;
+    dueSelector += `</select>`;
 
-    return result + assigneeSelector + tagSelector + `</div>` + createFilterPanelBody(selectedProject, selectedTag, items);
+    return result + assigneeSelector + tagSelector + dueSelector + `</div>` + createFilterPanelBody(selectedProject, selectedTag, selectedDue, items);
 }
 
-function createFilterPanelBody(project: string, tag: string, items: any[]) {
+function createFilterPanelBody(project: string, tag: string, due: string, items: any[]) {
     let result = '<ul class="list-group">';
     for (const item of items) {
-        if (project !== allProjectsStr && item.assignee && item.assignee !== project) {
+        if (project !== allProjectsStr && project !== noProjectStr && ((item.assignee && item.assignee !== project) || !item.assignee)) {
             continue;
         }
 
-        if (!item.assignee && project !== allProjectsStr) {
+        if (project === noProjectStr && item.assignee && item.assignee.length > 0) {
             continue;
         }
 
-        if (tag !== allTagsStr && item.tags && !item.tags.includes(tag)) {
+        if (tag !== allTagsStr && tag !== noTag && ((item.tags && !item.tags.includes(tag)) || !item.tags)) {
             continue;
         }
 
-        if (!item.tags && tag !== allTagsStr) {
+        if (tag === noTag && item.tags && item.tags.length > 0) {
+            continue;
+        }
+
+        if (due === withDue && ((item.date && item.date.length === 0) || !item.date)) {
+            continue;
+        }
+
+        if (due === withoutDue && item.date && item.date.length > 0) {
             continue;
         }
 
