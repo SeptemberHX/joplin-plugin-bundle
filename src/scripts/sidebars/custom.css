@@ -72,3 +72,11 @@ body {
     --bs-accordion-color: var(--joplin-color);
     --bs-accordion-bg: var(--joplin-background-color);
 }
+
+.nav-tabs {
+    --bs-nav-tabs-link-active-bg: var(--joplin-selected-color);
+    --bs-nav-tabs-link-active-color: var(--joplin-color);
+    --bs-nav-tabs-link-active-border-color: var(--joplin-selected-color);
+    --bs-nav-tabs-border-color: var(--joplin-selected-color);
+    --bs-nav-tabs-link-hover-border-color: var(--joplin-selected-color);
+}
