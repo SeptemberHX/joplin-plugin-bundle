@@ -19,9 +19,9 @@ function createCalendarTable(year, month, noteDays: string[]) {
 
     let table = `
         <div class="month-container btn-group" role="group">
-            <button type="button" class="btn button-previous btn-light" onclick="this.blur(); showCalendarFor(${lastMonth.year()}, ${lastMonth.month()});"><</button>
-            <button type="button" class="btn button-current btn-light btn-lg" onclick="this.blur(); showCalendarFor(${moment().year()}, ${moment().month()});">${currMonth.format('YYYY-MM')}</button>
-            <button type="button" class="btn button-next btn-light" onclick="this.blur(); showCalendarFor(${nextMonth.year()}, ${nextMonth.month()});">></button>
+            <button type="button" class="btn button-previous" onclick="this.blur(); showCalendarFor(${lastMonth.year()}, ${lastMonth.month()});"><</button>
+            <button type="button" class="btn button-current btn-lg" onclick="this.blur(); showCalendarFor(${moment().year()}, ${moment().month()});">${currMonth.format('YYYY-MM')}</button>
+            <button type="button" class="btn button-next" onclick="this.blur(); showCalendarFor(${nextMonth.year()}, ${nextMonth.month()});">></button>
         </div>
         <table class="dailynote-table">
             <thead>

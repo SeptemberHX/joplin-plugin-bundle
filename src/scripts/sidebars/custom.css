@@ -52,3 +52,23 @@ ul#myTab {
 div.spinner-border {
     text-align: center;
 }
+
+.list-group {
+    --bs-list-group-color: var(--joplin-color);
+    --bs-list-group-bg: var(--joplin-background-color);
+}
+
+html {
+    background: var(--joplin-background-color);
+    color: var(--joplin-color);
+}
+
+body {
+    --bs-body-bg: var(--joplin-background-color);
+    --bs-body-color: var(--joplin-color);
+}
+
+.accordion {
+    --bs-accordion-color: var(--joplin-color);
+    --bs-accordion-bg: var(--joplin-background-color);
+}
