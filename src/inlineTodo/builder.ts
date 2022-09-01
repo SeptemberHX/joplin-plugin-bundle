@@ -30,6 +30,7 @@ export class SummaryBuilder {
 		let match;
 		let index = 0;
 		const todo_type = this._settings.todo_type;
+		todo_type.regex.lastIndex = 0;
 		while ((match = todo_type.regex.exec(note.body)) !== null) {
 			// For todoitems in daily notes, we consider the note date as the default task date
 			let matchedDate = todo_type.date(match);

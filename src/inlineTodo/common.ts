@@ -9,7 +9,7 @@
 export const regexes = {
     list: {
         title: 'Confluence Style',
-        regex: /^\s*- \[ \]\s.*(?<=\s)(?:(@[^\s]+)|(\/\/[^\s]+)|(\+[^\s]+)|(![1234](?=\s))|())(?:[^\n]*)?$/gm,
+        regex: /^\s*- \[ \]\s.*(?<=\s)(?:(@[^\s]+)|(\/\/[^\s]+)|(\+[^\s]+)|(![1234](?=\s))|())(?:[^\n]*)?/gm,
         query: '/"- [ ]"',
         assignee: (todo: string[]) => {
             const result = todo[0].match(/(?<=\s@)([^\s]+)/);
