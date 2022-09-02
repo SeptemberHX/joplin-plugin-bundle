@@ -16,8 +16,8 @@ joplin.plugins.register({
 			outlinePlugin,
 			todolistPlugin,
 			dailyNotePlugin,
+			writingMarkerPlugin,
 			historyPlugin,
-			// writingMarkerPlugin,
 			// noteLinkPlugin,
 			// aggregateSearchPlugin
 		];
