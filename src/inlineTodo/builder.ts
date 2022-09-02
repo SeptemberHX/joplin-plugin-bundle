@@ -44,6 +44,9 @@ export class SummaryBuilder {
 			fromDate = chrono.parseDate(dateStrSplit[0]);
 			if (dateStrSplit.length >= 2) {
 				toDate = chrono.parseDate(dateStrSplit[1]);
+				if (toDate < fromDate) {
+					toDate = null;
+				}
 			}
 
 			matches.push({

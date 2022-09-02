@@ -1,5 +1,6 @@
 import {Summary} from "./types";
 import dateFormat  from "dateformat";
+import {fr} from "chrono-node";
 
 var md = require('markdown-it')()
             .use(require('markdown-it-mark'));
@@ -23,6 +24,27 @@ export const withoutDue = 'Without Date';
 function daysDifference(d0, d1) {
     const diff = new Date(+d1).setHours(12) - new Date(+d0).setHours(12);
     return Math.round(diff / 8.64e7);
+}
+
+function isTodayIncluded(fromDate, toDate) {
+    return durationComparedToToday(fromDate, toDate) === 0;
+}
+
+/**
+ * Return 0 if today is included; -1 if today is earlier, otherwise 1 is returned.
+ */
+function durationComparedToToday(fromDate, toDate) {
+    const today = new Date();
+    const fromDiff = daysDifference(fromDate, today);
+    const toDiff = daysDifference(today, toDate);
+
+    if (fromDiff >= 0 && toDiff >= 0) {
+        return 0;
+    } else if (fromDiff < 0) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
 const emptyTaskCheer = () => {
@@ -87,6 +109,21 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
                 scheduledItems.push(todoItem);
 
                 const diffs = daysDifference(new Date(), todoItemDate);
+                if (diffs < 0) {
+                    scheduledExpiredItems.push(todoItem);
+                } else if (diffs <= 7) {
+                    scheduledIn7DaysItems.push(todoItem);
+                } else {
+                    scheduledOtherItems.push(todoItem);
+                }
+            }
+        } else if (todoItem.fromDate && todoItem.toDate) {
+            if (isTodayIncluded(todoItem.fromDate, todoItem.toDate)) {
+                todayItems.push(todoItem);
+            } else {
+                scheduledItems.push(todoItem);
+
+                const diffs = daysDifference(new Date(), todoItem.fromDate);
                 if (diffs < 0) {
                     scheduledExpiredItems.push(todoItem);
                 } else if (diffs <= 7) {
@@ -312,10 +349,27 @@ function createHTMLForTodoItem(todoItem) {
         result += `<span class="badge assignee">${todoItem.assignee}</span>`;
     }
 
-    if (todoItem.date && !todoItem.toDate) {
+    if (todoItem.date) {
         let dateString = todoItem.date;
-        if (todoItem.fromDate) {
-            dateString = dateFormat(todoItem.fromDate, 'mm-dd');
+        if (todoItem.fromDate && !todoItem.toDate) {
+            if (isToday(todoItem.fromDate)) {
+                dateString = 'Today';
+            } else {
+                dateString = dateFormat(todoItem.fromDate, 'mm-dd');
+            }
+        } else if (todoItem.fromDate && todoItem.toDate) {
+            const compare = durationComparedToToday(todoItem.fromDate, todoItem.toDate);
+            if (compare === 0) {
+                dateString = 'Today';
+                const today = new Date();
+                result += `<span class="badge percent rounded-pill text-bg-warning">
+                            ${Math.floor(daysDifference(todoItem.fromDate, today) * 100 / daysDifference(todoItem.fromDate, todoItem.toDate))}%
+                            </span>`;
+            } else if (compare > 0) {
+                dateString = dateFormat(todoItem.toDate, 'mm-dd');
+            } else {
+                dateString = dateFormat(todoItem.fromDate, 'mm-dd');
+            }
         }
         result += `<span class="badge bg-primary">${dateString}</span>`
     }
