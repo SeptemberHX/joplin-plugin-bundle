@@ -17,6 +17,9 @@ export interface Todo {
 	date: string;
 	tags: string[];
 	index: number;
+
+	fromDate: Date;
+	toDate: Date;
 }
 
 interface Toggle {

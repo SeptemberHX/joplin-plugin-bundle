@@ -1,5 +1,4 @@
 import {Summary} from "./types";
-import * as chrono from 'chrono-node';
 import dateFormat  from "dateformat";
 
 var md = require('markdown-it')()
@@ -80,25 +79,21 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     const scheduledOtherItems = [];
     const inboxItems = [];
     for (const todoItem of todoItems) {
-        if (todoItem.date && todoItem.date.length > 0) {
-            const todoItemDate = chrono.parseDate(todoItem.date);
-            if (todoItemDate) {
-                if (isToday(todoItemDate)) {
-                    todayItems.push(todoItem);
-                } else {
-                    scheduledItems.push(todoItem);
-
-                    const diffs = daysDifference(new Date(), todoItemDate);
-                    if (diffs < 0) {
-                        scheduledExpiredItems.push(todoItem);
-                    } else if (diffs <= 7) {
-                        scheduledIn7DaysItems.push(todoItem);
-                    } else {
-                        scheduledOtherItems.push(todoItem);
-                    }
-                }
+        if (todoItem.fromDate && !todoItem.toDate) {
+            const todoItemDate = todoItem.fromDate;
+            if (isToday(todoItemDate)) {
+                todayItems.push(todoItem);
             } else {
-                inboxItems.push(todoItem);
+                scheduledItems.push(todoItem);
+
+                const diffs = daysDifference(new Date(), todoItemDate);
+                if (diffs < 0) {
+                    scheduledExpiredItems.push(todoItem);
+                } else if (diffs <= 7) {
+                    scheduledIn7DaysItems.push(todoItem);
+                } else {
+                    scheduledOtherItems.push(todoItem);
+                }
             }
         } else {
             inboxItems.push(todoItem);
@@ -317,11 +312,10 @@ function createHTMLForTodoItem(todoItem) {
         result += `<span class="badge assignee">${todoItem.assignee}</span>`;
     }
 
-    if (todoItem.date) {
-        const todoItemDate = chrono.parseDate(todoItem.date);
+    if (todoItem.date && !todoItem.toDate) {
         let dateString = todoItem.date;
-        if (todoItemDate) {
-            dateString = dateFormat(todoItemDate, 'mm-dd');
+        if (todoItem.fromDate) {
+            dateString = dateFormat(todoItem.fromDate, 'mm-dd');
         }
         result += `<span class="badge bg-primary">${dateString}</span>`
     }

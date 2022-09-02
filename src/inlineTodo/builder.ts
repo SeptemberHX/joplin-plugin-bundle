@@ -1,5 +1,6 @@
 import joplin from 'api';
 import { Note, Settings, Todo, Summary } from './types';
+import * as chrono from 'chrono-node';
 
 const dateStrReg = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -37,6 +38,14 @@ export class SummaryBuilder {
 			if (matchedDate.length === 0 && dateStrReg.test(note.title)) {
 				matchedDate = note.title;
 			}
+
+			const dateStrSplit = matchedDate.split('~');
+			let fromDate, toDate;
+			fromDate = chrono.parseDate(dateStrSplit[0]);
+			if (dateStrSplit.length >= 2) {
+				toDate = chrono.parseDate(dateStrSplit[1]);
+			}
+
 			matches.push({
 				note: note.id,
 				note_title: note.title,
@@ -45,6 +54,8 @@ export class SummaryBuilder {
 				msg: todo_type.msg(match),
 				assignee: todo_type.assignee(match),
 				date: matchedDate,
+				fromDate: fromDate,
+				toDate: toDate,
 				tags: todo_type.tags(match),
 				index: index,
 				priority: todo_type.priority(match)
