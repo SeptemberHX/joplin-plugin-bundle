@@ -1,7 +1,7 @@
 import joplin from "../../api";
 import {TaggedSentence} from "./common";
 
-const taggedSentenceReg = /\((\S+)::([^)]+)\)/g;
+const taggedSentenceReg = /\(([^\s)]+?)::([^)]+)\)/g;
 
 export async function getAllTaggedSentences() {
     let taggedSentences = [];

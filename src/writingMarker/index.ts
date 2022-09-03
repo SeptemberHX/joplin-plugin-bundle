@@ -23,6 +23,7 @@ class WritingMarkerPlugin extends SidebarPlugin {
         this.name = "Writing Marker";
         this.icon = "fas fa-tags";
         this.styles = [
+            './scripts/writingMarker/writingMarker.css'
         ];
         this.scripts = [
         ];

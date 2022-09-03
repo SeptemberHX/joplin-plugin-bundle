@@ -1,0 +1,8 @@
+div.tagged-sentences {
+    word-break: break-all;
+}
+
+div.tagged-sentences div.tag-badge {
+    display: flex;
+    float: right;
+}
