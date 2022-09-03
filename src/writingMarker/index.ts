@@ -3,13 +3,20 @@ import joplin from "../../api";
 import {panelHtml} from "./panelHtml";
 import {getAllTaggedSentences} from "./utils";
 import {debounce} from "ts-debounce";
+import {TaggedSentence} from "./common";
 
 class WritingMarkerPlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
+    items: {};
 
     async refresh() {
-        await this.sidebar.updateHtml(this.id, await panelHtml(await getAllTaggedSentences()));
+        await this.updateTaggedSentences();
+        let itemArray = [];
+        for (const noteId in this.items) {
+            itemArray = itemArray.concat(this.items[noteId]);
+        }
+        await this.sidebar.updateHtml(this.id, await panelHtml(itemArray));
     }
 
     debounceRefresh = debounce(async () => {
@@ -26,6 +33,7 @@ class WritingMarkerPlugin extends SidebarPlugin {
             './scripts/writingMarker/writingMarker.css'
         ];
         this.scripts = [
+            './scripts/writingMarker/writingMarker.js'
         ];
         this.html = '<div class="card"><div class="card-body">Under development...</div></div>';
     }
@@ -41,6 +49,28 @@ class WritingMarkerPlugin extends SidebarPlugin {
         })
 
         await this.debounceRefresh();
+    }
+
+
+    async panelMsgProcess(msg: any): Promise<boolean> {
+        switch (msg.name) {
+            case 'sidebar_tagged_sentence_clicked':
+                if (msg.id) {
+                    const items = msg.id.split('-');
+                    if (items.length === 2) {
+                        await joplin.commands.execute('openItem', `:/${items[0]}`);
+                        return true;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    async updateTaggedSentences() {
+        this.items = await getAllTaggedSentences();
     }
 }
 

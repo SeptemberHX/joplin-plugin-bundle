@@ -10,12 +10,17 @@ export async function panelHtml(items: TaggedSentence[]) {
     results.push(`<ul class="list-group">`);
 
     for (const item of items) {
-        results.push(`<li class="list-group-item">${md.renderInline(item.text)}`);
+        results.push(`<li class="list-group-item" onclick="taggedSentenceClicked('${item.noteId}-${item.index}')">${md.renderInline(item.text)}`);
+        results.push(`<div class="tagged-sentence-info">`);
+        results.push(`<div class="tagged-sentence-note-title">`);
+        results.push(`<span class="badge rounded-pill text-bg-light">${item.noteTitle}</span>`);
+        results.push(`</div>`);
         results.push(`<div class="tag-badge">`);
         for (const tag of item.tags) {
             results.push(`<span class="badge rounded-pill" style="background-color: ${stc(tag)}">${tag}</span>`);
         }
         results.push(`</div>`);
+        results.push(`</div>`)
         results.push(`</li>`);
     }
 

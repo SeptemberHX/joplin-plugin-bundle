@@ -6,3 +6,11 @@ div.tagged-sentences div.tag-badge {
     display: flex;
     float: right;
 }
+
+div.tagged-sentence-note-title {
+    display: inline;
+}
+
+div.tagged-sentences li.list-group-item:hover {
+    cursor: pointer;
+}

@@ -3,4 +3,5 @@ export class TaggedSentence {
     text: string;
     noteId: string;
     noteTitle: string;
+    index: number;
 }

@@ -4,7 +4,7 @@ import {TaggedSentence} from "./common";
 const taggedSentenceReg = /\(([^\s)]+?)::([^)]+)\)/g;
 
 export async function getAllTaggedSentences() {
-    let taggedSentences = [];
+    let taggedSentences = {};
     let page = 0;
     let r;
     do {
@@ -16,7 +16,7 @@ export async function getAllTaggedSentences() {
         r = await joplin.data.get(['search'], { query: taggedSentenceReg,  fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'], page: page });
         if (r.items) {
             for (let note of r.items) {
-                taggedSentences = taggedSentences.concat(await searchTaggedSentencesInNote(note));
+                taggedSentences[note.id] = await searchTaggedSentencesInNote(note);
             }
         }
         // This is a rate limiter that prevents us from pinning the CPU
@@ -42,6 +42,7 @@ async function searchTaggedSentencesInNote(note) {
         item.noteId = note.id;
         item.noteTitle = note.title;
         item.text = match[2];
+        item.index = index;
         matches.push(item);
         index += 1;
     }
