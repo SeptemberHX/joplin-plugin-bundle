@@ -19,9 +19,13 @@
     pointer-events: none;
 }
 
-.inline-todo-div div.task-badge {
+.inline-todo-div div.task-infos {
     display: flex;
     float: right;
+}
+
+.inline-todo-div div.task-tags {
+    display: inline;
 }
 
 .inline-todo-div span.badge.rounded-pill {

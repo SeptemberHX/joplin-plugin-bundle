@@ -1,6 +1,6 @@
 import {Summary} from "./types";
 import dateFormat  from "dateformat";
-import {fr} from "chrono-node";
+const stc = require('string-to-color');
 
 var md = require('markdown-it')()
             .use(require('markdown-it-mark'));
@@ -338,15 +338,18 @@ function createHTMLForTodoItem(todoItem) {
         `;
 
     result += `<div class="task-badge">`
+    result += `<div class="task-tags">`;
 
     if (todoItem.tags) {
         for (const tag of todoItem.tags){
-            result += `<span class="badge rounded-pill bg-info">${tag}</span>`;
+            result += `<span class="badge rounded-pill" style="background-color: ${stc(tag)}">${tag}</span>`;
         }
     }
+    result += `</div>`;
+    result += `<div class="task-infos">`;
 
     if (todoItem.assignee && todoItem.assignee.length > 0) {
-        result += `<span class="badge assignee">${todoItem.assignee}</span>`;
+        result += `<span class="badge assignee" style="background-color: ${stc(todoItem.assignee)}">${todoItem.assignee}</span>`;
     }
 
     if (todoItem.date) {
@@ -373,7 +376,7 @@ function createHTMLForTodoItem(todoItem) {
         }
         result += `<span class="badge bg-primary">${dateString}</span>`
     }
-
+    result += `</div>`;
     result += `</div></li>`;
     return result;
 }
