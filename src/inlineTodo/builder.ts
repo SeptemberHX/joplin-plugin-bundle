@@ -30,40 +30,45 @@ export class SummaryBuilder {
 		let folder = await this.get_parent_title(note.parent_id);
 		let match;
 		let index = 0;
+		let lineNumber = 0;
 		const todo_type = this._settings.todo_type;
 		todo_type.regex.lastIndex = 0;
-		while ((match = todo_type.regex.exec(note.body)) !== null) {
-			// For todoitems in daily notes, we consider the note date as the default task date
-			let matchedDate = todo_type.date(match);
-			if (matchedDate.length === 0 && dateStrReg.test(note.title)) {
-				matchedDate = note.title;
-			}
-
-			const dateStrSplit = matchedDate.split('~');
-			let fromDate, toDate;
-			fromDate = chrono.parseDate(dateStrSplit[0]);
-			if (dateStrSplit.length >= 2) {
-				toDate = chrono.parseDate(dateStrSplit[1]);
-				if (toDate < fromDate) {
-					toDate = null;
+		for (const line of note.body.split('\n')) {
+			while ((match = todo_type.regex.exec(line)) !== null) {
+				// For todoitems in daily notes, we consider the note date as the default task date
+				let matchedDate = todo_type.date(match);
+				if (matchedDate.length === 0 && dateStrReg.test(note.title)) {
+					matchedDate = note.title;
 				}
-			}
 
-			matches.push({
-				note: note.id,
-				note_title: note.title,
-				parent_id: note.parent_id,
-				parent_title: folder,
-				msg: todo_type.msg(match),
-				assignee: todo_type.assignee(match),
-				date: matchedDate,
-				fromDate: fromDate,
-				toDate: toDate,
-				tags: todo_type.tags(match),
-				index: index,
-				priority: todo_type.priority(match)
-			});
-			index += 1;
+				const dateStrSplit = matchedDate.split('~');
+				let fromDate, toDate;
+				fromDate = chrono.parseDate(dateStrSplit[0]);
+				if (dateStrSplit.length >= 2) {
+					toDate = chrono.parseDate(dateStrSplit[1]);
+					if (toDate < fromDate) {
+						toDate = null;
+					}
+				}
+
+				matches.push({
+					note: note.id,
+					note_title: note.title,
+					parent_id: note.parent_id,
+					parent_title: folder,
+					msg: todo_type.msg(match),
+					assignee: todo_type.assignee(match),
+					date: matchedDate,
+					fromDate: fromDate,
+					toDate: toDate,
+					tags: todo_type.tags(match),
+					index: index,
+					priority: todo_type.priority(match),
+					line: lineNumber
+				});
+				index += 1;
+			}
+			lineNumber += 1;
 		}
 
 		if (matches.length > 0 || this._summary[note.id]?.length > 0) {

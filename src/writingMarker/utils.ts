@@ -34,17 +34,22 @@ async function searchTaggedSentencesInNote(note) {
     let matches = [];
     let match;
     let index = 0;
+    let lineNumber = 0;
     taggedSentenceReg.lastIndex = 0;
-    while ((match = taggedSentenceReg.exec(note.body)) !== null) {
-        // For todoitems in daily notes, we consider the note date as the default task date
-        const item = new TaggedSentence();
-        item.tags = match[1].split('|');
-        item.noteId = note.id;
-        item.noteTitle = note.title;
-        item.text = match[2];
-        item.index = index;
-        matches.push(item);
-        index += 1;
+    for (const line of note.body.split('\n')) {
+        while ((match = taggedSentenceReg.exec(line)) !== null) {
+            // For todoitems in daily notes, we consider the note date as the default task date
+            const item = new TaggedSentence();
+            item.tags = match[1].split('|');
+            item.noteId = note.id;
+            item.noteTitle = note.title;
+            item.text = match[2];
+            item.index = index;
+            item.line = lineNumber;
+            matches.push(item);
+            index += 1;
+        }
+        lineNumber += 1;
     }
 
     return matches;

@@ -51,6 +51,12 @@ class WritingMarkerPlugin extends SidebarPlugin {
         await this.debounceRefresh();
     }
 
+    debounceScrollToLine = debounce(async (noteId, lineNumber) => {
+        await joplin.commands.execute('editor.execCommand', {
+            name: 'sidebar_cm_scrollToLine',
+            args: [this.items[noteId][lineNumber].line]
+        });
+    }, 250);
 
     async panelMsgProcess(msg: any): Promise<boolean> {
         switch (msg.name) {
@@ -59,6 +65,7 @@ class WritingMarkerPlugin extends SidebarPlugin {
                     const items = msg.id.split('-');
                     if (items.length === 2) {
                         await joplin.commands.execute('openItem', `:/${items[0]}`);
+                        await this.debounceScrollToLine(items[0], items[1]);
                         return true;
                     }
                 }

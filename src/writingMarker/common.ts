@@ -4,4 +4,5 @@ export class TaggedSentence {
     noteId: string;
     noteTitle: string;
     index: number;
+    line: number;
 }

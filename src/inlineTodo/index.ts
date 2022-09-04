@@ -58,6 +58,13 @@ class TodolistPlugin extends SidebarPlugin {
         await this.debounceRefresh();
     }
 
+    debounceScrollToLine = debounce(async (noteId, index) => {
+        await joplin.commands.execute('editor.execCommand', {
+            name: 'sidebar_cm_scrollToLine',
+            args: [this.summary_map[noteId][index].line]
+        });
+    }, 250);
+
     public async panelMsgProcess(msg) {
         switch (msg.name) {
             case 'sidebar_todo_item_clicked':
@@ -65,6 +72,7 @@ class TodolistPlugin extends SidebarPlugin {
                     const ids = msg.id.split('-');
                     if (ids.length > 0) {
                         await joplin.commands.execute('openItem', `:/${ids[0]}`);
+                        await this.debounceScrollToLine(ids[0], ids[1]);
                         return true;
                     }
                 }
@@ -77,6 +85,7 @@ class TodolistPlugin extends SidebarPlugin {
                         const currentNote = await joplin.workspace.selectedNote();
                         if (currentNote.id === ids[0]) {
                             await joplin.commands.execute('editor.setText', currentNote.body);
+                            await this.debounceScrollToLine(ids[0], ids[1]);
                         }
                         await this.debounceRefresh();
                         return true;

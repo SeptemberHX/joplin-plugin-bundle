@@ -7,9 +7,16 @@ import writingMarkerPlugin from "./writingMarker";
 import noteLinkPlugin from "./noteLink";
 import aggregateSearchPlugin from "./aggregateSearch";
 import historyPlugin from "./history";
+import {ContentScriptType} from "../api/types";
 
 joplin.plugins.register({
 	onStart: async function() {
+		await joplin.contentScripts.register(
+			ContentScriptType.CodeMirrorPlugin,
+			'sidebar_cm_commands',
+			'./codemirror/commands/index.js'
+		);
+
 		const sidebar = new Sidebars();
 
 		const plugins: SidebarPlugin[] = [

@@ -20,6 +20,7 @@ export interface Todo {
 
 	fromDate: Date;
 	toDate: Date;
+	line: number;
 }
 
 interface Toggle {

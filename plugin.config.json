@@ -1,3 +1,5 @@
 {
-	"extraScripts": []
+	"extraScripts": [
+		"./codemirror/commands/index.ts"
+	]
 }
