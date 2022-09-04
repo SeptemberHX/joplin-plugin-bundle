@@ -27,7 +27,7 @@ const settings: HistSettings = {
     maxDays: 90,
     panelTitle: 'HISTORY',
     panelTitleSize: 13,
-    panelTextSize: 12,
+    panelTextSize: 24,
     panelTextSpace: 4,
     panelMaxItems: 1000,
     trailDisplay: 3,

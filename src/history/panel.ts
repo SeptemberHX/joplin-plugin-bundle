@@ -273,7 +273,7 @@ function getStatsHtml(itemCounter: Map<string, number>,
         const r = Math.max(minR, maxR * count / maxCount);
         itemHtml.push(`
       <p class="hist-item">
-      <svg class="hist-plot">
+      <svg class="hist-plot" style="width: ${params.plotSize[0]}px; height: ${params.plotSize[1]}px">
         <circle r="${r}" cx="${0.9 * params.plotSize[0] - maxR}"
             cy="${params.plotSize[1] / 2}"
             stroke="none" fill="${params.trailColors[0]}" />
