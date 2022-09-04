@@ -8,6 +8,10 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 
 class OutlinePlugin extends SidebarPlugin {
     sidebars: Sidebars;
+    currentHead: {
+        text: string;
+        lineno: number;
+    };
 
     constructor() {
         super();
@@ -64,6 +68,29 @@ class OutlinePlugin extends SidebarPlugin {
             './outline/codeMirrorScroller.js',
         );
 
+        await joplin.contentScripts.onMessage('codeMirrorScroller', async (msg) => {
+            const note = await joplin.workspace.selectedNote();
+            if (note) {
+                const headers = mdHeaders(note.body, msg.from, msg.to);
+                if (headers.length > 0) {
+                    let i;
+                    for (i = headers.length - 1; i >= 0; i--) {
+                        if (headers[i].lineno < msg.from) {
+                            break;
+                        }
+                    }
+                    i += 1;
+                    const newHeader = headers[i];
+
+                    if (!this.currentHead || (newHeader.text !== this.currentHead.text || newHeader.lineno !== this.currentHead.lineno)) {
+                        this.currentHead = newHeader;
+                        await this.updateTocView();
+                    }
+                }
+
+            }
+        });
+
         await joplin.workspace.onNoteSelectionChange(() => {
             this.updateTocView();
         });
@@ -87,7 +114,7 @@ class OutlinePlugin extends SidebarPlugin {
             headers = [];
         }
 
-        const htmlText = await panelHtml(headers);
+        const htmlText = await panelHtml(headers, this.currentHead);
         await this.sidebars.updateHtml(this.id, htmlText);
     }
 }

@@ -19,22 +19,34 @@ async function getHeaderPrefix(level: number) {
     return await settingValue(`h${level}Prefix`);
 }
 
-export default async function panelHtml(headers: any[]) {
+export default async function panelHtml(headers: any[], currentHead) {
     // Settings
     const showNumber = await settingValue('showNumber');
     const headerDepth = await settingValue('headerDepth');
     const numberStyle = await settingValue('numberStyle');
+    const disableLinewrap = await settingValue('disableLinewrap');
+
+    let linewrapStyle = '';
+    if (disableLinewrap) {
+        linewrapStyle += `
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;`;
+    }
 
     const slugs: any = {};
     const itemHtml = [];
     const headerCount: number[] = [0, 0, 0, 0, 0, 0];
 
+    let headerN = 0;
     for (const header of headers) {
         // header depth
         /* eslint-disable no-continue */
         if (header.level > headerDepth) {
             continue;
         }
+
+        const isCurrentHeader = currentHead ? (header.text === currentHead.text && header.lineno === currentHead.lineno) : headerN === 0;
 
         // get slug
         const s = uslug(header.text);
@@ -61,15 +73,23 @@ export default async function panelHtml(headers: any[]) {
 
         /* eslint-disable no-await-in-loop */
         itemHtml.push(`
-      <a id="toc-item-link" class="toc-item-link" href="javascript:;"
+      <a class="toc-item-link ${isCurrentHeader ? 'current-header' : ''}" href="javascript:;"
       data-slug="${escapeHtml(slug)}" data-lineno="${header.lineno}"
       onclick="tocItemLinkClicked(this.dataset)"
       oncontextmenu="copyInnerLink(this.dataset, this.innerText)"
-      style="display: block; padding-left:${(header.level - 1) * 15}px;">
-        <span>${await getHeaderPrefix(header.level)}</span>
+      style="display: block; padding-left:${(header.level) * 15}px; ${linewrapStyle}">`);
+
+        const prefix = await getHeaderPrefix(header.level);
+        if (prefix && prefix.length > 0) {
+            itemHtml.push(`<span>${prefix}</span>`);
+        }
+
+        itemHtml.push(`
         <i style="${numberStyle}">${numberPrefix}</i>
         <span>${md.renderInline(header.text)}</span>
       </a>`);
+
+        headerN += 1;
     }
 
     if (itemHtml.length === 0) {

@@ -8,29 +8,6 @@ export async function registerSettings() {
     });
 
     await joplin.settings.registerSettings({
-        isVisible: {
-            type: SettingItemType.Bool,
-            value: true,
-            section: 'outline.settings',
-            public: false,
-            label: 'isVisible',
-        },
-        toggleShortcut: {
-            type: SettingItemType.String,
-            value: 'F9',
-            description: 'Shortcut to switch panel display',
-            section: 'outline.settings',
-            public: true,
-            label: 'Toggle Shortcut',
-        },
-        autoHide: {
-            type: SettingItemType.Bool,
-            value: false,
-            description: 'Automatically hide the panel when there is no content',
-            section: 'outline.settings',
-            public: true,
-            label: 'Auto Hide',
-        },
         headerDepth: {
             type: SettingItemType.Int,
             value: 6,
@@ -38,46 +15,6 @@ export async function registerSettings() {
             section: 'outline.settings',
             public: true,
             label: 'Header Depth',
-        },
-        fontFamily: {
-            type: SettingItemType.String,
-            value: 'var(--joplin-font-family)',
-            description: 'var(--joplin-font-family)',
-            section: 'outline.settings',
-            public: true,
-            label: 'Font Family',
-        },
-        fontSize: {
-            type: SettingItemType.Int,
-            value: '10',
-            description: 'Default: 10pt',
-            section: 'outline.settings',
-            public: true,
-            label: 'Font Size (pt)',
-        },
-        fontWeight: {
-            type: SettingItemType.String,
-            value: 'normal',
-            description: 'bold/normal/lighter',
-            section: 'outline.settings',
-            public: true,
-            label: 'Font Weight',
-        },
-        fontColor: {
-            type: SettingItemType.String,
-            value: 'var(--joplin-color)',
-            description: 'var(--joplin-color)',
-            section: 'outline.settings',
-            public: true,
-            label: 'Font Color',
-        },
-        bgColor: {
-            type: SettingItemType.String,
-            value: 'var(--joplin-background-color)',
-            description: 'var(--joplin-background-color)',
-            section: 'outline.settings',
-            public: true,
-            label: 'Background Color',
         },
         disableLinewrap: {
             type: SettingItemType.Bool,
@@ -102,15 +39,6 @@ export async function registerSettings() {
             section: 'outline.settings',
             public: true,
             label: 'Number <i> Style',
-            advanced: true,
-        },
-        userStyle: {
-            type: SettingItemType.String,
-            value: '',
-            description: 'User style',
-            section: 'outline.settings',
-            public: true,
-            label: 'User Style',
             advanced: true,
         },
         h1Prefix: {
