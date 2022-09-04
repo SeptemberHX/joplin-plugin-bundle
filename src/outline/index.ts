@@ -75,7 +75,7 @@ class OutlinePlugin extends SidebarPlugin {
                 if (headers.length > 0) {
                     let i;
                     for (i = headers.length - 1; i >= 0; i--) {
-                        if (headers[i].index < msg.from) {
+                        if (headers[i].lineno < msg.from) {
                             break;
                         }
                     }

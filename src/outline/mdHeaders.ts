@@ -6,7 +6,6 @@ export default function mdHeaders(noteBody: string, from?: number, to?: number) 
     let flagComment = false;
     /* eslint-disable prefer-const */
     for (let { index, line } of lines) {
-        if (from && from > index) { continue; }
         if (to && to < index) { break; }
 
         // check code block
