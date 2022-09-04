@@ -25,7 +25,6 @@ const settings: HistSettings = {
     markCurrentLine: false,
     secBetweenItems: 0,
     maxDays: 90,
-    panelTitle: 'HISTORY',
     panelTitleSize: 1,
     panelTextSize: 0.8,
     panelTextSpace: 1.4,
