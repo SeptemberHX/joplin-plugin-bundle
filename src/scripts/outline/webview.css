@@ -6,10 +6,8 @@
 .outline-content .toc-item-link {
     padding: 0 2px;
     text-decoration: none;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
 }
+
 .outline-content .toc-item-link:hover {
     font-weight: bold;
 }
@@ -21,7 +19,7 @@
 }
 
 .outline-content .toc-item-link {
-    padding: 4px;
+    padding: 5px;
     font-weight: normal;
     text-decoration: none;
     line-height: 1.3em;
@@ -32,10 +30,6 @@
 .outline-content .toc-item-link:hover {
     background-color: var(--joplin-selected-color);
     border-radius: 4px;
-}
-
-.outline-content .toc-item-link span {
-    margin: 4px;
 }
 
 i.fas.fa-scroll.no-toc-warn-icon {

@@ -24,6 +24,15 @@ export default async function panelHtml(headers: any[]) {
     const showNumber = await settingValue('showNumber');
     const headerDepth = await settingValue('headerDepth');
     const numberStyle = await settingValue('numberStyle');
+    const disableLinewrap = await settingValue('disableLinewrap');
+
+    let linewrapStyle = '';
+    if (disableLinewrap) {
+        linewrapStyle += `
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;`;
+    }
 
     const slugs: any = {};
     const itemHtml = [];
@@ -65,8 +74,14 @@ export default async function panelHtml(headers: any[]) {
       data-slug="${escapeHtml(slug)}" data-lineno="${header.lineno}"
       onclick="tocItemLinkClicked(this.dataset)"
       oncontextmenu="copyInnerLink(this.dataset, this.innerText)"
-      style="display: block; padding-left:${(header.level - 1) * 15}px;">
-        <span>${await getHeaderPrefix(header.level)}</span>
+      style="display: block; padding-left:${(header.level) * 15}px; ${linewrapStyle}">`);
+
+        const prefix = await getHeaderPrefix(header.level);
+        if (prefix && prefix.length > 0) {
+            itemHtml.push(`<span>${prefix}</span>`);
+        }
+
+        itemHtml.push(`
         <i style="${numberStyle}">${numberPrefix}</i>
         <span>${md.renderInline(header.text)}</span>
       </a>`);
