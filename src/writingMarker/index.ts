@@ -51,12 +51,13 @@ class WritingMarkerPlugin extends SidebarPlugin {
         await this.debounceRefresh();
     }
 
+    // Joplin needs to scroll to the previous position. We need a large wait time to avoid scrolling before Joplin
     debounceScrollToLine = debounce(async (noteId, lineNumber) => {
         await joplin.commands.execute('editor.execCommand', {
             name: 'sidebar_cm_scrollToLine',
             args: [this.items[noteId][lineNumber].line]
         });
-    }, 250);
+    }, 500);
 
     async panelMsgProcess(msg: any): Promise<boolean> {
         switch (msg.name) {

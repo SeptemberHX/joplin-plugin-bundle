@@ -63,7 +63,7 @@ class TodolistPlugin extends SidebarPlugin {
             name: 'sidebar_cm_scrollToLine',
             args: [this.summary_map[noteId][index].line]
         });
-    }, 250);
+    }, 500);
 
     public async panelMsgProcess(msg) {
         switch (msg.name) {

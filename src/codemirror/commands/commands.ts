@@ -5,6 +5,6 @@ export default class CommandsBridge {
     private readonly doc = this.editor.getDoc();
 
     scrollToLine(line: number): void {
-        this.editor.scrollIntoView({line :line, ch: 0}, 400);
+        this.editor.scrollIntoView({line :line, ch: 0}, 500);
     }
 }
