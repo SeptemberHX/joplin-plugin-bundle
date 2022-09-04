@@ -1,11 +1,14 @@
 /* eslint-disable no-continue, no-useless-escape, no-constant-condition */
-export default function mdHeaders(noteBody:string) {
+export default function mdHeaders(noteBody: string, from?: number, to?: number) {
     const headers = [];
     const lines = noteBody.split('\n').map((line, index) => ({ index, line }));
     let flagBlock = false;
     let flagComment = false;
     /* eslint-disable prefer-const */
     for (let { index, line } of lines) {
+        if (from && from > index) { continue; }
+        if (to && to < index) { break; }
+
         // check code block
         if (line.match(/(?:```)/)) {
             flagBlock = !flagBlock;

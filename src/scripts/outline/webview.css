@@ -47,3 +47,8 @@ p.no-toc-warn-text {
 div.no-toc-warn {
     text-align: center;
 }
+
+.outline-content .toc-item-link.current-header {
+    color: var(--joplin-url-color);
+    font-weight: bold;
+}
