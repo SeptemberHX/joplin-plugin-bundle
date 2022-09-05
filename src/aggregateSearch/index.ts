@@ -1,4 +1,5 @@
 import { SidebarPlugin } from "../sidebars/sidebarPage";
+import {underDevelopment} from "./test";
 
 class AggregateSearchPlugin extends SidebarPlugin {
 
@@ -12,7 +13,7 @@ class AggregateSearchPlugin extends SidebarPlugin {
         ];
         this.scripts = [
         ];
-        this.html = '<div class="card"><div class="card-body">Under development...</div></div>';
+        this.html = underDevelopment();
     }
 }
 
