@@ -150,16 +150,17 @@ export class Sidebars {
     }
 
     renderInfoLine() {
-        return `<div class="info-line-spans">
+        let result =  `<div class="info-line-spans">
                     <span class="line-text">Line: </span>
                     <span class="cursor-line-number">${this.lineInfos.currentLineNumber}</span>
                     <span class="line-text-token">/</span>
                     <span class="total-line-number">${this.lineInfos.totalLineCount}</span>
                     <span class="line-text">Count: </span>
-                    <span class="selected-word-count">${this.lineInfos.selectedWordCount}</span>
-                    <span class="line-text-token">/</span>
-                    <span class="total-word-count">${this.lineInfos.totalWordCount}</span>
-               </div>
-              `;
+                    <span class="total-word-count">${this.lineInfos.totalWordCount}</span>`;
+        if (this.lineInfos.selectedWordCount > 0) {
+            result += `<span class="selected-word-count">(${this.lineInfos.selectedWordCount})</span>`
+        }
+        result += `</div>`;
+        return result;
     }
 }

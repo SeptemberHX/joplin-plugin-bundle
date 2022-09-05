@@ -79,7 +79,9 @@ class OutlinePlugin extends SidebarPlugin {
                             break;
                         }
                     }
-                    i += 1;
+                    if (i < headers.length - 1) {
+                        i += 1;
+                    }
                     const newHeader = headers[i];
 
                     if (!this.currentHead || (newHeader.text !== this.currentHead.text || newHeader.lineno !== this.currentHead.lineno)) {

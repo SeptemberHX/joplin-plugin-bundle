@@ -19,8 +19,13 @@ module.exports = {
                             from: cm.lineAtHeight(rect.top, "window"),
                             to: cm.lineAtHeight(rect.bottom, "window")
                         });
-                    }, 100);
+                    }, 10);
                     cm.on('scroll', headerChangeDebounce);
+                    cm.on('change', function (cm, changeObjs) {
+                        if (changeObjs.origin === 'setValue') {
+                            headerChangeDebounce();
+                        }
+                    });
                 });
             },
             codeMirrorOptions: { 'markdownHeaderChange': true },
