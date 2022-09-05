@@ -366,7 +366,7 @@ function createHTMLForTodoItem(todoItem) {
                 dateString = 'Today';
                 const today = new Date();
                 result += `<span class="badge percent rounded-pill text-bg-warning">
-                            ${Math.floor(daysDifference(todoItem.fromDate, today) * 100 / daysDifference(todoItem.fromDate, todoItem.toDate))}%
+                            ${daysDifference(today, todoItem.toDate)}d
                             </span>`;
             } else if (compare > 0) {
                 dateString = dateFormat(todoItem.toDate, 'mm-dd');
