@@ -43,6 +43,7 @@ html {
 
 div#myTabContent {
     margin-top: 2.1em;
+    margin-bottom: 1.5em;
 }
 
 ul#myTab {
@@ -79,4 +80,29 @@ body {
     --bs-nav-tabs-link-active-border-color: var(--joplin-selected-color);
     --bs-nav-tabs-border-color: var(--joplin-selected-color);
     --bs-nav-tabs-link-hover-border-color: var(--joplin-selected-color);
+}
+
+div.info-line {
+    position: fixed;
+    bottom: 0;
+    height: 1.5em;
+    background-color: var(--joplin-background-color);
+    display: block;
+    width: 100%;
+    border-top: 1px solid var(--joplin-selected-color);
+    font-size: smaller;
+}
+
+div.info-line span.line-text {
+    margin-left: 1em;
+}
+
+div.info-line .info-line-spans {
+    display: flex;
+    float: right;
+    margin-right: 1em;
+}
+
+div.info-line span {
+    padding-left: 0.25em;
 }

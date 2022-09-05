@@ -4,3 +4,12 @@ function tabItemClicked(id) {
         id: id
     });
 }
+
+webviewApi.onMessage((data) => {
+    if (data.message.type === 'update') {
+        const element = document.getElementById(data.message.elementId);
+        if (element) {
+            element.innerHTML = data.message.html;
+        }
+    }
+});

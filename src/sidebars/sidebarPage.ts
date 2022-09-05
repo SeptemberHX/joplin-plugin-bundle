@@ -33,6 +33,12 @@ export class Sidebars {
     plugins: SidebarPlugin[];
     panel;
     lastActiveTabPluginId: string;
+    lineInfos: {
+        totalLineCount: number;
+        currentLineNumber: number;
+        totalWordCount: number;
+        selectedWordCount: number;
+    }
 
     constructor() {
     }
@@ -40,6 +46,23 @@ export class Sidebars {
     public async init(plugins) {
         this.plugins = plugins;
         this.panel = await joplin.views.panels.create('sidebar_bundle_panel');
+        this.lineInfos = {
+            totalLineCount: 0,
+            currentLineNumber: 0,
+            totalWordCount: 0,
+            selectedWordCount: 0
+        };
+
+        await joplin.contentScripts.onMessage('sidebar_cm_commands', async(msg) => {
+            console.log(msg);
+            this.lineInfos = msg;
+            // use webapi message to avoid reloading main sub-plugin elements
+            await joplin.views.panels.postMessage(this.panel, {
+                type: 'update',
+                elementId: 'info-line',
+                html: this.renderInfoLine()
+            });
+        });
 
         await joplin.views.panels.onMessage(this.panel, async (msg: any) => {
             switch (msg.name) {
@@ -97,6 +120,7 @@ export class Sidebars {
         }
 
         let result = `<div id="sidebar-bundle">`
+        result += `<div class="plugin-tabs" id="plugin-tabs">`;
         result += `<ul class="nav nav-tabs fixed-top" id="myTab" role="tablist">`;
         let divResult = `<div class="tab-content" id="myTabContent">`;
         for (let i = 0; i < this.plugins.length; i++) {
@@ -118,8 +142,24 @@ export class Sidebars {
             `
         }
         divResult += `</div>`;
-        result += `</ul>` + divResult + `</div>`;
+
+        let infoLine = `<div class="info-line" id="info-line"> ${this.renderInfoLine()} </div>`;
+        result += `</ul>` + divResult + `</div>` + infoLine + `</div>`;
 
         await joplin.views.panels.setHtml(this.panel, result);
+    }
+
+    renderInfoLine() {
+        return `<div class="info-line-spans">
+                    <span class="line-text">Line: </span>
+                    <span class="cursor-line-number">${this.lineInfos.currentLineNumber}</span>
+                    <span class="line-text-token">/</span>
+                    <span class="total-line-number">${this.lineInfos.totalLineCount}</span>
+                    <span class="line-text">Count: </span>
+                    <span class="selected-word-count">${this.lineInfos.selectedWordCount}</span>
+                    <span class="line-text-token">/</span>
+                    <span class="total-word-count">${this.lineInfos.totalWordCount}</span>
+               </div>
+              `;
     }
 }
