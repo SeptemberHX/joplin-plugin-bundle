@@ -17,7 +17,7 @@ div.history-container .hist-section {
 }
 
 div.history-container .hist-item {
-    margin: 2px 6px;
+    vertical-align: top;
     text-overflow: clip;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -52,10 +52,8 @@ div.history-container .hist-loader a:active, a:hover {
 }
 
 div.history-container .hist-plot {
-    vertical-align: text-top;
-    stroke-width: 2px;
-    width: 1.5em;
-    height: 1em;
+    vertical-align: top;
+    stroke-width: 0.1;
 }
 
 div.history-container ::-webkit-scrollbar {

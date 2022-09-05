@@ -12,7 +12,6 @@ export interface HistSettings {
     markCurrentLine: boolean;
     secBetweenItems: number;
     maxDays: number;
-    panelTitle: string;
     panelTitleSize: number;
     panelTextSize: number;
     panelTextSpace: number;
@@ -72,16 +71,15 @@ export async function updateSettings(settings: HistSettings) {
     settings.markCurrentLine = (await joplin.settings.value('histMarkCurrentLine'));
     settings.secBetweenItems = await joplin.settings.value('histSecBetweenItems');
     settings.maxDays = await joplin.settings.value('histMaxDays');
-    settings.panelTitle = await joplin.settings.value('histPanelTitle');
-    settings.panelTitleSize = await joplin.settings.value('histPanelTitleSize');
-    settings.panelTextSize = await joplin.settings.value('histPanelTextSize');
+    settings.panelTitleSize = await joplin.settings.value('histPanelTitleSizeRel') / 100;
+    settings.panelTextSize = await joplin.settings.value('histPanelTextSizeRel') / 100;
     settings.trailDisplay = await joplin.settings.value('histTrailDisplay');
     settings.trailRecords = await joplin.settings.value('histTrailRecords');
     settings.trailBacklinks = await joplin.settings.value('histTrailBacklinks');
     settings.trailLength = await joplin.settings.value('histTrailLength');
-    settings.trailWidth = await joplin.settings.value('histTrailWidth');
+    settings.trailWidth = await joplin.settings.value('histTrailWidthRel') / 50;
     settings.plotSize = [settings.trailWidth,
-        settings.panelTextSize + settings.panelTextSpace];
+        settings.panelTextSize * settings.panelTextSpace];
     settings.trailColors = (await joplin.settings.value('histTrailColors')).split(',');
     settings.trailFormat = await joplin.settings.value('histTrailFormat');
     settings.freqDisplay = await joplin.settings.value('histFreqDisplay');
@@ -144,30 +142,22 @@ export function getSettingsSection(settings: HistSettings): Record<string, Setti
             description: 'Backtracking must be activated'
         },
 
-        'histPanelTitle': {
-            value: settings.panelTitle,
-            type: SettingItemType.String,
-            section: 'HistoryPanel',
-            public: true,
-            label: 'Panel: Title',
-        },
-
-        'histPanelTitleSize': {
-            value: settings.panelTitleSize,
+        'histPanelTitleSizeRel': {
+            value: 100*settings.panelTitleSize,
             type: SettingItemType.Int,
             minimum: 1,
             section: 'HistoryPanel',
             public: true,
-            label: 'Panel: Title font size (px)',
+            label: 'Panel: Title font size (%)',
         },
 
-        'histPanelTextSize': {
-            value: settings.panelTextSize,
+        'histPanelTextSizeRel': {
+            value: 100*settings.panelTextSize,
             type: SettingItemType.Int,
             minimum: 1,
             section: 'HistoryPanel',
             public: true,
-            label: 'Panel: Text font size (px)',
+            label: 'Panel: Text font size (%)',
         },
 
         'histTrailDisplay': {
@@ -209,13 +199,13 @@ export function getSettingsSection(settings: HistSettings): Record<string, Setti
             label: 'Trails: Max trail length (no. of items)',
         },
 
-        'histTrailWidth': {
-            value: settings.trailWidth,
+        'histTrailWidthRel': {
+            value: 200*settings.trailWidth,
             type: SettingItemType.Int,
             minimum: 0,
             section: 'HistoryPanel',
             public: true,
-            label: 'Trails: Plot width (px)',
+            label: 'Trails: Plot width (%)',
         },
 
         'histTrailFormat': {

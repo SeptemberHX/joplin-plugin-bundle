@@ -50,14 +50,14 @@ function getItemHtml(lines: string[], itemMap: Map<string, string>, maxItems: nu
     itemHtml.push(`<div class="accordion-item" id="accordionToday">`)
     itemHtml.push(`
         <h2 class="accordion-header" id="headingFrequent">
-          <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToday" aria-expanded="true" aria-controls="collapseOne">
+          <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseToday" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
             Today
           </button>
         </h2>
     `);
     itemHtml.push(`
         <div id="collapseToday" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-          <div class="accordion-body">
+          <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
     `);
 
     sectIndex.push(0);
@@ -75,7 +75,7 @@ function getItemHtml(lines: string[], itemMap: Map<string, string>, maxItems: nu
 
         itemHtml.push(`
             ${foldTag}
-            <p class="hist-item">
+            <p class="hist-item" style="margin-bottom: 0; line-height: ${params.plotSize[1]}rem">
               ${plotTag}
               ${backTagStart}
               <a class="hist-item" href="#" data-slug="${item.id}" data-line="${i}">
@@ -106,6 +106,7 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
     const now = new Date();
     const dayDiff = getDateDay(now) - getDateDay(item.date);
     const state = (currentInd <= params.currentLine) ? 'show' : 'collapsed';
+
     if (!dateScope.has('yesterday') && (dayDiff == 1)) {
         dateScope.add('yesterday');
         sectIndex.push(currentInd + 1);
@@ -113,12 +114,12 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
             </div></div></div>
             <div class="accordion-item" id="accordionYesterday">
             <h2 class="accordion-header">
-              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYesterday" aria-expanded="true" aria-controls="collapseOne">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYesterday" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
                 Yesterday
               </button>
             </h2>
             <div id="collapseYesterday" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
-              <div class="accordion-body">
+              <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
         `;
     }
     if (!dateScope.has('week') &&
@@ -129,12 +130,12 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
             </div></div></div>
             <div class="accordion-item" id="accordionWeek">
             <h2 class="accordion-header">
-              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeek" aria-expanded="true" aria-controls="collapseOne">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeek" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
                 Last 7 Days
               </button>
             </h2>
             <div id="collapseWeek" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
-              <div class="accordion-body">
+              <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
         `;
     }
 
@@ -148,12 +149,12 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
             </div></div></div>
             <div class="accordion-item" id="accordionMonth">
             <h2 class="accordion-header">
-              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonth" aria-expanded="true" aria-controls="collapseOne">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonth" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
                 ${strMonth}
               </button>
             </h2>
             <div id="collapseMonth" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
-              <div class="accordion-body">
+              <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
         `;
     }
 
@@ -161,27 +162,29 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
 }
 
 function getPlotTag(trail: number[], activeTrail: Set<number>, params: HistSettings): string {
-    const yDot = params.plotSize[1] / 2;  // connector pos
-    const rDotMax = 0.5 * params.trailDisplay + 2;
-    const xBase = params.plotSize[0] - rDotMax;
+    const yDot = 0.5;  // connector pos
+    const rDotMax = 0.25;
+    const xBase = 1;
     const yControl = yDot;
-    let plot = `<svg class="hist-plot" style="width: ${params.plotSize[0]}px; height: ${params.plotSize[1]}px">`;
+    let plot = `<svg class="hist-plot"
+      width="${params.plotSize[0]}rem" height="${params.plotSize[1]}rem"
+      viewBox="0 0 1 1">`;
 
     for (let i = 1; i <= params.trailDisplay; i++) {
         const color = params.trailColors[(i - 1) % params.trailColors.length];
         const xLevel = xBase * (1 - (i - 1) / (params.trailDisplay));
-        const rLevel = rDotMax - (i - 1) / 2;
+        const rLevel = rDotMax * (1 - (i - 1) / (1.5 * params.trailDisplay));
 
         if (trail.includes(i)) {
             if (activeTrail.has(i))  // continue trail
                 plot += `
-            <line x1="${xLevel}" y1="0" x2="${xLevel}" y2="${params.plotSize[1]}"
+            <line x1="${xLevel}" y1="0" x2="${xLevel}" y2="1"
               style="stroke:${color};" />
           `;
             else {  // start trail
                 activeTrail.add(i);
                 plot += `
-          <path d="M ${xBase} ${yDot} C ${xBase} ${yControl}, ${xLevel} ${yControl}, ${xLevel} ${params.plotSize[1]}"
+          <path d="M ${xBase} ${yDot} C ${xBase} ${yControl}, ${xLevel} ${yControl}, ${xLevel} 1"
             stroke="${color}" fill="none" />
           <circle cx="${xBase}" cy="${yDot}" r="${rLevel}"
             stroke="none" fill="${color}" />
@@ -242,8 +245,8 @@ function updateStats(item: HistItem, itemCounter: Map<string, number>,
  */
 function getStatsHtml(itemCounter: Map<string, number>,
                       itemMap: Map<string, string>, params: HistSettings): string {
-    const maxR = 0.9 * Math.min(params.panelTextSize, params.plotSize[0]) / 2;  // px, leaving 10% margin
-    const minR = 1;
+    const maxR = 0.4;
+    const minR = 0.1;
     const itemHtml: string[] = [];
     const noteOrder = new Map([...itemCounter.entries()].sort((a, b) => b[1] - a[1]));
     const maxCount = Math.max(...itemCounter.values());
@@ -255,14 +258,14 @@ function getStatsHtml(itemCounter: Map<string, number>,
     itemHtml.push(`<div class="accordion-item" id="accordionFrequent">`)
     itemHtml.push(`
         <h2 class="accordion-header" id="headingFrequent">
-          <button class="accordion-button ${strOpen}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFrequent" aria-expanded="true" aria-controls="collapseOne">
+          <button class="accordion-button ${strOpen}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFrequent" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
             Frequent Notes
           </button>
         </h2>
     `);
     itemHtml.push(`
         <div id="collapseFrequent" class="accordion-collapse collapse ${strOpen}" aria-labelledby="headingOne">
-          <div class="accordion-body">
+          <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
     `)
 
     let i = 0;
@@ -272,10 +275,10 @@ function getStatsHtml(itemCounter: Map<string, number>,
             return
         const r = Math.max(minR, maxR * count / maxCount);
         itemHtml.push(`
-      <p class="hist-item">
-      <svg class="hist-plot">
-        <circle r="${r}" cx="${0.9 * params.plotSize[0] - maxR}"
-            cy="${params.plotSize[1] / 2}"
+      <p class="hist-item" style="margin-bottom: 0; line-height: ${params.plotSize[1]}rem">
+      <svg class="hist-plot" width="${params.plotSize[0]}rem" height="${params.plotSize[1]}rem"
+        viewBox="0 0 1 1">
+        <circle r="${r}" cx="${0.9 - maxR}" cy="0.5"
             stroke="none" fill="${params.trailColors[0]}" />
       </svg>
       <a class="hist-item" href="#" data-slug="${id}">
