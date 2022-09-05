@@ -1,6 +1,7 @@
 {
 	"extraScripts": [
 		"./codemirror/commands/index.ts",
-		"./aggregateSearch/test.tsx"
+		"./aggregateSearch/test.tsx",
+		"./writingMarker/htmlGenerator.tsx"
 	]
 }

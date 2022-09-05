@@ -1,6 +1,7 @@
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import joplin from "../../api";
 import {panelHtml} from "./panelHtml";
+// import {panelHtml} from "./htmlGenerator";
 import {getAllTaggedSentences} from "./utils";
 import {debounce} from "ts-debounce";
 import {TaggedSentence} from "./common";

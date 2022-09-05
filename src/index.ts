@@ -26,7 +26,7 @@ joplin.plugins.register({
 			writingMarkerPlugin,
 			historyPlugin,
 			// noteLinkPlugin,
-			aggregateSearchPlugin
+			// aggregateSearchPlugin
 		];
 
 		await sidebar.init(plugins);
