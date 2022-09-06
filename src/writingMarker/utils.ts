@@ -19,16 +19,11 @@ export async function getAllTaggedSentences() {
                 taggedSentences[note.id] = await searchTaggedSentencesInNote(note);
             }
         }
-        // This is a rate limiter that prevents us from pinning the CPU
-        if (r.has_more && (page % 1000) == 0) {
-            // sleep
-            await new Promise(res => setTimeout(res, 2 * 1000));
-        }
     } while(r.has_more);
     return taggedSentences;
 }
 
-async function searchTaggedSentencesInNote(note) {
+export async function searchTaggedSentencesInNote(note) {
     // Conflict notes are duplicates usually
     if (note.is_conflict) { return; }
     let matches = [];

@@ -2,7 +2,7 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import joplin from "../../api";
 import {panelHtml} from "./panelHtml";
 // import {panelHtml} from "./htmlGenerator";
-import {getAllTaggedSentences} from "./utils";
+import {getAllTaggedSentences, searchTaggedSentencesInNote} from "./utils";
 import {debounce} from "ts-debounce";
 import {TaggedSentence} from "./common";
 
@@ -20,8 +20,24 @@ class WritingMarkerPlugin extends SidebarPlugin {
         await this.sidebar.updateHtml(this.id, await panelHtml(itemArray));
     }
 
+    async refreshNote(noteId: string) {
+        const note = await joplin.data.get(['notes', noteId], { fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'] });
+        if (note) {
+            this.items[noteId] = await searchTaggedSentencesInNote(note);
+            let itemArray = [];
+            for (const noteId in this.items) {
+                itemArray = itemArray.concat(this.items[noteId]);
+            }
+            await this.sidebar.updateHtml(this.id, await panelHtml(itemArray));
+        }
+    }
+
     debounceRefresh = debounce(async () => {
         await this.refresh();
+    }, 100);
+
+    debounceRefreshNote = debounce(async (noteId: string) => {
+        await this.refreshNote(noteId);
     }, 100);
 
     constructor() {
@@ -45,8 +61,12 @@ class WritingMarkerPlugin extends SidebarPlugin {
             await this.debounceRefresh();
         });
 
-        await joplin.workspace.onNoteChange(async () => {
+        await joplin.workspace.onSyncComplete(async () => {
             await this.debounceRefresh();
+        })
+
+        await joplin.workspace.onNoteChange(async (event) => {
+            await this.debounceRefreshNote(event.id);
         })
 
         await this.debounceRefresh();
