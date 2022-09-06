@@ -19,7 +19,7 @@ class TodolistPlugin extends SidebarPlugin {
 
     debounceRefresh = debounce(async () => {
         await this.refresh();
-    }, 100);
+    }, 500);
 
     refresh = async () => {
         await this.builder.search_in_all();

@@ -80,11 +80,27 @@ async function getOrCreateDailyNoteRootDir(ifCreate) {
     if (rootDirName.length === 0) {
         rootDirName = 'Daily Note';
     }
-    const folders = await joplin.data.get(['folders']);
+    let folders = await joplin.data.get(['folders']);
+    let page = 1;
     let folder_id;
-    for (let folder of folders.items) {
-        if (folder.parent_id === '' && folder.title === rootDirName) {
-            folder_id = folder.id;
+    while (true) {
+        for (let folder of folders.items) {
+            if (folder.parent_id === '' && folder.title === rootDirName) {
+                folder_id = folder.id;
+                break;
+            }
+        }
+
+        if (folder_id) {
+            break;
+        }
+
+        if (folders.has_more) {
+            page += 1;
+            folders = await joplin.data.get(['folders'], {
+                page: page
+            });
+        } else {
             break;
         }
     }
@@ -98,11 +114,23 @@ async function getOrCreateDailyNoteRootDir(ifCreate) {
 }
 
 async function getOrCreateSubFolder(parentFolderId, subFolderNames, ifCreate) {
-    const folders = await joplin.data.get(['folders']);
+    let folders = await joplin.data.get(['folders']);
+    let page = 1;
     let nameFolderIds = {}
-    for (let folder of folders.items) {
-        if (folder.parent_id === parentFolderId) {
-            nameFolderIds[folder.title] = folder.id
+    while (true) {
+        for (let folder of folders.items) {
+            if (folder.parent_id === parentFolderId) {
+                nameFolderIds[folder.title] = folder.id
+            }
+        }
+
+        if (folders.has_more) {
+            page += 1;
+            folders = await joplin.data.get(['folders'], {
+                page: page
+            });
+        } else {
+            break;
         }
     }
 
@@ -110,9 +138,13 @@ async function getOrCreateSubFolder(parentFolderId, subFolderNames, ifCreate) {
         if (folderName in nameFolderIds) {
             continue;
         } else if (ifCreate) {
-            const subFolder = await joplin.data.post(['folders'], null, {title: folderName, parent_id: parentFolderId});
+            const subFolder = await joplin.data.post(['folders'], null, {
+                title: folderName,
+                parent_id: parentFolderId
+            });
             nameFolderIds[folderName] = subFolder.id;
         }
     }
+
     return nameFolderIds;
 }
