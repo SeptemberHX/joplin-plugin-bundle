@@ -54,7 +54,6 @@ export class Sidebars {
         };
 
         await joplin.contentScripts.onMessage('sidebar_cm_commands', async(msg) => {
-            console.log(msg);
             this.lineInfos = msg;
             // use webapi message to avoid reloading main sub-plugin elements
             await joplin.views.panels.postMessage(this.panel, {

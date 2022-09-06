@@ -86,7 +86,6 @@ export class SummaryBuilder {
 	// This function scans all notes, but it's rate limited to it from crushing Joplin
 	async search_in_all() {
 		this._summary = {};
-		let todos = {};
 		let page = 0;
 		let r;
 		do {
@@ -101,14 +100,16 @@ export class SummaryBuilder {
 					await this.search_in_note(note);
 				}
 			}
-			// This is a rate limiter that prevents us from pinning the CPU
-			if (r.has_more && (page % this._settings.scan_period_c) == 0) {
-				// sleep
-				await new Promise(res => setTimeout(res, this._settings.scan_period_s * 1000));
-			}
 		} while(r.has_more);
 
 		this._initialized = true;
+	}
+
+	async update_from_note(note: Note) {
+		if (note.id in this._summary) {
+			delete this._summary[note.id];
+		}
+		await this.search_in_note(note);
 	}
 
 	// Reads a parent title from cache, or uses the joplin api to get a title based on id

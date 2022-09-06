@@ -26,6 +26,18 @@ class TodolistPlugin extends SidebarPlugin {
         await this.update_summary(this.builder.summary, this.builder.settings);
     };
 
+    debounceRefreshNote = debounce(async (noteId: string) => {
+        await this.refreshNote(noteId);
+    }, 100);
+
+    refreshNote = async (noteId: string) => {
+        const note = await joplin.data.get(['notes', noteId], { fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'] });
+        if (note) {
+            await this.builder.update_from_note(note);
+            await this.update_summary(this.builder.summary, this.builder.settings);
+        }
+    }
+
     constructor() {
         super();
 
@@ -47,13 +59,20 @@ class TodolistPlugin extends SidebarPlugin {
             this.builder.settings = await this.getSettings();
         });
 
+        // do full refresh when switching notes because sometimes we need to manually refresh
         await joplin.workspace.onNoteSelectionChange(async () => {
             await this.debounceRefresh();
         });
 
-        await joplin.workspace.onNoteChange(async () => {
+        // do part refresh for performance. Only search tasks in changed note.
+        await joplin.workspace.onNoteChange(async (event) => {
+            await this.debounceRefreshNote(event.id);
+        });
+
+        // do full refresh when sync is completed
+        await joplin.workspace.onSyncComplete(async () => {
             await this.debounceRefresh();
-        })
+        });
 
         await this.debounceRefresh();
     }
