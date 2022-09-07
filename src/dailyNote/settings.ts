@@ -5,7 +5,7 @@ export const DAILY_NOTE_TEMPLATE = 'bundle_daily_note_template';
 export const DAILY_NOTE_ROOT_DIR_NAME = 'bundle_daily_note_root_dir_name';
 
 export namespace settings {
-    const SECTION = 'FeatureSettings';
+    const SECTION = 'DailyNoteSettings';
 
     export async function register() {
         await joplin.settings.registerSection(SECTION, {
