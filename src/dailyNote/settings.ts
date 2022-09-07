@@ -20,8 +20,8 @@ export namespace settings {
             public: true,
             section: SECTION,
             type: SettingItemType.String,
-            label: 'Daily Note Root Directory Name',
-            description: "Where to save all your daily notes",
+            label: 'Daily Note Root Directory Name/ID',
+            description: "Where to save all your daily notes. Set it to the directory ID if you want to use a specific directory as the root. Right click on the folder -> Copy external link -> Paste it in any editor and you will find the folder id (32 characters). If an invalid id is provided, 'Daily Note' will be used instead.",
         };
 
         PLUGIN_SETTINGS[DAILY_NOTE_TEMPLATE] = {

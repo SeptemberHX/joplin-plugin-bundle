@@ -77,31 +77,41 @@ async function getOrCreateMonthFolder(year, month, ifCreate) {
 
 async function getOrCreateDailyNoteRootDir(ifCreate) {
     let rootDirName = await joplin.settings.value(DAILY_NOTE_ROOT_DIR_NAME);
+    let folder_id;
     if (rootDirName.length === 0) {
         rootDirName = 'Daily Note';
+    } else if (rootDirName.length === 32) {
+        const folder = await joplin.data.get(['folders', rootDirName], {fields: ['id', 'title']});
+        if (folder) {
+            folder_id = folder.id;
+        } else {
+            rootDirName = 'Daily Note';
+        }
     }
-    let folders = await joplin.data.get(['folders']);
-    let page = 1;
-    let folder_id;
-    while (true) {
-        for (let folder of folders.items) {
-            if (folder.parent_id === '' && folder.title === rootDirName) {
-                folder_id = folder.id;
+
+    if (!folder_id) {
+        let folders = await joplin.data.get(['folders']);
+        let page = 1;
+        while (true) {
+            for (let folder of folders.items) {
+                if (folder.parent_id === '' && folder.title === rootDirName) {
+                    folder_id = folder.id;
+                    break;
+                }
+            }
+
+            if (folder_id) {
                 break;
             }
-        }
 
-        if (folder_id) {
-            break;
-        }
-
-        if (folders.has_more) {
-            page += 1;
-            folders = await joplin.data.get(['folders'], {
-                page: page
-            });
-        } else {
-            break;
+            if (folders.has_more) {
+                page += 1;
+                folders = await joplin.data.get(['folders'], {
+                    page: page
+                });
+            } else {
+                break;
+            }
         }
     }
 
