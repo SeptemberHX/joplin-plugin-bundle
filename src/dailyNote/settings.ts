@@ -30,7 +30,7 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.String,
             label: 'Daily Note Template',
-            description: "Template when you create a new daily note",
+            description: "Template when you create a new daily note. Use '\\n' for new line",
         };
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);
