@@ -1,12 +1,16 @@
 import joplin from "../../api";
 import {DAILY_NOTE_ROOT_DIR_NAME, DAILY_NOTE_TEMPLATE} from "./settings";
+import {Note} from "../inlineTodo/types";
+import * as chrono from "chrono-node";
+
+const finishedTaskReg = /^\s*- \[[xX]\]/g;
 
 
 export async function getDailyNoteByDate(dateStr) {
     const splits = dateStr.split('-');
     const noteIds = await getDailyNoteIdsByMonth(splits[0], splits[1]);
     if (splits[2] in noteIds) {
-        return noteIds[splits[2]];
+        return noteIds[splits[2]].noteId;
     }
     return null;
 }
@@ -26,7 +30,10 @@ export async function getDailyNoteIdsByMonth(year, month) {
         for (let item of notes.items) {
             const splits = item.title.split('-');
             if (splits.length === 3) {
-                noteIds[splits[2]] = item.id;
+                noteIds[splits[2]] = {
+                    noteId: item.id,
+                    finishedTaskCount: await search_in_note(item)
+                };
             }
         }
 
@@ -157,4 +164,26 @@ async function getOrCreateSubFolder(parentFolderId, subFolderNames, ifCreate) {
     }
 
     return nameFolderIds;
+}
+
+async function search_in_note(note: Note): Promise<number> {
+    // Conflict notes are duplicates usually
+    if (note.is_conflict) { return; }
+    let matches = [];
+    // This introduces a small risk of a race condition
+    // (If this is waiting, the note.body could become stale, but this function would
+    // continue anyways and update the summary with stale data)
+    // I don't think this will be an issue in practice, and if it does crop up
+    // there won't be any data loss
+    let match;
+    let finishedTaskCount = 0;
+    let lineNumber = 0;
+    finishedTaskReg.lastIndex = 0;
+    for (const line of note.body.split('\n')) {
+        while ((match = finishedTaskReg.exec(line)) !== null) {
+            finishedTaskCount += 1;
+        }
+    }
+
+    return finishedTaskCount;
 }

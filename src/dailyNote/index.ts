@@ -39,6 +39,7 @@ class DailyNotePlugin extends SidebarPlugin {
         const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month)), 100);
         await joplin.workspace.onSyncComplete(async () => await updateDebounce());
         await joplin.workspace.onNoteSelectionChange(async () => await updateDebounce());
+        await joplin.workspace.onNoteChange(async () => updateDebounce());
         await joplin.settings.onChange(async () => updateDebounce());
     }
 
