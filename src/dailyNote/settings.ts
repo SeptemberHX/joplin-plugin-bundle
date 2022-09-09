@@ -4,6 +4,7 @@ import {SettingItemType} from "../../api/types";
 export const DAILY_NOTE_TEMPLATE = 'bundle_daily_note_template';
 export const DAILY_NOTE_ROOT_DIR_NAME = 'bundle_daily_note_root_dir_name';
 export const DAILY_NOTE_ENABLE_HEATMAP = 'bundle_daily_note_enable_heatmap';
+export const DAILY_NOTE_HEATMAP_LEVEL_STEP = 'bundle_daily_note_heatmap_level_step';
 export const DAILY_NOTE_HEATMAP_COLOR = 'bundle_daily_note_heatmap_color';
 
 
@@ -12,6 +13,7 @@ export class DailyNoteConfig {
     noteTemplate: string;
     enableHeatmap: boolean;
     heatmapColor: string;
+    step: number;
 }
 
 
@@ -21,6 +23,7 @@ export async function getConfig() {
     config.noteTemplate = await joplin.settings.value(DAILY_NOTE_TEMPLATE);
     config.enableHeatmap = await joplin.settings.value(DAILY_NOTE_ENABLE_HEATMAP);
     config.heatmapColor = await joplin.settings.value(DAILY_NOTE_HEATMAP_COLOR);
+    config.step = await joplin.settings.value(DAILY_NOTE_HEATMAP_LEVEL_STEP);
     return config;
 }
 
@@ -61,6 +64,15 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Daily Note HeatMap',
             description: "Show heatmap for daily notes by counting the finished tasks in each daily note",
+        };
+
+        PLUGIN_SETTINGS[DAILY_NOTE_HEATMAP_LEVEL_STEP] = {
+            value: 1,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Int,
+            label: 'Daily Note HeatMap Level Step',
+            description: "There are 10 levels of heatmap, level = floor(# of finished tasks / level step)",
         };
 
         PLUGIN_SETTINGS[DAILY_NOTE_HEATMAP_COLOR] = {

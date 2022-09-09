@@ -5,7 +5,7 @@ import {DailyNoteConfig} from "./settings";
 function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date, finishedTaskCount?: number, config?: DailyNoteConfig) {
     return `<td class="${monthClass}" onclick="calendarCellClicked('${date.format('YYYY-MM-DD')}')">
         <div class="day ${hasNote ? 'hasNote' : 'noNote'} ${isToday ? 'curr-day' : ''} ${finishedTaskCount && finishedTaskCount >= 10 ? 'level-10' : `level-${finishedTaskCount}`} "
-             ${finishedTaskCount && config.enableHeatmap ? `style="background-color: rgba(${config.heatmapColor}, 0.${finishedTaskCount})"`: ''}>
+             ${finishedTaskCount && config.enableHeatmap ? `style="background-color: rgba(${config.heatmapColor}, 0.${Math.floor(finishedTaskCount / (config.step > 0 ? config.step : 1))})"`: ''}>
             <div class="day-number">
                 ${date.date()}
             </div>

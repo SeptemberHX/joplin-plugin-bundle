@@ -13,7 +13,7 @@ table.dailynote-table td {
 }
 
 table.dailynote-table .day:hover {
-    background-color: #ececec;
+    background-color: #ececec !important;
 }
 
 table.dailynote-table .day {
