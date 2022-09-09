@@ -3,6 +3,8 @@ table.dailynote-table {
     font-size: smaller;
     width: 100%;
     table-layout: fixed;
+    border-spacing: 3px;
+    border-collapse: unset;
 }
 
 table.dailynote-table td {
@@ -63,45 +65,4 @@ button.button-current {
 button.btn.button-next,
 button.btn.button-previous {
     color: dimgray;
-}
-
-.day.hasNote.level-1 {
-    background: rgba(242, 75, 125, 0.1);
-}
-
-.day.hasNote.level-2 {
-    background: rgba(242, 75, 125, 0.2);
-}
-
-.day.hasNote.level-3 {
-    background: rgba(242, 75, 125, 0.3);
-}
-
-.day.hasNote.level-4 {
-    background: rgba(242, 75, 125, 0.4);
-}
-
-.day.hasNote.level-5 {
-    background: rgba(242, 75, 125, 0.5);
-}
-
-.day.hasNote.level-6 {
-    background: rgba(242, 75, 125, 0.6);
-}
-
-.day.hasNote.level-7 {
-    background: rgba(242, 75, 125, 0.7);
-}
-
-.day.hasNote.level-8 {
-    background: rgba(242, 75, 125, 0.8);
-}
-
-.day.hasNote.level-9 {
-    background: rgba(242, 75, 125, 0.9);
-
-}
-
-.day.hasNote.level-10 {
-    background: rgba(242, 75, 125, 1);
 }

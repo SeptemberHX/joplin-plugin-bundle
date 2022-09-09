@@ -4,7 +4,7 @@ import {createDailyNoteByDate, getDailyNoteByDate} from "./utils";
 import joplin from "../../api";
 import {debounce} from "ts-debounce";
 import * as moment from "moment";
-import {settings} from "./settings";
+import {DailyNoteConfig, getConfig, settings} from "./settings";
 
 class DailyNotePlugin extends SidebarPlugin {
 
@@ -12,6 +12,7 @@ class DailyNotePlugin extends SidebarPlugin {
     createDialog;
     year: number;
     month: number;
+    config: DailyNoteConfig;
 
     constructor() {
         super();
@@ -31,16 +32,20 @@ class DailyNotePlugin extends SidebarPlugin {
 
     public async init(sidebar: Sidebars) {
         await settings.register();
+        this.config = await getConfig();
 
         this.sidebar = sidebar;
-        await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month));
+        await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month, this.config));
 
         this.createDialog = await joplin.views.dialogs.create('DailyNoteCreateDialog');
-        const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month)), 100);
+        const updateDebounce = debounce(async () => await this.sidebar.updateHtml(this.id, await createCalendar(this.year, this.month, this.config)), 100);
         await joplin.workspace.onSyncComplete(async () => await updateDebounce());
         await joplin.workspace.onNoteSelectionChange(async () => await updateDebounce());
         await joplin.workspace.onNoteChange(async () => updateDebounce());
-        await joplin.settings.onChange(async () => updateDebounce());
+        await joplin.settings.onChange(async () => {
+            this.config = await getConfig();
+            await updateDebounce();
+        });
     }
 
     async panelMsgProcess(msg: any): Promise<boolean> {
@@ -66,7 +71,7 @@ class DailyNotePlugin extends SidebarPlugin {
                 }
                 break;
             case 'sidebar_dailynote_show_calendar_for':
-                await this.sidebar.updateHtml(this.id, await createCalendar(msg.id.year, msg.id.month));
+                await this.sidebar.updateHtml(this.id, await createCalendar(msg.id.year, msg.id.month, this.config));
                 this.year = msg.id.year;
                 this.month = msg.id.month;
                 return true;
