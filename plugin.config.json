@@ -2,6 +2,7 @@
 	"extraScripts": [
 		"./codemirror/commands/index.ts",
 		"./aggregateSearch/test.tsx",
-		"./writingMarker/htmlGenerator.tsx"
+		"./writingMarker/htmlGenerator.tsx",
+		"./dailyNote/htmlGenerator.tsx"
 	]
 }

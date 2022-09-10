@@ -34,7 +34,14 @@ table.dailynote-table div.noNote div.dot-container {
 
 table.dailynote-table svg.dot {
     height: 0.6em;
+}
+
+table.dailynote-table svg.dot.filled.level-1 {
     fill: yellowgreen;
+}
+
+table.dailynote-table svg.dot.filled.level-5 {
+    fill: red;
 }
 
 table.dailynote-table td.prev-month,

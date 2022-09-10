@@ -1,18 +1,11 @@
 import * as moment from "moment";
 import {getDailyNoteIdsByMonth} from "./utils";
 import {DailyNoteConfig} from "./settings";
+import {cellInnerHtml} from "./htmlGenerator";
 
-function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date, finishedTaskCount?: number, config?: DailyNoteConfig) {
+function createCell(monthClass: string, hasNote: boolean, isToday: boolean, date, finishedTaskCount?: number, config?: DailyNoteConfig, wordCount?: number) {
     return `<td class="${monthClass}" onclick="calendarCellClicked('${date.format('YYYY-MM-DD')}')">
-        <div class="day ${hasNote ? 'hasNote' : 'noNote'} ${isToday ? 'curr-day' : ''} ${finishedTaskCount && finishedTaskCount >= 10 ? 'level-10' : `level-${finishedTaskCount}`} "
-             ${finishedTaskCount && config.enableHeatmap ? `style="background-color: rgba(${config.heatmapColor}, 0.${Math.floor(finishedTaskCount / (config.step > 0 ? config.step : 1))})"`: ''}>
-            <div class="day-number">
-                ${date.date()}
-            </div>
-            <div class="dot-container">
-                <svg class="dot filled svelte-1widvzq" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="2"></circle></svg>
-            </div>
-        </div>
+        ${cellInnerHtml(monthClass, hasNote, isToday, date, finishedTaskCount, config, wordCount)}
     </td>`;
 }
 
@@ -54,9 +47,10 @@ function createCalendarTable(year, month, noteDaysInfo, config: DailyNoteConfig)
         }
         while (currMonth.weekday() > 0 && currMonth.weekday() <= 6) {
             const hasNote = currMonth.format('DD') in noteDaysInfo;
+            const noteInfo = noteDaysInfo[currMonth.format('DD')];
             table += createCell('curr-month', hasNote,
                 currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),
-                currMonth, hasNote ? noteDaysInfo[currMonth.format('DD')].finishedTaskCount : null, config);
+                currMonth, hasNote ? noteInfo.finishedTaskCount : null, config, noteInfo ? noteInfo.wordCount : null);
             currMonth.add(1, 'day');
         }
         table += `
@@ -69,9 +63,10 @@ function createCalendarTable(year, month, noteDaysInfo, config: DailyNoteConfig)
         for (let i = 0; i < 7; i++) {
             if (currMonth < nextMonth) {
                 const hasNote = currMonth.format('DD') in noteDaysInfo;
+                const noteInfo = noteDaysInfo[currMonth.format('DD')];
                 table += createCell('curr-month', hasNote,
                     currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),
-                    currMonth, hasNote ? noteDaysInfo[currMonth.format('DD')].finishedTaskCount : null, config);
+                    currMonth, hasNote ? noteInfo.finishedTaskCount : null, config, noteInfo ? noteInfo.wordCount : null);
             } else {
                 table += createCell('next-month', false,
                     currMonth.date() === moment().date() && currMonth.year() === moment().year() && currMonth.month() === moment().month(),

@@ -1,7 +1,7 @@
 import joplin from "../../api";
 import {DAILY_NOTE_ROOT_DIR_NAME, DAILY_NOTE_TEMPLATE} from "./settings";
 import {Note} from "../inlineTodo/types";
-import * as chrono from "chrono-node";
+import wordsCount from 'words-count';
 
 const finishedTaskReg = /^\s*- \[[xX]\]/g;
 
@@ -32,7 +32,8 @@ export async function getDailyNoteIdsByMonth(year, month) {
             if (splits.length === 3) {
                 noteIds[splits[2]] = {
                     noteId: item.id,
-                    finishedTaskCount: await search_in_note(item)
+                    finishedTaskCount: await search_in_note(item),
+                    wordCount: wordsCount(item.body)
                 };
             }
         }

@@ -6,6 +6,7 @@ export const DAILY_NOTE_ROOT_DIR_NAME = 'bundle_daily_note_root_dir_name';
 export const DAILY_NOTE_ENABLE_HEATMAP = 'bundle_daily_note_enable_heatmap';
 export const DAILY_NOTE_HEATMAP_LEVEL_STEP = 'bundle_daily_note_heatmap_level_step';
 export const DAILY_NOTE_HEATMAP_COLOR = 'bundle_daily_note_heatmap_color';
+export const DAILY_NOTE_WORD_COUNT_STEP = 'bundle_daily_note_word_count_step';
 
 
 export class DailyNoteConfig {
@@ -14,6 +15,7 @@ export class DailyNoteConfig {
     enableHeatmap: boolean;
     heatmapColor: string;
     step: number;
+    wordStep: number;
 }
 
 
@@ -24,6 +26,7 @@ export async function getConfig() {
     config.enableHeatmap = await joplin.settings.value(DAILY_NOTE_ENABLE_HEATMAP);
     config.heatmapColor = await joplin.settings.value(DAILY_NOTE_HEATMAP_COLOR);
     config.step = await joplin.settings.value(DAILY_NOTE_HEATMAP_LEVEL_STEP);
+    config.wordStep = await joplin.settings.value(DAILY_NOTE_WORD_COUNT_STEP);
     return config;
 }
 
@@ -57,6 +60,15 @@ export namespace settings {
             description: "Template when you create a new daily note. Use '\\n' for new line",
         };
 
+        PLUGIN_SETTINGS[DAILY_NOTE_WORD_COUNT_STEP] = {
+            value: 100,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Int,
+            label: 'Daily Note Word Count Level Step',
+            description: "There are 20 levels of word count, level = ceil(word count / level step). One green point = 1 level, one red point = 5 level",
+        };
+
         PLUGIN_SETTINGS[DAILY_NOTE_ENABLE_HEATMAP] = {
             value: true,
             public: true,
@@ -72,7 +84,7 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.Int,
             label: 'Daily Note HeatMap Level Step',
-            description: "There are 10 levels of heatmap, level = floor(# of finished tasks / level step)",
+            description: "There are 10 levels of heatmap, level = ceil(# of finished tasks / level step)",
         };
 
         PLUGIN_SETTINGS[DAILY_NOTE_HEATMAP_COLOR] = {
