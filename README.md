@@ -40,6 +40,7 @@ Under development:
 ![Imgur](https://i.imgur.com/yfcsNDb.gif)
 <img src="https://i.imgur.com/7cMUBOj.gif" width="200px"></img>
 ![Imgur](https://i.imgur.com/h7fP8iq.gif)
+<img src="./screenshot/dailyNote.png" width="200px"></img>
 <img src="./screenshot/history.png" width="200px"></img>
 
 ## Building the plugin
