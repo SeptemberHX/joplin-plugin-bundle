@@ -11,12 +11,13 @@ import {ContentScriptType} from "../api/types";
 import {
 	ENABLE_DAILY_NOTE,
 	ENABLE_HISTORY,
-	ENABLE_OUTLINE,
+	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS,
 	ENABLE_TODO,
 	ENABLE_WRITING_MARKER,
 	SideBarConfig
 } from "./common";
 import {settings} from "./settings";
+import readCubePlugin from "./readcube";
 
 joplin.plugins.register({
 	onStart: async function() {
@@ -53,6 +54,10 @@ joplin.plugins.register({
 			plugins.push(historyPlugin);
 		}
 
+		if (pluginConfig.readcube) {
+			plugins.push(readCubePlugin);
+		}
+
 		await sidebar.init(plugins);
 	},
 });
@@ -64,5 +69,6 @@ async function getConfig(): Promise<SideBarConfig> {
 	config.dailyNote = await joplin.settings.value(ENABLE_DAILY_NOTE);
 	config.writingMarker = await joplin.settings.value(ENABLE_WRITING_MARKER);
 	config.history = await joplin.settings.value(ENABLE_HISTORY);
+	config.readcube = await joplin.settings.value(ENABLE_READCUBE_PAPERS);
 	return config;
 }

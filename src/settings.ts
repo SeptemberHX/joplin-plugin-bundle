@@ -1,5 +1,12 @@
 import joplin from "../api";
-import {ENABLE_DAILY_NOTE, ENABLE_HISTORY, ENABLE_OUTLINE, ENABLE_TODO, ENABLE_WRITING_MARKER} from "./common";
+import {
+    ENABLE_DAILY_NOTE,
+    ENABLE_HISTORY,
+    ENABLE_OUTLINE,
+    ENABLE_READCUBE_PAPERS,
+    ENABLE_TODO,
+    ENABLE_WRITING_MARKER
+} from "./common";
 import {SettingItemType} from "../api/types";
 import {localeString, MsgType} from "./locale";
 
@@ -58,6 +65,15 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Enable History in bundle',
             description: "Forked from https://github.com/alondmnt/joplin-plugin-history-panel. Requires restart",
+        }
+
+        PLUGIN_SETTINGS[ENABLE_READCUBE_PAPERS] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Enable ReadCube Papers in bundle',
+            description: "Requires restart",
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

@@ -3,6 +3,8 @@
 		"./codemirror/commands/index.ts",
 		"./aggregateSearch/test.tsx",
 		"./writingMarker/htmlGenerator.tsx",
-		"./dailyNote/htmlGenerator.tsx"
+		"./dailyNote/htmlGenerator.tsx",
+		"./readcube/driver/markdownItRenderer/paperFence/index.ts",
+		"./readcube/driver/codemirror/autoCitation/index.ts"
 	]
 }

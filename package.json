@@ -40,6 +40,12 @@
     "string-to-color": "^2.2.2",
     "ts-debounce": "^4.0.0",
     "uslug": "git+https://github.com/laurent22/uslug.git#emoji-support",
-    "words-count": "^2.0.2"
+    "words-count": "^2.0.2",
+    "html-entities": "^2.3.3",
+    "net": "^1.0.2",
+    "node-fetch": "^2.6.1",
+    "reconnecting-websocket": "^4.4.0",
+    "tls": "^0.0.1",
+    "ws": "^8.6.0"
   }
 }
