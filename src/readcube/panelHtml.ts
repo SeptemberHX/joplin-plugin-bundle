@@ -7,17 +7,17 @@ export function panelHtml(currItem: PaperItem, currTabIndex: number) {
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
     result.push(`
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-info" type="button" role="tab" aria-controls="pills-paper-info" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" onclick="paperTabClicked(1)" id="pills-paper-info-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-info" type="button" role="tab" aria-controls="pills-paper-info" aria-selected="true">
           <i class="fas fa-info-circle"></i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-anno" type="button" role="tab" aria-controls="pills-paper-anno" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" onclick="paperTabClicked(2)" id="pills-paper-anno-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-anno" type="button" role="tab" aria-controls="pills-paper-anno" aria-selected="true">
           <i class="fas fa-marker"></i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
           <i class="fas fa-book"></i>
         </button>
       </li>

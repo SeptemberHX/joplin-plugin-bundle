@@ -23,8 +23,18 @@ class ReadCubePlugin extends SidebarPlugin {
             './scripts/readcube/readcube.css'
         ];
         this.scripts = [
-
+            './scripts/readcube/readcube.js'
         ];
+    }
+
+    async panelMsgProcess(msg: any): Promise<boolean> {
+        switch (msg.name) {
+            case 'sidebar_paper_tab_item_clicked':
+                this.currTabIndex = msg.id;
+                return true;
+            default:
+                return false;
+        }
     }
 
     async init(sidebars: Sidebars): Promise<void> {
@@ -46,7 +56,7 @@ class ReadCubePlugin extends SidebarPlugin {
         } else {
             this.currPaper = null;
         }
-        await this.sidebar.updateHtml(this.id, panelHtml(this.currPaper, this.currTabIndex));
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currTabIndex));
     }, 100);
 }
 
