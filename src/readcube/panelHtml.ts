@@ -7,17 +7,17 @@ export function panelHtml(currItem: PaperItem, currTabIndex: number) {
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
     result.push(`
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-info" type="button" role="tab" aria-controls="pills-paper-info" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" onclick="paperTabClicked(1)" id="pills-paper-info-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-info" type="button" role="tab" aria-controls="pills-paper-info" aria-selected="true">
           <i class="fas fa-info-circle"></i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-anno" type="button" role="tab" aria-controls="pills-paper-anno" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" onclick="paperTabClicked(2)" id="pills-paper-anno-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-anno" type="button" role="tab" aria-controls="pills-paper-anno" aria-selected="true">
           <i class="fas fa-marker"></i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
           <i class="fas fa-book"></i>
         </button>
       </li>
@@ -66,7 +66,7 @@ export function generatePaperInfoPage(item: PaperItem) {
             result.push(`<div class="journal">${item.journal}</div>`);
         }
         if (item.title) {
-            result.push(`<div class="title">${item.title}</div>`);
+            result.push(`<div class="title" lang="en">${item.title}</div>`);
         }
         if (item.authors && item.authors.length > 0) {
             result.push(`<div class="authors">`);
@@ -75,14 +75,23 @@ export function generatePaperInfoPage(item: PaperItem) {
             }
             result.push('</div>');
         }
+
+        result.push('<div class="tag-rate">');
+        result.push('<div class="tags">');
         if (item.tags && item.tags.length > 0) {
-            result.push(`<div class="tags">${item.tags.join('; ')}</div>`);
+            for (const tag of item.tags) {
+                result.push(`<span class="badge rounded-pill text-bg-info">${tag}</span>`);
+            }
         }
-        if (item.rating) {
+        result.push('</div>');
+
+        if (stars) {
             result.push(`<div class="rate">${stars}</div>`);
         }
+        result.push('</div>');
+
         if (item.abstract) {
-            result.push(`<div class="abstract">${item.abstract}</div>`);
+            result.push(`<div class="abstract" lang="en">${item.abstract}</div>`);
         }
 
         return result.join('');

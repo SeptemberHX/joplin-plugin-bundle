@@ -162,4 +162,19 @@ export class Sidebars {
         result += `</div>`;
         return result;
     }
+
+    async partUpdateHtml(pluginId: string, html: string) {
+        for (const existPlugin of this.plugins) {
+            if (existPlugin.id === pluginId) {
+                existPlugin.html = html;
+                break;
+            }
+        }
+        // use webapi message to avoid reloading main sub-plugin elements
+        await joplin.views.panels.postMessage(this.panel, {
+            type: 'update',
+            elementId: pluginId,
+            html: html
+        });
+    }
 }

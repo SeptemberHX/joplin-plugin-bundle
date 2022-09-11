@@ -11,6 +11,9 @@
     padding: 3px 0;
     color: var(--joplin-url-color);
     cursor: pointer;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 
 .readcube-paper-div div.authors {
@@ -19,7 +22,6 @@
 
 .readcube-paper-div div.tags {
     padding: 3px 0;
-    font-size: small;
 }
 
 .readcube-paper-div div.rate {
@@ -33,9 +35,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
-    word-break: break-word;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 15;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 
 .readcube-paper-div ul#pills-paper-tab {
@@ -50,4 +54,14 @@
 div#pills-paper-info {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.readcube-paper-div div.authors span.badge.text-bg-light {
+    margin-right: 5px;
+}
+
+.readcube-paper-div div.tag-rate {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: auto auto;
 }
