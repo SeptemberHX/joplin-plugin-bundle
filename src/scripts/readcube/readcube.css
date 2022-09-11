@@ -1,11 +1,11 @@
-div.journal {
+.readcube-paper-div div.journal {
     font-size: smaller;
     padding: 3px 0;
     font-style: italic;
     font-family: Times New Roman;
 }
 
-div.title {
+.readcube-paper-div div.title {
     font-weight: bold;
     font-size: smaller;
     padding: 3px 0;
@@ -13,29 +13,33 @@ div.title {
     cursor: pointer;
 }
 
-div.authors {
+.readcube-paper-div div.authors {
+    padding: 3px 0;
+}
+
+.readcube-paper-div div.tags {
+    padding: 3px 0;
     font-size: small;
+}
+
+.readcube-paper-div div.rate {
     padding: 3px 0;
 }
 
-div.tags {
-    padding: 3px 0;
-    font-size: small;
-}
-
-div.rate {
-    padding: 3px 0;
-}
-
-div.abstract {
+.readcube-paper-div div.abstract {
     font-family: Times New Roman;
     font-size: 0.9em;
-    word-break: break-word;
     padding: 3px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 15;
 }
 
-.readcube-paper-div ul#pills-tab {
-    padding-top: 1em;
+.readcube-paper-div ul#pills-paper-tab {
+    padding-top: 0.5em;
 }
 
 .readcube-paper-div li.nav-item {

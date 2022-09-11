@@ -4,7 +4,7 @@ import {PaperItem} from "./lib/papers/papersLib";
 export function panelHtml(currItem: PaperItem, currTabIndex: number) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
-    result.push(`<ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">`);
+    result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
     result.push(`
       <li class="nav-item" role="presentation">
         <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-info" type="button" role="tab" aria-controls="pills-paper-info" aria-selected="true">
@@ -69,7 +69,11 @@ export function generatePaperInfoPage(item: PaperItem) {
             result.push(`<div class="title">${item.title}</div>`);
         }
         if (item.authors && item.authors.length > 0) {
-            result.push(`<div class="authors">${item.authors.join('; ')}</div>`);
+            result.push(`<div class="authors">`);
+            for (const author of item.authors) {
+                result.push(`<span class="badge text-bg-light">${author}</span>`);
+            }
+            result.push('</div>');
         }
         if (item.tags && item.tags.length > 0) {
             result.push(`<div class="tags">${item.tags.join('; ')}</div>`);
