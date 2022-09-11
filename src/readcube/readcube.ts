@@ -74,18 +74,6 @@ export async function initPapers() {
         './readcube/driver/codemirror/autoCitation/index.js'
     );
 
-    await joplin.contentScripts.register(
-        ContentScriptType.CodeMirrorPlugin,
-        'enhancement_editor_paper_render',
-        './readcube/driver/codemirror/paperBlockRender/index.js'
-    );
-
-    await joplin.contentScripts.register(
-        ContentScriptType.MarkdownItPlugin,
-        'enhancement_paper_fence_renderer',
-        './readcube/driver/markdownItRenderer/paperFence/index.js'
-    );
-
     await joplin.commands.register({
         name: "enhancement_papers_syncAll",
         label: "Sync All Files from Papers",

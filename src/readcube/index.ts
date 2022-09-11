@@ -1,12 +1,17 @@
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {settings} from "./settings";
 import joplin from "../../api";
-import {ENABLE_CUSTOM_STYLE} from "./common";
-import {ContentScriptType} from "../../api/types";
 import {initPapers} from "./readcube";
+import {getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
+import {PaperItem} from "./lib/papers/papersLib";
+import { debounce } from "ts-debounce";
+import {panelHtml} from "./panelHtml";
 
 class ReadCubePlugin extends SidebarPlugin {
+
     sidebar: Sidebars;
+    currPaper: PaperItem;
+    currTabIndex: 1;
 
     constructor() {
         super();
@@ -15,7 +20,7 @@ class ReadCubePlugin extends SidebarPlugin {
         this.name = 'ReadCube Papers';
         this.icon = 'fas fa-graduation-cap';
         this.styles = [
-
+            './scripts/readcube/readcube.css'
         ];
         this.scripts = [
 
@@ -26,17 +31,22 @@ class ReadCubePlugin extends SidebarPlugin {
         this.sidebar = sidebars;
 
         await settings.register();
-        const enableCustomStyle = await joplin.settings.value(ENABLE_CUSTOM_STYLE);
-
         await initPapers();
-        if (enableCustomStyle) {
-            await joplin.contentScripts.register(
-                ContentScriptType.MarkdownItPlugin,
-                'enhancement_paper_style',
-                './readcube/driver/style/index.js'
-            );
-        }
+
+        await joplin.workspace.onNoteSelectionChange(async () => {
+            await this.update();
+        });
     }
+
+    update = debounce(async () => {
+        const currNote = await joplin.workspace.selectedNote();
+        if (currNote) {
+            this.currPaper = await getPaperItemByNoteIdOrTitle(currNote.id, currNote.title);
+        } else {
+            this.currPaper = null;
+        }
+        await this.sidebar.updateHtml(this.id, panelHtml(this.currPaper, this.currTabIndex));
+    }, 100);
 }
 
 const readCubePlugin = new ReadCubePlugin();

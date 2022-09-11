@@ -1,0 +1,49 @@
+div.journal {
+    font-size: smaller;
+    padding: 3px 0;
+    font-style: italic;
+    font-family: Times New Roman;
+}
+
+div.title {
+    font-weight: bold;
+    font-size: smaller;
+    padding: 3px 0;
+    color: var(--joplin-url-color);
+    cursor: pointer;
+}
+
+div.authors {
+    font-size: small;
+    padding: 3px 0;
+}
+
+div.tags {
+    padding: 3px 0;
+    font-size: small;
+}
+
+div.rate {
+    padding: 3px 0;
+}
+
+div.abstract {
+    font-family: Times New Roman;
+    font-size: 0.9em;
+    word-break: break-word;
+    padding: 3px 0;
+}
+
+.readcube-paper-div ul#pills-tab {
+    padding-top: 1em;
+}
+
+.readcube-paper-div li.nav-item {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+div#pills-paper-info {
+    margin-left: 5px;
+    margin-right: 5px;
+}
