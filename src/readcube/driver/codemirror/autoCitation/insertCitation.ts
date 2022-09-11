@@ -44,6 +44,7 @@ export default class InsertCitation {
         this.doc.setValue(text);
         this.doc.replaceRange(insertRefNames.join(''), currSelection.to());
         // this.doc.setSelection(currSelection);
+        this.editor.focus();
     }
 
     insertAnnotationCitations(options) {
@@ -72,5 +73,6 @@ export default class InsertCitation {
             }
         }
         this.doc.replaceRange(insertedText, currSelection.to());
+        this.editor.focus();
     }
 }

@@ -58,19 +58,13 @@ const initIID_paper = setInterval(() => {
 }, 100);
 
 function loadPaperDetail() {
-    webviewApi.postMessage("enhancement_paper_fence_renderer").then(item => {
-        if (item) {
-            const html = generateBodyForPaperFence(item.title, item.authors, item.journal, item.tags, item.rating,
-                item.abstract, item.collection_id, item.id, item.year, item.page, item.volume, item.notes);
-            let paperDetailDiv = document.getElementById('div_paper_detail');
-            if (!paperDetailDiv) {
-                paperDetailDiv = document.createElement("div");
-                paperDetailDiv.id = 'div_paper_detail';
+    const paperRenderDivs = document.getElementsByClassName('paperRender');
+    for (const div of paperRenderDivs) {
+        webviewApi.postMessage("enhancement_paper_fence_renderer", div.textContent).then(item => {
+            if (item) {
+                div.innerHTML = generateBodyForPaperFence(item.title, item.authors, item.journal, item.tags, item.rating,
+                    item.abstract, item.collection_id, item.id, item.year, item.page, item.volume, item.notes);
             }
-            paperDetailDiv.innerHTML = html;
-            document.getElementById('joplin-container-content').appendChild(paperDetailDiv);
-        } else {
-
-        }
-    });
+        });
+    }
 }

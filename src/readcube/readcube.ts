@@ -1,8 +1,9 @@
 import {ContentScriptType, MenuItem, MenuItemLocation, ToolbarButtonLocation} from "../../api/types";
 import joplin from "../../api";
-import {getAllRecords, getPaperItemByNoteIdOrTitle, setupDatabase} from "./lib/papers/papersDB";
+import {getAllRecords, getPaperItemByNoteIdOrTitle, getRecord, setupDatabase} from "./lib/papers/papersDB";
 import {
-    buildCitationForItem,
+    appendPaperBlockIfMissing,
+    buildCitationForItem, buildPaperUrl,
     buildRefName,
     createNewNotesForPapers,
     syncAllPaperItems
@@ -25,14 +26,26 @@ export async function initPapers() {
 
     await joplin.contentScripts.onMessage(
         'enhancement_paper_fence_renderer',
-        async () => {
-            const currNote = await joplin.workspace.selectedNote();
-            if (currNote) {
-                return await getPaperItemByNoteIdOrTitle(currNote.id, currNote.title);
-            }
-            return undefined;
+        async (itemId) => {
+            return await getRecord(itemId);
         }
     );
+
+    await joplin.contentScripts.onMessage(
+        'enhancement_editor_paper_render',
+        async (msg) => {
+            switch (msg.type) {
+                case 'queryPaper':
+                    return await getRecord(msg.content);
+                case 'openPaper':
+                    const paperItem = await getRecord(msg.content);
+                    await joplin.commands.execute('openItem', buildPaperUrl(paperItem.collection_id, paperItem.id));
+                    break;
+                default:
+                    break;
+            }
+        }
+    )
 
     const dialogs = joplin.views.dialogs;
     const beforeHandle = await dialogs.create('BeforeSyncDialog');
@@ -59,6 +72,12 @@ export async function initPapers() {
         ContentScriptType.CodeMirrorPlugin,
         'enhancement_autoCitation',
         './readcube/driver/codemirror/autoCitation/index.js'
+    );
+
+    await joplin.contentScripts.register(
+        ContentScriptType.CodeMirrorPlugin,
+        'enhancement_editor_paper_render',
+        './readcube/driver/codemirror/paperBlockRender/index.js'
     );
 
     await joplin.contentScripts.register(
@@ -107,6 +126,15 @@ export async function initPapers() {
             }
         }
     });
+
+    await joplin.commands.register({
+        name: 'enhancement_append_paper_block',
+        label: 'Fix missing paper code blocks',
+        iconName: 'fa fa-tools',
+        execute: async () => {
+            await appendPaperBlockIfMissing();
+        }
+    })
 
     await joplin.commands.register({
         name: 'enhancement_cite_papers',
@@ -173,8 +201,12 @@ export async function initPapers() {
             commandName: 'enhancement_papers_createNoteForPaper',
             label: 'Create notes for papers'
         },
+        {
+            commandName: 'enhancement_append_paper_block',
+            label: 'Fix missing paper blocks'
+        }
     ];
-    await joplin.views.menus.create('enhancementToolMenu', 'Enhancement', commandsSubMenu, MenuItemLocation.Tools);
+    await joplin.views.menus.create('enhancementToolMenu', 'ReadCube Papers', commandsSubMenu, MenuItemLocation.Tools);
 
     await joplin.views.toolbarButtons.create(
         'enhancementCitePapers',

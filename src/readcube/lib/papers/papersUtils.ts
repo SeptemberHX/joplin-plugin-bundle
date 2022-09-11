@@ -4,7 +4,7 @@ import {PAPERS_COOKIE, PAPERS_FOLDER_NAME, SOURCE_URL_PAPERS_PREFIX, updateInfo}
 import {
     createRecord, deleteRecord,
     getAllRecords,
-    getNoteId2PaperId, getNoteIdByPaperId, removeInvalidSourceUrlByAllItems,
+    getNoteId2PaperId, getNoteIdByPaperId, getPaperItemByNoteIdOrTitle, removeInvalidSourceUrlByAllItems,
     updateRecord
 } from "./papersDB";
 
@@ -31,7 +31,7 @@ export async function createNewNotesForPapers(selectedItemIds: string[], paperIt
             const note = await joplin.data.post(['notes'], null, {
                     title: paperId2Items[itemId].title,
                     parent_id: targetYearDir,
-                    body: paperId2Items[itemId].title,
+                    body: createPaperBlockContent(paperId2Items[itemId]),
                     source_url: `${updateInfo('', SOURCE_URL_PAPERS_PREFIX, itemId)}`
                 }
             );
@@ -105,7 +105,7 @@ export async function buildRefName(item: PaperItem) {
 async function buildCitation(title, authors, from, volume, page, year, itemId, collectionId) {
     let showText = "";
     showText += authors.slice(0, authors.length - 1).join(', ') + `, and ${authors[authors.length - 1]}.`;
-    showText += ` "[${title}](https://www.readcube.com/library/${collectionId}:${itemId})."`;
+    showText += ` "[${title}](${buildPaperUrl(collectionId, itemId)})."`;
 
     if (from.length > 0) {
         showText += ` In *${from}*.`;
@@ -167,4 +167,50 @@ async function getOrCreatePaperYearFolder(rootFolderId, subFolderNames) {
         nameFolderIds[folderName] = subFolder.id;
     }
     return nameFolderIds;
+}
+
+export async function appendPaperBlockIfMissing() {
+    const rootFolderId = await getOrCreatePaperRootFolder();
+    const folders = await joplin.data.get(['folders']);
+    for (let folder of folders.items) {
+        if (folder.parent_id === rootFolderId) {
+            let page = 1;
+            let notes = await joplin.data.get(['folders', folder.id, 'notes'], {
+                fields: ['id', 'title', 'body']
+            });
+            while (true) {
+                for (let item of notes.items) {
+                    const paperItem = await getPaperItemByNoteIdOrTitle(item.id, item.title);
+                    if (paperItem) {
+                        const reg = new RegExp(`id:\\s*${paperItem.id}`);
+                        if (!reg.test(item.body)) {
+                            const modifiedBody = item.body + '\n' + createPaperBlockContent(paperItem);
+                            await joplin.data.put(['notes', item.id], null, {body: modifiedBody})
+                        }
+                    }
+                }
+
+                if (notes.has_more) {
+                    page += 1;
+                    notes = await joplin.data.get(['folders', folder.id, 'notes'], {
+                        fields: ['id', 'title', 'body'],
+                        page: page
+                    });
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+function createPaperBlockContent(paperItem: PaperItem) {
+    return `
+\`\`\`paper
+id: ${paperItem.id}
+\`\`\``
+}
+
+export function buildPaperUrl(collectionId, itemId) {
+    return `https://www.readcube.com/library/${collectionId}:${itemId}`;
 }

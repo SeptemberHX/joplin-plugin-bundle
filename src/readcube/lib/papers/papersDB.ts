@@ -117,7 +117,7 @@ export async function getRecord(id): Promise<PaperItem>{
 
 export async function getRecordByTitle(title): Promise<PaperItem> {
     const records = await runQuery('all', `SELECT * FROM papers WHERE title = $title`, {$title: title})
-    if (records) {
+    if (records && records.length > 0) {
         return getRecordAsPaperItem(records[0])
     } else {
         return null;
@@ -129,7 +129,7 @@ export async function deleteRecord(id){
 }
 
 function getRecordAsPaperItem(record): PaperItem{
-    if (record != undefined){
+    if (record){
         let recurrence = new PaperItem()
         recurrence.id = record.id;
         recurrence.title = record.title;
@@ -199,7 +199,7 @@ export async function getPaperItemByNoteIdOrTitle(noteId: string, title: string)
     });
 
     if (!note || !note.source_url.includes(SOURCE_URL_PAPERS_PREFIX)) {
-        return getRecordByTitle(title);
+        return await getRecordByTitle(title);
     }
     return await getRecord(extractInfo(note.source_url)[SOURCE_URL_PAPERS_PREFIX]);
 }

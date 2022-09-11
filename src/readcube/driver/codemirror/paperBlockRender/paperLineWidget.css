@@ -1,0 +1,76 @@
+.enhancement-paper-block-marker-line {
+    display: none;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg {
+    max-width: 1000px;
+    margin: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg td {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    font-family: Times New Roman, serif !important;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg th {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 14px;
+    font-weight: normal;
+    overflow: hidden;
+    word-break: normal;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg th a,
+.enhancement-paper-block-marker-line-widget td i {
+    font-family: Times New Roman, serif !important;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg_title,
+.enhancement-paper-block-marker-line-widget .paper_tg_from,
+.enhancement-paper-block-marker-line-widget .paper_tg_tags,
+.enhancement-paper-block-marker-line-widget .paper_tg_stars,
+.enhancement-paper-block-marker-line-widget .paper_tg_authors,
+.enhancement-paper-block-marker-line-widget .paper_tg_from,
+.enhancement-paper-block-marker-line-widget .paper_tg_year {
+    border-color: inherit;
+    font-size: large;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.enhancement-paper-block-marker-line-widget th.paper_tg_title {
+    font-weight: bold !important;
+}
+
+.enhancement-paper-block-marker-line-widget th.paper_tg_abstract {
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+}
+
+.enhancement-paper-block-marker-line-widget th.paper_tg_from {
+    width: 50%;
+}
+
+.enhancement-paper-block-marker-line-widget .paper_tg_tags {
+    width: 25%;
+}
+
+.enhancement-paper-block-marker-line-widget .noteBoxes
+{
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 300px;
+}
