@@ -200,7 +200,7 @@ export function getSettingsSection(settings: HistSettings): Record<string, Setti
         },
 
         'histTrailWidthRel': {
-            value: 200*settings.trailWidth,
+            value: 100*settings.trailWidth,
             type: SettingItemType.Int,
             minimum: 0,
             section: 'HistoryPanel',
