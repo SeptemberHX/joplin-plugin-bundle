@@ -11,7 +11,7 @@ class ReadCubePlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
     currPaper: PaperItem;
-    currTabIndex: 1;
+    currTabIndex: number = 1;
 
     constructor() {
         super();
@@ -36,6 +36,7 @@ class ReadCubePlugin extends SidebarPlugin {
         await joplin.workspace.onNoteSelectionChange(async () => {
             await this.update();
         });
+        await this.update();
     }
 
     update = debounce(async () => {

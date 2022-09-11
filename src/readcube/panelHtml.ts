@@ -66,7 +66,7 @@ export function generatePaperInfoPage(item: PaperItem) {
             result.push(`<div class="journal">${item.journal}</div>`);
         }
         if (item.title) {
-            result.push(`<div class="title">${item.title}</div>`);
+            result.push(`<div class="title" lang="en">${item.title}</div>`);
         }
         if (item.authors && item.authors.length > 0) {
             result.push(`<div class="authors">`);
@@ -75,14 +75,23 @@ export function generatePaperInfoPage(item: PaperItem) {
             }
             result.push('</div>');
         }
+
+        result.push('<div class="tag-rate">');
+        result.push('<div class="tags">');
         if (item.tags && item.tags.length > 0) {
-            result.push(`<div class="tags">${item.tags.join('; ')}</div>`);
+            for (const tag of item.tags) {
+                result.push(`<span class="badge rounded-pill text-bg-info">${tag}</span>`);
+            }
         }
-        if (item.rating) {
+        result.push('</div>');
+
+        if (stars) {
             result.push(`<div class="rate">${stars}</div>`);
         }
+        result.push('</div>');
+
         if (item.abstract) {
-            result.push(`<div class="abstract">${item.abstract}</div>`);
+            result.push(`<div class="abstract" lang="en">${item.abstract}</div>`);
         }
 
         return result.join('');
