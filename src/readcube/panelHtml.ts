@@ -96,8 +96,9 @@ export function generatePaperInfoPage(item: PaperItem) {
 
         return result.join('');
     } else {
-        return `<div>
-            <div>No Paper related to current note</div>
+        return `<div class="non-paper-note">
+            <i class="fas fa-info-circle non-paper-icon"></i>
+            <div class="non-paper-text">No Paper related to current note</div>
         </div>`
     }
 }

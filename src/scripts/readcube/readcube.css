@@ -65,3 +65,19 @@ div#pills-paper-info {
     justify-content: space-between;
     grid-template-columns: auto auto;
 }
+
+.readcube-paper-div div.non-paper-note {
+    text-align: center;
+}
+
+.readcube-paper-div .non-paper-icon {
+    font-size: 500%;
+    opacity: 0.3;
+    margin-top: 1em;
+    margin-bottom: 30px;
+}
+
+.readcube-paper-div .non-paper-text {
+    font-style: italic;
+    opacity: 0.5;
+}
