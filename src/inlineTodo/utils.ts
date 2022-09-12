@@ -46,7 +46,7 @@ export function filterItemsBySearchStr(items: Todo[], searchStr: string) {
                     break;
                 }
             } else {
-                if (!item.msg.includes(cond)) {
+                if (!item.msg.toLowerCase().includes(cond.toLowerCase())) {
                     passed = false;
                     break;
                 }
