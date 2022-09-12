@@ -99,14 +99,15 @@ export class Sidebars {
     }
 
     public async updateHtml(id, html) {
-        for (const existPlugin of this.plugins) {
-            if (existPlugin.id === id) {
-                existPlugin.html = html;
-                break;
-            }
-        }
-
-        await this.render();
+        await this.partUpdateHtml(id, html);
+        // for (const existPlugin of this.plugins) {
+        //     if (existPlugin.id === id) {
+        //         existPlugin.html = html;
+        //         break;
+        //     }
+        // }
+        //
+        // await this.render();
     }
 
     public async render() {
