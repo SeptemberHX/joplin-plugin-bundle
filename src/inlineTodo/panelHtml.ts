@@ -13,6 +13,7 @@ const isToday = (someDate) => {
 }
 
 export const allProjectsStr = 'All Projects';
+export const withProjectStr = 'With Project';
 export const noProjectStr = 'No Project';
 export const allTagsStr = 'All Tags';
 export const noTag = 'No Tag';
@@ -276,6 +277,7 @@ function createFilterPanel(items: any[], selectedProject, selectedTag, selectedD
     const sortedTags = Array.from(existTag).sort();
 
     assigneeSelector += `<option value="${allProjectsStr}">${allProjectsStr}</option>`;
+    assigneeSelector += `<option value="${withProjectStr}" ${selectedProject === withProjectStr ? 'selected' : ''}>${withProjectStr}</option>`;
     assigneeSelector += `<option value="${noProjectStr}" ${selectedProject === noProjectStr ? 'selected' : ''}>${noProjectStr}</option>`;
     for (const assignee of sortedAssignees) {
         assigneeSelector += `<option value="${assignee}" ${assignee === selectedProject ? 'selected' : ''}>${assignee}</option>`;
@@ -300,11 +302,15 @@ function createFilterPanel(items: any[], selectedProject, selectedTag, selectedD
 function createFilterPanelBody(project: string, tag: string, due: string, items: any[]) {
     let result = '<ul class="list-group">';
     for (const item of items) {
-        if (project !== allProjectsStr && project !== noProjectStr && ((item.assignee && item.assignee !== project) || !item.assignee)) {
+        if (project !== allProjectsStr && project !== noProjectStr && project !== withProjectStr && ((item.assignee && item.assignee !== project) || !item.assignee)) {
             continue;
         }
 
         if (project === noProjectStr && item.assignee && item.assignee.length > 0) {
+            continue;
+        }
+
+        if (project === withProjectStr && (!item.assignee || item.assignee.length === 0)) {
             continue;
         }
 
