@@ -17,6 +17,7 @@ export interface Todo {
 	date: string;
 	tags: string[];
 	index: number;
+	priority: number;
 
 	fromDate: Date;
 	toDate: Date;

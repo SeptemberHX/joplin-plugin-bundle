@@ -1,5 +1,6 @@
-import {Summary} from "./types";
+import {Summary, Todo} from "./types";
 import dateFormat  from "dateformat";
+import {filterItemsBySearchStr} from "./utils";
 const stc = require('string-to-color');
 
 var md = require('markdown-it')()
@@ -57,7 +58,7 @@ const emptyTaskCheer = () => {
         `;
 }
 
-export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag, selectedDue) {
+export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag, selectedDue, searchCondition) {
     let todoItems = [];
     for (const noteId in summary) {
         for (const todoItem of summary[noteId]) {
@@ -169,8 +170,13 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${activedTab === 4 ? 'active' : ''}" onclick="todoTypeTabItemClicked(4);" id="pills-filter-tab" data-bs-toggle="pill" data-bs-target="#pills-filter" type="button" role="tab" aria-controls="pills-inbox" aria-selected="false">
+        <button class="position-relative nav-link ${activedTab === 4 ? 'active' : ''}" onclick="todoTypeTabItemClicked(4);" id="pills-filter-tab" data-bs-toggle="pill" data-bs-target="#pills-filter" type="button" role="tab" aria-controls="pills-filter" aria-selected="false">
           <i class="fas fa-filter"></i>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="position-relative nav-link ${activedTab === 5 ? 'active' : ''}" onclick="todoTypeTabItemClicked(5);" id="pills-search-tab" data-bs-toggle="pill" data-bs-target="#pills-search" type="button" role="tab" aria-controls="pills-search" aria-selected="false">
+          <i class="fas fa-search"></i>
         </button>
       </li>
     </ul>
@@ -183,6 +189,7 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     let scheduledDiv = `<div class="tab-pane fade show ${activedTab === 1 ? 'active' : ''}" id="pills-scheduled" role="tabpanel" aria-labelledby="pills-scheduled-tab" tabindex="0">`;
     let inboxDiv = `<div class="tab-pane fade show ${activedTab === 2 ? 'active' : ''}" id="pills-inbox" role="tabpanel" aria-labelledby="pills-inbox-tab" tabindex="0"><ul class="list-group">`;
     let filterDiv = `<div class="tab-pane fade show ${activedTab === 4 ? 'active' : ''}" id="pills-filter" role="tabpanel" aria-labelledby="pills-filter-tab" tabindex="0">`;
+    let searchDiv = `<div class="tab-pane fade show ${activedTab === 5 ? 'active' : ''}" id="pills-search" role="tabpanel" aria-labelledby="pills-search-tab" tabindex="0">`;
 
     for (const todoItem of todayItems) {
         result += createHTMLForTodoItem(todoItem);
@@ -242,18 +249,40 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     }
 
     filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag, selectedDue);
+    searchDiv += createSearchPanel(todoItems, searchCondition);
 
     inboxDiv += `</ul></div>`;
     scheduledDiv += `</div>`;
     filterDiv += `</div>`;
+    searchDiv += `</div>`;
     result += `</ul></div>`;
-    result += scheduledDiv + inboxDiv + filterDiv;
+    result += scheduledDiv + inboxDiv + filterDiv + searchDiv;
 
     result += `</div></div>`;
     return result;
 }
 
-function createFilterPanel(items: any[], selectedProject, selectedTag, selectedDue) {
+function createSearchPanel(items: any[], searchStr: string) {
+    let result = [`<div id ="taskSearchDiv">`];
+    result.push(`<div class="input-group mb-1 search-input">
+          <input class="form-control" type="text" id="floatingTaskSearchInput" onkeydown="onSearchChanged()" value="${searchStr}">
+        </div>`
+    );
+    result.push(createSearchPanelBody(items, searchStr));
+    result.push('</div>');
+    return result.join('');
+}
+
+function createSearchPanelBody(items: Todo[], searchStr: string) {
+    let result = '<ul class="list-group">';
+    for (const item of filterItemsBySearchStr(items, searchStr)) {
+        result += createHTMLForTodoItem(item);
+    }
+    result += `</ul>`;
+    return result;
+}
+
+function createFilterPanel(items: Todo[], selectedProject, selectedTag, selectedDue) {
     let result = `<div id="taskSelectorsDiv">`;
     let assigneeSelector = `<select id="assignee-selector" class="form-select form-select-sm" onchange="onFilterProjectChanged()" aria-label="Assignee Selector">`;
     let tagSelector = `<select id="tag-selector" class="form-select form-select-sm" onchange="onFilterTagChanged()" aria-label="Tag Selector">`;
@@ -299,7 +328,7 @@ function createFilterPanel(items: any[], selectedProject, selectedTag, selectedD
     return result + assigneeSelector + tagSelector + dueSelector + `</div>` + createFilterPanelBody(selectedProject, selectedTag, selectedDue, items);
 }
 
-function createFilterPanelBody(project: string, tag: string, due: string, items: any[]) {
+function createFilterPanelBody(project: string, tag: string, due: string, items: Todo[]) {
     let result = '<ul class="list-group">';
     for (const item of items) {
         if (project !== allProjectsStr && project !== noProjectStr && project !== withProjectStr && ((item.assignee && item.assignee !== project) || !item.assignee)) {
@@ -336,7 +365,7 @@ function createFilterPanelBody(project: string, tag: string, due: string, items:
     return result;
 }
 
-function createHTMLForTodoItem(todoItem) {
+function createHTMLForTodoItem(todoItem: Todo) {
     let result = `
             <li class="list-group-item priority-${todoItem.priority}">
                 <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">

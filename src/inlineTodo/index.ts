@@ -17,6 +17,7 @@ class TodolistPlugin extends SidebarPlugin {
     filterProject: string = allProjectsStr;
     filterTag: string = allTagsStr;
     filterDue: string = allDue;
+    searchCondition: string = '';
 
     debounceRefresh = debounce(async () => {
         await this.refresh();
@@ -26,6 +27,14 @@ class TodolistPlugin extends SidebarPlugin {
         await this.builder.search_in_all();
         await this.update_summary(this.builder.summary, this.builder.settings);
     };
+
+    debounceCacheRefresh = debounce(async () => {
+        await this.cacheRefresh();
+    }, 100);
+
+    cacheRefresh = async () => {
+        await this.update_summary(this.builder.summary, this.builder.settings);
+    }
 
     debounceRefreshNote = debounce(async (noteId: string) => {
         await this.refreshNote(noteId);
@@ -122,21 +131,28 @@ class TodolistPlugin extends SidebarPlugin {
             case 'sidebar_todo_filter_project_changed':
                 if (msg.id) {
                     this.filterProject = msg.id;
-                    await this.refresh();
+                    await this.debounceCacheRefresh();
                     return true;
                 }
                 break;
             case 'sidebar_todo_filter_tag_changed':
                 if (msg.id) {
                     this.filterTag = msg.id;
-                    await this.refresh();
+                    await this.debounceCacheRefresh();
                     return true;
                 }
                 break;
             case 'sidebar_todo_filter_due_changed':
                 if (msg.id) {
                     this.filterDue = msg.id;
-                    await this.refresh();
+                    await this.debounceCacheRefresh();
+                    return true;
+                }
+                break;
+            case 'sidebar_todo_search_changed':
+                if (msg.id) {
+                    this.searchCondition = msg.id;
+                    await this.debounceCacheRefresh();
                     return true;
                 }
                 break;
@@ -159,7 +175,7 @@ class TodolistPlugin extends SidebarPlugin {
 
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
-        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag, this.filterDue));
+        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag, this.filterDue, this.searchCondition));
     }
 }
 

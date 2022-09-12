@@ -44,3 +44,12 @@ function onFilterDueChanged() {
         id: x
     });
 }
+
+function onSearchChanged() {
+    if (event.keyCode === 13) {
+        webviewApi.postMessage({
+            name: 'sidebar_todo_search_changed',
+            id: event.target.value
+        });
+    }
+}
