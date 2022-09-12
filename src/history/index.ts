@@ -60,7 +60,6 @@ class HistoryPlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/history/history.js'
         ];
-        this.html = '<div class="card"><div class="card-body">Init...</div></div>';
     }
 
 

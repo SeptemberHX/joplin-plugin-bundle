@@ -13,7 +13,6 @@ class AggregateSearchPlugin extends SidebarPlugin {
         ];
         this.scripts = [
         ];
-        this.html = underDevelopment();
     }
 }
 
