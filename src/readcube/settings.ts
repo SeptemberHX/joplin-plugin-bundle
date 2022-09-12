@@ -7,7 +7,7 @@ export namespace settings {
 
     export async function register() {
         await joplin.settings.registerSection(SECTION, {
-            label: "ReadCube Papers",
+            label: "Bundle ReadCube Papers",
             iconName: "fa fa-graduation-cap",
         });
 

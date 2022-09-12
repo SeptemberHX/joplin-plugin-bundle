@@ -47,6 +47,7 @@ export interface Settings {
 	todo_type: RegexEntry;
 	summary_type: string;
 	force_sync: boolean;
+	note_title_date: boolean;
 }
 
 export interface TitleEntry {

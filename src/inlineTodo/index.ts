@@ -6,6 +6,7 @@ import {SummaryBuilder} from "./builder";
 import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
+import {INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
 
 class TodolistPlugin extends SidebarPlugin {
 
@@ -54,9 +55,11 @@ class TodolistPlugin extends SidebarPlugin {
 
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
+        await settings.register();
         this.builder = new SummaryBuilder(await this.getSettings());
         await joplin.settings.onChange(async (_) => {
             this.builder.settings = await this.getSettings();
+            await this.debounceRefresh();
         });
 
         // do full refresh when switching notes because sometimes we need to manually refresh
@@ -150,6 +153,7 @@ class TodolistPlugin extends SidebarPlugin {
             todo_type: regexes['list'],
             summary_type: 'Table',
             force_sync: true,
+            note_title_date: await joplin.settings.value(INLINE_TODO_NOTE_TITLE_AS_DATE),
         };
     }
 

@@ -36,7 +36,7 @@ export namespace settings {
 
     export async function register() {
         await joplin.settings.registerSection(SECTION, {
-            label: "Daily Note",
+            label: "Bundle Daily Note",
             iconName: "fas fa-calendar-alt",
         });
 

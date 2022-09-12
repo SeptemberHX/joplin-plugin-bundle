@@ -37,7 +37,7 @@ export class SummaryBuilder {
 			while ((match = todo_type.regex.exec(line)) !== null) {
 				// For todoitems in daily notes, we consider the note date as the default task date
 				let matchedDate = todo_type.date(match);
-				if (matchedDate.length === 0 && dateStrReg.test(note.title)) {
+				if (this.settings.note_title_date && matchedDate.length === 0 && dateStrReg.test(note.title)) {
 					matchedDate = note.title;
 				}
 
@@ -105,7 +105,7 @@ export class SummaryBuilder {
 		this._initialized = true;
 	}
 
-	async update_from_note(note: Note) {
+	async update_from_note(note: Note, note_title_date?: boolean) {
 		if (note.id in this._summary) {
 			delete this._summary[note.id];
 		}
