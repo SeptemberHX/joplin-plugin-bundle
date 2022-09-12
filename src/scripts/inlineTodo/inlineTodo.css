@@ -54,8 +54,8 @@ div.no-task-cheer {
 }
 
 div.inline-todo-div li.nav-item {
-    margin-left: 0.75em;
-    margin-right: 0.75em;
+    margin-left: 0.65em;
+    margin-right: 0.65em;
 }
 
 div.inline-todo-div li.list-group-item.priority-4 {
@@ -116,6 +116,6 @@ select#due-selector {
 }
 
 div.inline-todo-div div.search-input {
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }

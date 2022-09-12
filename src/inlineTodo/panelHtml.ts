@@ -1,6 +1,6 @@
 import {Summary, Todo} from "./types";
 import dateFormat  from "dateformat";
-import {filterItemsBySearchStr} from "./utils";
+import {daysDifference, durationComparedToToday, filterItemsBySearchStr, isTodayIncluded} from "./utils";
 const stc = require('string-to-color');
 
 var md = require('markdown-it')()
@@ -22,32 +22,6 @@ export const allDue = 'All Date';
 export const withDue = 'With Date';
 export const withoutDue = 'Without Date';
 
-// https://stackoverflow.com/a/7763654/5513120
-function daysDifference(d0, d1) {
-    const diff = new Date(+d1).setHours(12) - new Date(+d0).setHours(12);
-    return Math.round(diff / 8.64e7);
-}
-
-function isTodayIncluded(fromDate, toDate) {
-    return durationComparedToToday(fromDate, toDate) === 0;
-}
-
-/**
- * Return 0 if today is included; -1 if today is earlier, otherwise 1 is returned.
- */
-function durationComparedToToday(fromDate, toDate) {
-    const today = new Date();
-    const fromDiff = daysDifference(fromDate, today);
-    const toDiff = daysDifference(today, toDate);
-
-    if (fromDiff >= 0 && toDiff >= 0) {
-        return 0;
-    } else if (fromDiff < 0) {
-        return -1;
-    } else {
-        return 1;
-    }
-}
 
 const emptyTaskCheer = () => {
     return `
@@ -264,7 +238,8 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
 
 function createSearchPanel(items: any[], searchStr: string) {
     let result = [`<div id ="taskSearchDiv">`];
-    result.push(`<div class="input-group mb-1 search-input">
+    result.push(`<div class="input-group input-group-sm mb-2 search-input">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
           <input class="form-control" type="text" id="floatingTaskSearchInput" onkeydown="onSearchChanged()" value="${searchStr}">
         </div>`
     );

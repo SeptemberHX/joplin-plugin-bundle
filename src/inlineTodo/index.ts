@@ -150,12 +150,9 @@ class TodolistPlugin extends SidebarPlugin {
                 }
                 break;
             case 'sidebar_todo_search_changed':
-                if (msg.id) {
-                    this.searchCondition = msg.id;
-                    await this.debounceCacheRefresh();
-                    return true;
-                }
-                break;
+                this.searchCondition = msg.id;
+                await this.debounceCacheRefresh();
+                return true;
             default:
                 break;
         }
