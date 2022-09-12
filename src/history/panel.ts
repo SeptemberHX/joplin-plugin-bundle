@@ -163,28 +163,31 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
 
 function getPlotTag(trail: number[], activeTrail: Set<number>, params: HistSettings): string {
     const yDot = 0.5;  // connector pos
-    const rDotMax = 0.25;
-    const xBase = 1;
+    const yMax = 1;
+    const xMax = params.plotSize[0] / params.plotSize[1];
+    const xBase = xMax * (1 - 1 / (params.trailDisplay + 1));
+    const rDotMax = Math.min(0.4*yMax, xBase / (params.trailDisplay + 1));
     const yControl = yDot;
     let plot = `<svg class="hist-plot"
       width="${params.plotSize[0]}rem" height="${params.plotSize[1]}rem"
-      viewBox="0 0 1 1">`;
+      viewBox="0 0 ${xMax} ${yMax}">`;
 
     for (let i = 1; i <= params.trailDisplay; i++) {
         const color = params.trailColors[(i - 1) % params.trailColors.length];
-        const xLevel = xBase * (1 - (i - 1) / (params.trailDisplay));
-        const rLevel = rDotMax * (1 - (i - 1) / (1.5 * params.trailDisplay));
+        const xLevel = xMax * (1 - i / (params.trailDisplay + 1));
+        const rLevel = rDotMax * (1 - (i - 1) / (params.trailDisplay));
+        xBase/(params.trailDisplay + 1)
 
         if (trail.includes(i)) {
             if (activeTrail.has(i))  // continue trail
                 plot += `
-            <line x1="${xLevel}" y1="0" x2="${xLevel}" y2="1"
+            <line x1="${xLevel}" y1="0" x2="${xLevel}" y2="${yMax}"
               style="stroke:${color};" />
           `;
             else {  // start trail
                 activeTrail.add(i);
                 plot += `
-          <path d="M ${xBase} ${yDot} C ${xBase} ${yControl}, ${xLevel} ${yControl}, ${xLevel} 1"
+          <path d="M ${xBase} ${yDot} C ${xBase} ${yControl}, ${xLevel} ${yControl}, ${xLevel} ${yMax}"
             stroke="${color}" fill="none" />
           <circle cx="${xBase}" cy="${yDot}" r="${rLevel}"
             stroke="none" fill="${color}" />
