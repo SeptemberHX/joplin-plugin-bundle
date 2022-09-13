@@ -62,13 +62,7 @@ class OutlinePlugin extends SidebarPlugin {
         this.sidebars = sidebars;
         await registerSettings();
 
-        await joplin.contentScripts.register(
-            ContentScriptType.CodeMirrorPlugin,
-            'codeMirrorScroller',
-            './outline/codeMirrorScroller.js',
-        );
-
-        await joplin.contentScripts.onMessage('codeMirrorScroller', async (msg) => {
+        await joplin.contentScripts.onMessage('sidebar_cm_commands', async (msg) => {
             const note = await joplin.workspace.selectedNote();
             if (note) {
                 const headers = mdHeaders(note.body, msg.from, msg.to);
