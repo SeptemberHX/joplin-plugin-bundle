@@ -8,7 +8,6 @@ table.dailynote-table {
 }
 
 table.dailynote-table td {
-    width: 2.5em;
     height: 3em;
 }
 
@@ -21,7 +20,7 @@ table.dailynote-table .day {
 }
 
 table.dailynote-table .curr-day {
-    background-color: antiquewhite;
+    background-color: antiquewhite !important;
 }
 
 table.dailynote-table div.dot-container {
