@@ -11,7 +11,7 @@ export function filterItemsBySearchStr(items: Todo[], searchStr: string) {
                 continue;
             }
             if (cond.startsWith('@')) {
-                if (cond.length > 1 && (!item.assignee || (item.assignee && item.assignee !== cond.substr(1)))) {
+                if (cond.length > 1 && (!item.assignee || (item.assignee && item.assignee.toLowerCase() !== cond.substr(1).toLowerCase()))) {
                     passed = false;
                     break;
                 } else if (cond.length === 1 && item.assignee && item.assignee.length > 0) {
@@ -19,9 +19,25 @@ export function filterItemsBySearchStr(items: Todo[], searchStr: string) {
                     break;
                 }
             } else if (cond.startsWith('+')) {
-                if (cond.length > 1 && (!item.tags || !item.tags.includes(cond.substr(1)))) {
-                    passed = false;
-                    break;
+                if (cond.length > 1) {
+                    if (!item.tags) {
+                        passed = false;
+                        break;
+                    } else {
+                        let tagFound = false;
+                        for (const tag of item.tags) {
+                            const targetTag = cond.substr(1).toLowerCase();
+                            if (tag.toLowerCase() === targetTag) {
+                                tagFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!tagFound) {
+                            passed = false;
+                            break;
+                        }
+                    }
                 } else if (cond.length === 1 && item.tags && item.tags.length > 0) {
                     passed = false;
                     break;
