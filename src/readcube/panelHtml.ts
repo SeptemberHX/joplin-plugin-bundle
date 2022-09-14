@@ -58,10 +58,10 @@ function generateAnnoPage(annos: AnnotationItem[]) {
             case 'highlight':
                 result.push(`<i class="fas fa-font highlight" style="background: ${colorMap[annotation.color_id]}; color: white;"></i>`);
                 break;
-            case 'note':
+            case 'strikethrough':
                 result.push(`<i class="fas fa-strikethrough strikethrough" style="color: ${colorMap[annotation.color_id]}"></i>`);
                 break;
-            case 'strikethrough':
+            case 'note':
                 result.push(`<i class="fas fa-sticky-note sticky-note" style="color: ${colorMap[annotation.color_id]}"></i>`);
                 break;
             default:
@@ -82,7 +82,7 @@ function generateAnnoPage(annos: AnnotationItem[]) {
         result.push(`</div>`);
 
         if (annotation.note) {
-            result.push(`<span class="anno-note">${md.renderInline(annotation.note)}</span>`)
+            result.push(`<div class="anno-note">${md.render(annotation.note)}</div>`)
         }
         result.push('</li>');
     }
@@ -151,7 +151,7 @@ export function generatePaperInfoPage(item: PaperItem) {
         if (item.notes) {
             result.push(`<div class="notes">
                 <div class="user-note-label">User Note</div>
-                ${md.renderInline(item.notes)}
+                ${md.render(item.notes)}
             </div>`);
         }
 

@@ -22,7 +22,7 @@ export async function initPapers() {
 
     await setupDatabase();
     await PapersLib.init(papers_cookie);
-    new PapersWS();
+    const paperWS = new PapersWS();
 
     await joplin.contentScripts.onMessage(
         'enhancement_paper_fence_renderer',
@@ -207,4 +207,6 @@ export async function initPapers() {
         'enhancement_cite_paper_annotations',
         ToolbarButtonLocation.EditorToolbar
     );
+
+    return paperWS;
 }

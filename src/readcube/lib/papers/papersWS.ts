@@ -21,6 +21,7 @@ export class PapersWS {
     lastReceivedMessageDate: Date;
     currMessageId: 1;
     papers: typeof PapersLib;
+    onPaperChangeListener;
 
     constructor() {
         this.ws = new ReconnectingWebSocket('wss://push.readcube.com/bayeux', [], options);
@@ -116,12 +117,19 @@ export class PapersWS {
                         changeItemIds.push(change.id);
                     } else if (change.action === 'deleted') {  // paper is deleted
                         removedItemIds.push(change.id);
+                    } else if (change.action === 'annotated') {  // change of annotations
+
                     }
+                    this.onPaperChangeListener();
                 }
             }
         }
         await this.refreshItems(changeItemIds);
         await this.deleteItems(removedItemIds);
+    }
+
+    async onPaperChange(callback) {
+        this.onPaperChangeListener = callback;
     }
 
     onClose(event): void {
