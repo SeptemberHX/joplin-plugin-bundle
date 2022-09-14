@@ -7,6 +7,7 @@ export const DAILY_NOTE_ENABLE_HEATMAP = 'bundle_daily_note_enable_heatmap';
 export const DAILY_NOTE_HEATMAP_LEVEL_STEP = 'bundle_daily_note_heatmap_level_step';
 export const DAILY_NOTE_HEATMAP_COLOR = 'bundle_daily_note_heatmap_color';
 export const DAILY_NOTE_WORD_COUNT_STEP = 'bundle_daily_note_word_count_step';
+export const DAILY_NOTE_USE_TODO_NOTE = 'bundle_daily_note_use_todo_note';
 
 
 export class DailyNoteConfig {
@@ -16,6 +17,7 @@ export class DailyNoteConfig {
     heatmapColor: string;
     step: number;
     wordStep: number;
+    todoNote: boolean;
 }
 
 
@@ -27,6 +29,7 @@ export async function getConfig() {
     config.heatmapColor = await joplin.settings.value(DAILY_NOTE_HEATMAP_COLOR);
     config.step = await joplin.settings.value(DAILY_NOTE_HEATMAP_LEVEL_STEP);
     config.wordStep = await joplin.settings.value(DAILY_NOTE_WORD_COUNT_STEP);
+    config.todoNote = await joplin.settings.value(DAILY_NOTE_USE_TODO_NOTE);
     return config;
 }
 
@@ -58,6 +61,14 @@ export namespace settings {
             type: SettingItemType.String,
             label: 'Daily Note Template',
             description: "Template when you create a new daily note. Use '\\n' for new line",
+        };
+
+        PLUGIN_SETTINGS[DAILY_NOTE_USE_TODO_NOTE] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Create new notes in todo note type'
         };
 
         PLUGIN_SETTINGS[DAILY_NOTE_WORD_COUNT_STEP] = {

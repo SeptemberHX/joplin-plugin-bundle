@@ -61,7 +61,7 @@ class DailyNotePlugin extends SidebarPlugin {
                         await joplin.views.dialogs.addScript(this.createDialog, './scripts/dailyNote/dialog.css');
                         const dialogResult = await joplin.views.dialogs.open(this.createDialog);
                         if (dialogResult.id === 'ok') {
-                            const createNoteId = await createDailyNoteByDate(noteDate);
+                            const createNoteId = await createDailyNoteByDate(noteDate, this.config.todoNote);
                             await joplin.commands.execute('openItem', `:/${createNoteId}`);
                         }
                     } else {

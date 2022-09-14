@@ -51,7 +51,7 @@ export async function getDailyNoteIdsByMonth(year, month) {
     return noteIds;
 }
 
-export async function createDailyNoteByDate(dateStr: string) {
+export async function createDailyNoteByDate(dateStr: string, isTodoNote: boolean = false) {
     const splits = dateStr.split('-');
     const monthDirId = await getOrCreateMonthFolder(splits[0], splits[1], true);
 
@@ -59,6 +59,7 @@ export async function createDailyNoteByDate(dateStr: string) {
             title: dateStr,
             parent_id: monthDirId,
             body: (await joplin.settings.value(DAILY_NOTE_TEMPLATE)).split(`\\n`).join('\n'),
+            is_todo: isTodoNote
         }
     );
     return note.id;
