@@ -96,3 +96,35 @@ div#pills-paper-info {
     background: var(--joplin-selected-color);
     margin: -4px -4px 4px;
 }
+
+.paper-annos li.list-group-item {
+    font-size: small;
+}
+
+.paper-annos span.anno-page {
+    opacity: 0.5;
+}
+
+.paper-annos .anno-part {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: auto auto;
+    margin: 4px 0;
+}
+
+.paper-annos span.anno-text {
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    padding-left: 0.5em;
+}
+
+.paper-annos .anno-info {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: auto auto;
+}
+
+.paper-annos i.fas {
+    padding: 2px;
+}

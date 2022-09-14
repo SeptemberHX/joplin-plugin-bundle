@@ -1,14 +1,5 @@
 import {AnnotationItem} from "../../../lib/papers/papersLib";
-
-const colorMap = {
-    1: '#ffd638',
-    2: '#94ed96',
-    3: '#feb6c1',
-    4: '#dba1da',
-    5: '#fe0013',
-    6: '#001df8',
-    7: '#ffa42c'
-};
+import {colorMap} from "../../../utils/paperCardGenerator";
 
 export default class InsertCitation {
     constructor(private readonly editor) {}

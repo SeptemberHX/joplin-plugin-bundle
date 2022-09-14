@@ -3,7 +3,7 @@ import {settings} from "./settings";
 import joplin from "../../api";
 import {initPapers} from "./readcube";
 import {getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
-import {PaperItem} from "./lib/papers/papersLib";
+import {PaperItem, PapersLib} from "./lib/papers/papersLib";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
 
@@ -56,7 +56,13 @@ class ReadCubePlugin extends SidebarPlugin {
         } else {
             this.currPaper = null;
         }
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currTabIndex));
+
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, [], this.currTabIndex));
+        if (this.currPaper) {
+            PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {
+                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, annos, this.currTabIndex));
+            });
+        }
     }, 100);
 }
 

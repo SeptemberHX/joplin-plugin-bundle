@@ -1,5 +1,19 @@
 import {PaperItem} from "../lib/papers/papersLib";
 
+export const colorMap = {
+    1: '#ffd638',
+    2: '#94ed96',
+    3: '#feb6c1',
+    4: '#dba1da',
+    5: '#fe0013',
+    6: '#001df8',
+    7: '#000000',
+    8: '#137f1a',
+    9: '#7e087d',
+    10: '#ffa42c'
+};
+
+
 export function buildPaperCard(item: PaperItem, options) {
     if (item) {
         let stars = '☆☆☆☆☆';
