@@ -87,7 +87,7 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currPaper = null;
         }
 
-        this.paperList = await getAllRecords();
+        // this.paperList = await getAllRecords();
         await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex));
         if (this.currPaper) {
             PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {

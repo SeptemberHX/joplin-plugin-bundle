@@ -19,13 +19,15 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
           <i class="fas fa-marker"></i>
         </button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
-          <i class="fas fa-book"></i>
-        </button>
-      </li>
-    `)
-    result.push('</ul>')
+    `);
+    // result.push(`
+    //   <li class="nav-item" role="presentation">
+    //     <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-list-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-list" type="button" role="tab" aria-controls="pills-paper-list" aria-selected="true">
+    //       <i class="fas fa-book"></i>
+    //     </button>
+    //   </li>
+    // `);
+    result.push('</ul>');
 
     result.push(`<div class="tab-content" id="pills-tabContent">`);
     result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info" role="tabpanel" aria-labelledby="pills-paper-info-tab" tabindex="0"><ul class="list-group">`);
@@ -34,9 +36,9 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno" role="tabpanel" aria-labelledby="pills-paper-anno-tab" tabindex="0">`);
     result.push(generateAnnoPage(currAnnos));
     result.push('</div>');
-    result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-list" role="tabpanel" aria-labelledby="pills-paper-list-tab" tabindex="0">`);
-    result.push(generatePaperListPage(paperList));
-    result.push('</div>');
+    // result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-list" role="tabpanel" aria-labelledby="pills-paper-list-tab" tabindex="0">`);
+    // result.push(generatePaperListPage(paperList));
+    // result.push('</div>');
 
     result.push('</div>');
     result.push('</div>');
