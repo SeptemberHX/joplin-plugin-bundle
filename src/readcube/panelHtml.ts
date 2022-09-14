@@ -76,6 +76,11 @@ function generatePaperListPage(paperList: PaperItem[]) {
 
 function generateAnnoPage(annos: AnnotationItem[]) {
     let result = ['<div class="paper-annos">'];
+    result.push(`<div class="input-group input-group-sm mb-2 search-input">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+          <input class="form-control" type="text" id="floatingPaperAnnoSearchInput" value="">
+        </div>`
+    );
     result.push('<ul class="list-group">');
 
     for (const annotation of annos) {

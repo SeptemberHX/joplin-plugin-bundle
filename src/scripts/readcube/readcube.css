@@ -153,3 +153,8 @@ span.paper-info-journal-year {
     font-size: smaller;
     font-style: italic;
 }
+
+div.paper-annos div.search-input {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}

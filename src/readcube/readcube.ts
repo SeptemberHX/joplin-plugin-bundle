@@ -202,11 +202,5 @@ export async function initPapers() {
         ToolbarButtonLocation.EditorToolbar
     );
 
-    await joplin.views.toolbarButtons.create(
-        'enhancementCitePaperAnnotation',
-        'enhancement_cite_paper_annotations',
-        ToolbarButtonLocation.EditorToolbar
-    );
-
     return paperWS;
 }
