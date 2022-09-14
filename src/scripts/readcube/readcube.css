@@ -114,6 +114,7 @@ div#pills-paper-info {
     word-break: break-word;
     hyphens: auto;
     padding-left: 0.5em;
+    display: inline-block;
 }
 
 .paper-annos .anno-info {
