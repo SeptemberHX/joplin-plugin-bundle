@@ -4,7 +4,7 @@ var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 
 
-export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], currTabIndex: number) {
+export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], currTabIndex: number) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
@@ -35,9 +35,41 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], curr
     result.push(generateAnnoPage(currAnnos));
     result.push('</div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-list" role="tabpanel" aria-labelledby="pills-paper-list-tab" tabindex="0">`);
+    result.push(generatePaperListPage(paperList));
     result.push('</div>');
 
     result.push('</div>');
+    result.push('</div>');
+    return result.join('');
+}
+
+
+function generatePaperListPage(paperList: PaperItem[]) {
+    const result = ['<div class="paper-list">'];
+    result.push('<ul class="list-group">');
+
+    for (const paperItem of paperList) {
+        result.push('<li class="list-group-item" onmouseenter="paperItemMouseOverAndOut(true)" onmouseleave="paperItemMouseOverAndOut(false)">');
+        result.push('<div class="paper-info-header">');
+        result.push(`<span class="paper-info-journal-year">${paperItem.journal ? paperItem.journal + ' ' + paperItem.year : ''}</span>`);
+        result.push(`<span class="paper-info-buttons">
+            <i class="fas fa-copy"></i>
+            <i class="fas fa-quote-right"></i>
+        </span>`);
+        result.push('</div>');
+        result.push(`<span class="paper-info-title">${paperItem.title}</span>`);
+        result.push('<div class="paper-info-author-tag">');
+        result.push(`<span class="paper-info-first-author badge text-bg-light">${paperItem.authors.length > 0 ? paperItem.authors[0] : ''}</span>`);
+        result.push(`<div class="paper-info-tags">`);
+        for (const tag of paperItem.tags) {
+            result.push(`<span class="badge rounded-pill text-bg-info">${tag}</span>`);
+        }
+        result.push('</div>');
+        result.push(`</div>`);
+        result.push('</li>');
+    }
+
+    result.push('</ul>');
     result.push('</div>');
     return result.join('');
 }

@@ -14,6 +14,15 @@ function annotationMouseOverAndOut(over) {
     }
 }
 
+function paperItemMouseOverAndOut(over) {
+    if (event.target) {
+        const buttonsEle = event.target.querySelector('.paper-info-buttons');
+        if (buttonsEle) {
+            buttonsEle.style.visibility = over ? 'visible' : 'hidden';
+        }
+    }
+}
+
 function annotationCopyClicked(annotation_id) {
     webviewApi.postMessage({
         name: 'sidebar_annotation_copy_clicked',

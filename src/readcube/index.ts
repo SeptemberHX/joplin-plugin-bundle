@@ -2,7 +2,7 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {settings} from "./settings";
 import joplin from "../../api";
 import {initPapers} from "./readcube";
-import {getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
+import {getAllRecords, getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
 import {AnnotationItem, PaperItem, PapersLib} from "./lib/papers/papersLib";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
@@ -14,6 +14,7 @@ class ReadCubePlugin extends SidebarPlugin {
     sidebar: Sidebars;
     currPaper: PaperItem;
     currAnnotations: AnnotationItem[] = [];
+    paperList: PaperItem[] = [];
     currTabIndex: number = 1;
     papersWS: PapersWS;
 
@@ -86,11 +87,12 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currPaper = null;
         }
 
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.currTabIndex));
+        this.paperList = await getAllRecords();
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex));
         if (this.currPaper) {
             PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {
                 this.currAnnotations = annos;
-                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.currTabIndex));
+                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex));
             });
         }
     }, 100);

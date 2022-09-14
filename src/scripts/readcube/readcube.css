@@ -60,7 +60,9 @@ div#pills-paper-info {
     margin-right: 5px;
 }
 
-.readcube-paper-div div.tag-rate {
+.readcube-paper-div div.tag-rate,
+.paper-list .paper-info-header,
+.paper-list .paper-info-author-tag {
     display: grid;
     justify-content: space-between;
     grid-template-columns: auto auto;
@@ -127,7 +129,27 @@ div#pills-paper-info {
     padding: 2px;
 }
 
-.paper-annos .anno-buttons {
+.paper-annos .anno-buttons,
+.paper-list .paper-info-buttons {
     visibility: hidden;
     color: dimgray;
+}
+
+.paper-list li.list-group-item {
+    font-size: small;
+}
+
+span.paper-info-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+span.paper-info-journal-year {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 10px;
+    font-size: smaller;
+    font-style: italic;
 }
