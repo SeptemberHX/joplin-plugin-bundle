@@ -1,4 +1,6 @@
 import {PaperItem} from "./lib/papers/papersLib";
+var md = require('markdown-it')()
+    .use(require('markdown-it-mark'));
 
 
 export function panelHtml(currItem: PaperItem, currTabIndex: number) {
@@ -63,7 +65,7 @@ export function generatePaperInfoPage(item: PaperItem) {
         }
         let result = ['<div class="paper-info">'];
         if (item.journal) {
-            result.push(`<div class="journal">${item.journal}</div>`);
+            result.push(`<div class="journal">${item.journal} ${item.year ? item.year : ''}</div>`);
         }
         if (item.title) {
             result.push(`<div class="title" lang="en">${item.title}</div>`);
@@ -92,6 +94,13 @@ export function generatePaperInfoPage(item: PaperItem) {
 
         if (item.abstract) {
             result.push(`<div class="abstract" lang="en">${item.abstract}</div>`);
+        }
+
+        if (item.notes) {
+            result.push(`<div class="notes">
+                <div class="user-note-label">User Note</div>
+                ${md.renderInline(item.notes)}
+            </div>`);
         }
 
         return result.join('');

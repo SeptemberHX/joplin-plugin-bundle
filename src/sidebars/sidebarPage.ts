@@ -58,6 +58,7 @@ export class Sidebars {
             selectedWordCount: 0
         };
 
+        // Message processing
         await joplin.contentScripts.onMessage('sidebar_cm_commands', async(msg) => {
             switch (msg.type) {
                 case MsgType.CURSOR_CHANGE:
@@ -78,7 +79,6 @@ export class Sidebars {
                     break;
             }
         });
-
         await joplin.views.panels.onMessage(this.panel, async (msg: any) => {
             switch (msg.name) {
                 case 'sidebar_tab_item_clicked':
@@ -94,6 +94,7 @@ export class Sidebars {
             }
         });
 
+        // Html construction
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/bootstrap.min.css');
 
         for (const plugin of this.plugins) {
@@ -109,6 +110,7 @@ export class Sidebars {
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/bootstrap.bundle.min.js');
         await joplin.views.panels.addScript(this.panel, './scripts/sidebars/sidebars.js');
 
+        // Plugin init
         for (const plugin of this.plugins) {
             await plugin.init(this);
         }

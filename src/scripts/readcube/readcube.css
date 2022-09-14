@@ -81,3 +81,18 @@ div#pills-paper-info {
     font-style: italic;
     opacity: 0.5;
 }
+
+.readcube-paper-div .notes {
+    border: 1px solid var(--joplin-selected-color);
+    border-radius: 4px;
+    padding: 4px;
+    font-size: small;
+    margin-top: 0.8em;
+}
+
+.readcube-paper-div .user-note-label {
+    text-align: center;
+    font-weight: bold;
+    background: var(--joplin-selected-color);
+    margin: -4px -4px 4px;
+}
