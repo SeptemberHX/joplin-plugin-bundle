@@ -106,9 +106,6 @@ div#pills-paper-info {
 }
 
 .paper-annos .anno-part {
-    display: grid;
-    justify-content: space-between;
-    grid-template-columns: auto auto;
     margin: 4px 0;
 }
 
@@ -122,9 +119,14 @@ div#pills-paper-info {
 .paper-annos .anno-info {
     display: grid;
     justify-content: space-between;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
 }
 
 .paper-annos i.fas {
     padding: 2px;
+}
+
+.paper-annos .anno-buttons {
+    visibility: hidden;
+    color: dimgray;
 }

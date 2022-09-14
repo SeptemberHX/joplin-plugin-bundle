@@ -48,7 +48,7 @@ function generateAnnoPage(annos: AnnotationItem[]) {
     result.push('<ul class="list-group">');
 
     for (const annotation of annos) {
-        result.push('<li class="list-group-item">');
+        result.push('<li class="list-group-item" onmouseenter="annotationMouseOverAndOut(true)" onmouseleave="annotationMouseOverAndOut(false)">');
         result.push('<div class="anno-info">');
         result.push(`<span class="anno-type">`);
         switch (annotation.type) {
@@ -68,6 +68,10 @@ function generateAnnoPage(annos: AnnotationItem[]) {
                 break;
         }
         result.push(`</span>`);
+        result.push(`<span class="anno-buttons">
+            <i class="fas fa-copy" onclick="annotationCopyClicked('${annotation.id}')"></i>
+            <i class="fas fa-quote-right" onclick="annotationCiteClicked('${annotation.id}')"></i>
+        </span>`);
         if (annotation.page) {
             result.push(`<span class="anno-page">Page: ${annotation.page}</span>`)
         }

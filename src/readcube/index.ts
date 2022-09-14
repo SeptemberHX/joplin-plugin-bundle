@@ -7,6 +7,7 @@ import {AnnotationItem, PaperItem, PapersLib} from "./lib/papers/papersLib";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
 import {PapersWS} from "./lib/papers/papersWS";
+import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
 
 class ReadCubePlugin extends SidebarPlugin {
 
@@ -34,6 +35,25 @@ class ReadCubePlugin extends SidebarPlugin {
         switch (msg.name) {
             case 'sidebar_paper_tab_item_clicked':
                 this.currTabIndex = msg.id;
+                return true;
+            case 'sidebar_annotation_copy_clicked':
+                for (const anno of this.currAnnotations) {
+                    if (anno.id === msg.id) {
+                        await joplin.clipboard.writeText(anno.text);
+                        break;
+                    }
+                }
+                return true;
+            case 'sidebar_annotation_cite_clicked':
+                for (const anno of this.currAnnotations) {
+                    if (anno.id === msg.id) {
+                        await joplin.commands.execute('editor.execCommand', {
+                            name: 'enhancement_insertAnnotation',
+                            args: [[[anno], await joplin.settings.value(ENABLE_ENHANCED_BLOCKQUOTE)]]
+                        });
+                        break;
+                    }
+                }
                 return true;
             default:
                 return false;
