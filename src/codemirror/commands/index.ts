@@ -1,6 +1,7 @@
 import CommandsBridge from "./commands";
 import {debounce} from "ts-debounce";
 import wordsCount from 'words-count';
+import {MsgType} from "../../common";
 
 module.exports = {
     default: function(_context) {
@@ -19,6 +20,7 @@ module.exports = {
                         }
 
                         return await _context.postMessage({
+                            type: MsgType.CURSOR_CHANGE,
                             totalLineCount: cm.getDoc().lineCount(),
                             currentLineNumber: cm.getDoc().getCursor().line + 1,
                             totalWordCount: wordsCount(cm.getDoc().getValue()),
@@ -40,6 +42,7 @@ module.exports = {
                     const headerChangeDebounce = debounce(async function() {
                         var rect = cm.getWrapperElement().getBoundingClientRect();
                         return await _context.postMessage({
+                            type: MsgType.SCROLL_CHANGE,
                             from: cm.lineAtHeight(rect.top, "window"),
                             to: cm.lineAtHeight(rect.bottom, "window")
                         });

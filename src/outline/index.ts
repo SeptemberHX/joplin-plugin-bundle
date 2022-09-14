@@ -4,6 +4,7 @@ import { registerSettings, settingValue } from './settings';
 import mdHeaders from './mdHeaders';
 import panelHtml from './panelHtml';
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
+import {MsgType} from "../common";
 
 
 class OutlinePlugin extends SidebarPlugin {
@@ -58,34 +59,40 @@ class OutlinePlugin extends SidebarPlugin {
         return false;
     }
 
+    async cmMsgProcess(msg: any): Promise<boolean> {
+        switch (msg.type) {
+            case MsgType.SCROLL_CHANGE:
+                const note = await joplin.workspace.selectedNote();
+                if (note) {
+                    const headers = mdHeaders(note.body, msg.from, msg.to);
+                    if (headers.length > 0) {
+                        let i;
+                        for (i = headers.length - 1; i >= 0; i--) {
+                            if (headers[i].lineno < msg.from) {
+                                break;
+                            }
+                        }
+                        if (i < headers.length - 1) {
+                            i += 1;
+                        }
+                        const newHeader = headers[i];
+
+                        if (!this.currentHead || (newHeader.text !== this.currentHead.text || newHeader.lineno !== this.currentHead.lineno)) {
+                            this.currentHead = newHeader;
+                            await this.updateTocView();
+                        }
+                    }
+
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public async init(sidebars: Sidebars) {
         this.sidebars = sidebars;
         await registerSettings();
-
-        await joplin.contentScripts.onMessage('sidebar_cm_commands', async (msg) => {
-            const note = await joplin.workspace.selectedNote();
-            if (note) {
-                const headers = mdHeaders(note.body, msg.from, msg.to);
-                if (headers.length > 0) {
-                    let i;
-                    for (i = headers.length - 1; i >= 0; i--) {
-                        if (headers[i].lineno < msg.from) {
-                            break;
-                        }
-                    }
-                    if (i < headers.length - 1) {
-                        i += 1;
-                    }
-                    const newHeader = headers[i];
-
-                    if (!this.currentHead || (newHeader.text !== this.currentHead.text || newHeader.lineno !== this.currentHead.lineno)) {
-                        this.currentHead = newHeader;
-                        await this.updateTocView();
-                    }
-                }
-
-            }
-        });
 
         await joplin.workspace.onNoteSelectionChange(() => {
             this.updateTocView();

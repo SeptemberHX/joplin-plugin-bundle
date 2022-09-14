@@ -6,6 +6,12 @@ export const ENABLE_HISTORY = 'bundle_enable_history';
 export const ENABLE_READCUBE_PAPERS = 'bundle_enable_readcube_papers';
 
 
+export enum MsgType {
+    SCROLL_CHANGE,
+    CURSOR_CHANGE,
+}
+
+
 export class SideBarConfig {
     outline: boolean;
     inlineTodo: boolean;

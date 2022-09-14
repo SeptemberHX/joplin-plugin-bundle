@@ -1,4 +1,5 @@
 import joplin from "../../api";
+import {MsgType} from "../common";
 
 
 export abstract class SidebarPlugin {
@@ -25,6 +26,10 @@ export abstract class SidebarPlugin {
 
     public async init(sidebars: Sidebars) {
 
+    }
+
+    public async cmMsgProcess(msg: any) {
+        return false;
     }
 }
 
@@ -54,13 +59,24 @@ export class Sidebars {
         };
 
         await joplin.contentScripts.onMessage('sidebar_cm_commands', async(msg) => {
-            this.lineInfos = msg;
-            // use webapi message to avoid reloading main sub-plugin elements
-            await joplin.views.panels.postMessage(this.panel, {
-                type: 'update',
-                elementId: 'info-line',
-                html: this.renderInfoLine()
-            });
+            switch (msg.type) {
+                case MsgType.CURSOR_CHANGE:
+                    this.lineInfos = msg;
+                    // use webapi message to avoid reloading main sub-plugin elements
+                    await joplin.views.panels.postMessage(this.panel, {
+                        type: 'update',
+                        elementId: 'info-line',
+                        html: this.renderInfoLine()
+                    });
+                    break;
+                default:
+                    for (const plugin of this.plugins) {
+                        if (await plugin.cmMsgProcess(msg)) {
+                            break;
+                        }
+                    }
+                    break;
+            }
         });
 
         await joplin.views.panels.onMessage(this.panel, async (msg: any) => {
