@@ -119,7 +119,8 @@ div#pills-paper-info {
     display: inline-block;
 }
 
-.paper-annos .anno-info {
+.paper-annos .anno-info,
+.paper-refs-list .ref-info-header {
     display: grid;
     justify-content: space-between;
     grid-template-columns: auto auto auto;
@@ -130,7 +131,8 @@ div#pills-paper-info {
 }
 
 .paper-annos .anno-buttons,
-.paper-list .paper-info-buttons {
+.paper-list .paper-info-buttons,
+.paper-refs-list .ref-info-buttons {
     visibility: hidden;
     color: dimgray;
 }
@@ -154,7 +156,45 @@ span.paper-info-journal-year {
     font-style: italic;
 }
 
-div.paper-annos div.search-input {
+div.paper-annos div.search-input,
+div.paper-refs-list div.search-input {
     padding-left: 0.5em;
     padding-right: 0.5em;
+}
+
+div.readcube-paper-div p {
+    margin-bottom: 0;
+}
+
+div.paper-refs-list .ref-info-header {
+    margin-bottom: 5px;
+}
+
+.paper-refs-list li.list-group-item {
+    font-size: small;
+}
+
+div.paper-refs-list .ref-info-title {
+    display: block;
+    font-weight: bold;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.paper-refs-list .ref-info-authors,
+.paper-refs-list .ref-info-journal {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    color: gray;
+}
+
+.paper-refs-list .ref-info-journal {
+    font-style: italic;
+}
+
+.paper-refs-list span.ref-info-ordinal {
+    margin-left: -1em;
 }

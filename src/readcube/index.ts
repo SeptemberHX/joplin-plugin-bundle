@@ -3,7 +3,7 @@ import {settings} from "./settings";
 import joplin from "../../api";
 import {initPapers} from "./readcube";
 import {getAllRecords, getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
-import {AnnotationItem, PaperItem, PapersLib} from "./lib/papers/papersLib";
+import {AnnotationItem, PaperItem, PaperMetadata, PapersLib} from "./lib/papers/papersLib";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
 import {PapersWS} from "./lib/papers/papersWS";
@@ -14,6 +14,7 @@ class ReadCubePlugin extends SidebarPlugin {
     sidebar: Sidebars;
     currPaper: PaperItem;
     currAnnotations: AnnotationItem[] = [];
+    currMetadata: PaperMetadata;
     annoSearchStr: string = '';
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
@@ -75,6 +76,7 @@ class ReadCubePlugin extends SidebarPlugin {
         await joplin.workspace.onNoteSelectionChange(async () => {
             this.annoSearchStr = '';
             this.currAnnotations = [];
+            this.currMetadata = null;
             await this.update();
         });
 
@@ -94,19 +96,27 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currPaper = null;
         }
 
-        // this.paperList = await getAllRecords();
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
+        await this.updateHtml();
         if (this.currPaper) {
             PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {
                 this.currAnnotations = annos;
-                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
+                await this.updateHtml();
+            });
+
+            PapersLib.getMetadata(this.currPaper.doi).then(async metadata => {
+                this.currMetadata = metadata;
+                await this.updateHtml();
             });
         }
     }, 100);
 
     cacheUpdate = debounce(async () => {
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
+        await this.updateHtml();
     })
+
+    async updateHtml() {
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currTabIndex, this.annoSearchStr));
+    }
 }
 
 const readCubePlugin = new ReadCubePlugin();

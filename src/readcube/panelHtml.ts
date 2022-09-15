@@ -1,10 +1,10 @@
-import {AnnotationItem, PaperItem} from "./lib/papers/papersLib";
+import {AnnotationItem, PaperItem, PaperMetadata, PaperReference} from "./lib/papers/papersLib";
 import {colorMap} from "./utils/paperCardGenerator";
 var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 
 
-export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], currTabIndex: number, annoSearchStr: string) {
+export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currTabIndex: number, annoSearchStr: string) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
@@ -35,9 +35,54 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push(generateAnnoPage(currAnnos, annoSearchStr));
     result.push('</div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-refs" role="tabpanel" aria-labelledby="pills-paper-refs-tab" tabindex="0">`);
+    if (metadata) {
+        result.push(generateRefsPage(metadata.references));
+    }
     result.push('</div>');
 
     result.push('</div>');
+    result.push('</div>');
+    return result.join('');
+}
+
+
+function generateRefsPage(refs: PaperReference[]) {
+    const result = ['<div class="paper-refs-list">'];
+    result.push(`<div class="input-group input-group-sm mb-2 search-input">
+          <span class="input-group-text" id="ref-search-input"><i class="fas fa-search"></i></span>
+          <input class="form-control" type="text" id="floatingPaperRefSearchInput" value="">
+        </div>`
+    );
+    result.push('<ul class="list-group">');
+
+    for (const refItem of refs) {
+        result.push('<li class="list-group-item" onmouseenter="refItemMouseOverAndOut(true)" onmouseleave="refItemMouseOverAndOut(false)">');
+        result.push('<div class="ref-info-header">');
+        result.push(`<span class="ref-info-ordinal badge text-bg-light">${refItem.ordinal}</span>`);
+        result.push(`<span class="ref-info-buttons">
+            <i class="fas fa-copy"></i>
+            <i class="fas fa-quote-right"></i>
+        </span>`);
+        result.push(`<span class="ref-info-year badge text-bg-light">${refItem.year}</span>`);
+        result.push(`</div>`);
+
+        if (refItem.title.startsWith('<') && refItem.title.endsWith('>')) {
+            result.push(`<span class="ref-info-title">${refItem.title.substr(1, refItem.title.length - 2)}</span>`);
+        } else {
+            result.push(`<span class="ref-info-title">${refItem.title}</span>`);
+        }
+
+        if (refItem.authors.length > 0) {
+            result.push(`<span class="ref-info-authors">${refItem.authors.join(', ')}</span>`);
+        }
+
+        if (refItem.journal.length > 0) {
+            result.push(`<span class="ref-info-journal">${refItem.journal}</span>`);
+        }
+
+        result.push('</li>');
+    }
+    result.push('</ul>');
     result.push('</div>');
     return result.join('');
 }

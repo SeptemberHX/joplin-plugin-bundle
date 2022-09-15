@@ -5,6 +5,34 @@ import fetch from 'node-fetch';
  */
 
 
+export class PaperReference {
+    title: string;
+    ordinal: number;
+    authors: string[];
+    year: string;
+    pagination: string;
+    label: string;
+    doi: string;
+    article_url: string;
+    journal: string;
+    reader_url: string;
+}
+
+
+export class PaperFigure {
+    url: string;
+    thumb: string;
+    download_url: string;
+    caption: string;
+}
+
+
+export class PaperMetadata {
+    references: PaperReference[];
+    figures: PaperFigure[];
+}
+
+
 export class PaperItem {
     title: string;
     journal: string;
@@ -146,6 +174,44 @@ class PapersLibTool {
             }
         }
         return results;
+    }
+
+    async getMetadata(doi: string) {
+        const requestUrl = `https://services.readcube.com/reader/metadata?doi=${doi}`;
+        const response = await fetch(requestUrl, { headers: { cookie: this.cookie } });
+        if (response) {
+            const resJson = await response.json();
+            if (resJson) {
+                const metadata = new PaperMetadata();
+                metadata.references = [];
+                for (const ref of resJson['references']) {
+                    const paperRef = new PaperReference();
+                    paperRef.title = 'title' in ref ? ref.title : '';
+                    paperRef.ordinal = 'ordinal' in ref ? ref.ordinal : 1;
+                    paperRef.authors = 'authors' in ref ? ref.authors : [];
+                    paperRef.year = 'year' in ref ? ref.year : '';
+                    paperRef.pagination = 'pagination' in ref ? ref.pagination : '';
+                    paperRef.label = 'label' in ref ? ref.label : '';
+                    paperRef.doi = 'doi' in ref ? ref.doi : '';
+                    paperRef.article_url = 'article_url' in ref ? ref.article_url : '';
+                    paperRef.reader_url = 'reader_url' in ref ? ref.reader_url : '';
+                    paperRef.journal = 'journal' in ref ? ref.journal : '';
+                    metadata.references.push(paperRef);
+                }
+
+                metadata.figures = [];
+                for (const figure of resJson['figures']) {
+                    const paperFigure = new PaperFigure();
+                    paperFigure.url = 'url' in figure ? figure.url : '';
+                    paperFigure.thumb = 'thumb' in figure ? figure.thumb : '';
+                    paperFigure.download_url = 'download_url' in figure ? figure.download_url : '';
+                    paperFigure.caption = 'caption' in figure ? figure.caption : '';
+                    metadata.figures.push(paperFigure);
+                }
+                return metadata;
+            }
+        }
+        return null;
     }
 
     /**

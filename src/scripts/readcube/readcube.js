@@ -23,6 +23,15 @@ function paperItemMouseOverAndOut(over) {
     }
 }
 
+function refItemMouseOverAndOut(over) {
+    if (event.target) {
+        const buttonsEle = event.target.querySelector('.ref-info-buttons');
+        if (buttonsEle) {
+            buttonsEle.style.visibility = over ? 'visible' : 'hidden';
+        }
+    }
+}
+
 function annotationCopyClicked(annotation_id) {
     webviewApi.postMessage({
         name: 'sidebar_annotation_copy_clicked',
