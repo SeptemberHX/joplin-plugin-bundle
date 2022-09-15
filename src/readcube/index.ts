@@ -14,6 +14,7 @@ class ReadCubePlugin extends SidebarPlugin {
     sidebar: Sidebars;
     currPaper: PaperItem;
     currAnnotations: AnnotationItem[] = [];
+    annoSearchStr: string = '';
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
     papersWS: PapersWS;
@@ -56,6 +57,10 @@ class ReadCubePlugin extends SidebarPlugin {
                     }
                 }
                 return true;
+            case 'sidebar_papers_anno_search_changed':
+                this.annoSearchStr = msg.id;
+                await this.cacheUpdate();
+                break;
             default:
                 return false;
         }
@@ -68,6 +73,8 @@ class ReadCubePlugin extends SidebarPlugin {
         this.papersWS = await initPapers();
 
         await joplin.workspace.onNoteSelectionChange(async () => {
+            this.annoSearchStr = '';
+            this.currAnnotations = [];
             await this.update();
         });
 
@@ -88,14 +95,18 @@ class ReadCubePlugin extends SidebarPlugin {
         }
 
         // this.paperList = await getAllRecords();
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex));
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
         if (this.currPaper) {
             PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {
                 this.currAnnotations = annos;
-                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex));
+                await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
             });
         }
     }, 100);
+
+    cacheUpdate = debounce(async () => {
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currTabIndex, this.annoSearchStr));
+    })
 }
 
 const readCubePlugin = new ReadCubePlugin();

@@ -36,3 +36,12 @@ function annotationCiteClicked(annotation_id) {
         id: annotation_id
     });
 }
+
+function onSearchPressed() {
+    if (event.keyCode === 13) {
+        webviewApi.postMessage({
+            name: 'sidebar_papers_anno_search_changed',
+            id: event.target.value ? event.target.value : ''
+        });
+    }
+}

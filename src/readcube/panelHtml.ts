@@ -4,7 +4,7 @@ var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 
 
-export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], currTabIndex: number) {
+export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], currTabIndex: number, annoSearchStr: string) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
@@ -32,7 +32,7 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push(generatePaperInfoPage(currItem));
     result.push('</ul></div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno" role="tabpanel" aria-labelledby="pills-paper-anno-tab" tabindex="0">`);
-    result.push(generateAnnoPage(currAnnos));
+    result.push(generateAnnoPage(currAnnos, annoSearchStr));
     result.push('</div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-refs" role="tabpanel" aria-labelledby="pills-paper-refs-tab" tabindex="0">`);
     result.push('</div>');
@@ -74,16 +74,22 @@ function generatePaperListPage(paperList: PaperItem[]) {
 }
 
 
-function generateAnnoPage(annos: AnnotationItem[]) {
+function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
     let result = ['<div class="paper-annos">'];
     result.push(`<div class="input-group input-group-sm mb-2 search-input">
           <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-          <input class="form-control" type="text" id="floatingPaperAnnoSearchInput" value="">
+          <input class="form-control" type="text" id="floatingPaperAnnoSearchInput" value="${annoSearchStr}" onkeydown="onSearchPressed()">
         </div>`
     );
     result.push('<ul class="list-group">');
 
     for (const annotation of annos) {
+        if (annoSearchStr && annoSearchStr.length > 0) {
+            if (!(annotation.text && annotation.text.includes(annoSearchStr) || annotation.note && annotation.note.includes(annoSearchStr))) {
+                continue;
+            }
+        }
+
         result.push('<li class="list-group-item" onmouseenter="annotationMouseOverAndOut(true)" onmouseleave="annotationMouseOverAndOut(false)">');
         result.push('<div class="anno-info">');
         result.push(`<span class="anno-type">`);
