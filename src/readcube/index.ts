@@ -16,6 +16,7 @@ class ReadCubePlugin extends SidebarPlugin {
     currAnnotations: AnnotationItem[] = [];
     currMetadata: PaperMetadata;
     annoSearchStr: string = '';
+    refSearchStr: string = '';
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
     papersWS: PapersWS;
@@ -62,6 +63,10 @@ class ReadCubePlugin extends SidebarPlugin {
                 this.annoSearchStr = msg.id;
                 await this.cacheUpdate();
                 break;
+            case 'sidebar_papers_ref_search_changed':
+                this.refSearchStr = msg.id;
+                await this.cacheUpdate();
+                break;
             default:
                 return false;
         }
@@ -75,6 +80,7 @@ class ReadCubePlugin extends SidebarPlugin {
 
         await joplin.workspace.onNoteSelectionChange(async () => {
             this.annoSearchStr = '';
+            this.refSearchStr = '';
             this.currAnnotations = [];
             this.currMetadata = null;
             await this.update();
@@ -115,7 +121,7 @@ class ReadCubePlugin extends SidebarPlugin {
     })
 
     async updateHtml() {
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currTabIndex, this.annoSearchStr));
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currTabIndex, this.annoSearchStr, this.refSearchStr));
     }
 }
 

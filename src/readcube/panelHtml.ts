@@ -4,7 +4,7 @@ var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 
 
-export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currTabIndex: number, annoSearchStr: string) {
+export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currTabIndex: number, annoSearchStr: string, refSearchStr: string) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
@@ -36,7 +36,7 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push('</div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-refs" role="tabpanel" aria-labelledby="pills-paper-refs-tab" tabindex="0">`);
     if (metadata) {
-        result.push(generateRefsPage(metadata.references));
+        result.push(generateRefsPage(metadata.references, refSearchStr));
     }
     result.push('</div>');
 
@@ -46,16 +46,20 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
 }
 
 
-function generateRefsPage(refs: PaperReference[]) {
+function generateRefsPage(refs: PaperReference[], searchStr: string) {
     const result = ['<div class="paper-refs-list">'];
     result.push(`<div class="input-group input-group-sm mb-2 search-input">
           <span class="input-group-text" id="ref-search-input"><i class="fas fa-search"></i></span>
-          <input class="form-control" type="text" id="floatingPaperRefSearchInput" value="">
+          <input class="form-control" type="text" id="floatingPaperRefSearchInput" value="${searchStr}" onkeydown="onRefSearchPressed()">
         </div>`
     );
     result.push('<ul class="list-group">');
 
     for (const refItem of refs) {
+        if (!(refItem.title.includes(searchStr) || refItem.authors.includes(searchStr) || refItem.ordinal.toString() === searchStr || refItem.journal.includes(searchStr))) {
+            continue;
+        }
+
         result.push('<li class="list-group-item" onmouseenter="refItemMouseOverAndOut(true)" onmouseleave="refItemMouseOverAndOut(false)">');
         result.push('<div class="ref-info-header">');
         result.push(`<span class="ref-info-ordinal badge text-bg-light">${refItem.ordinal}</span>`);

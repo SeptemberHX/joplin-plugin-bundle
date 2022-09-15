@@ -54,3 +54,12 @@ function onSearchPressed() {
         });
     }
 }
+
+function onRefSearchPressed() {
+    if (event.keyCode === 13) {
+        webviewApi.postMessage({
+            name: 'sidebar_papers_ref_search_changed',
+            id: event.target.value ? event.target.value : ''
+        });
+    }
+}
