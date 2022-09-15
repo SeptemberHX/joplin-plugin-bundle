@@ -63,3 +63,10 @@ function onRefSearchPressed() {
         });
     }
 }
+
+function onPaperTitleClicked(remote_url) {
+    webviewApi.postMessage({
+        name: 'sidebar_open_item',
+        id: remote_url
+    });
+}

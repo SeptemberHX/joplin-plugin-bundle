@@ -84,6 +84,9 @@ export class Sidebars {
                 case 'sidebar_tab_item_clicked':
                     this.lastActiveTabPluginId = msg.id;
                     break;
+                case 'sidebar_open_item':
+                    await joplin.commands.execute('openItem', msg.id);
+                    break;
                 default:
                     for (const plugin of this.plugins) {
                         if (await plugin.panelMsgProcess(msg)) {
