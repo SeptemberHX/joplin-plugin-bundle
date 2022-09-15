@@ -62,11 +62,14 @@ class ReadCubePlugin extends SidebarPlugin {
             case 'sidebar_papers_anno_search_changed':
                 this.annoSearchStr = msg.id;
                 await this.cacheUpdate();
-                break;
+                return true;
             case 'sidebar_papers_ref_search_changed':
                 this.refSearchStr = msg.id;
                 await this.cacheUpdate();
-                break;
+                return true;
+            case 'sidebar_copy_img_by_url':
+                await joplin.clipboard.writeImage(msg.id);
+                return true;
             default:
                 return false;
         }

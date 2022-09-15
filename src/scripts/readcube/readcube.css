@@ -198,3 +198,18 @@ div.paper-refs-list .ref-info-title {
 .paper-refs-list span.ref-info-ordinal {
     margin-left: -1em;
 }
+
+.paper-figures-list figure.paper-figure {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    font-size: small;
+}
+
+.paper-figures-list img {
+    max-width: 100%;
+    margin-bottom: 0.5em;
+}
+
+.paper-figures-list figcaption {
+    opacity: 0.75;
+}

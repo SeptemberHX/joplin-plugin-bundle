@@ -70,3 +70,21 @@ function onPaperTitleClicked(remote_url) {
         id: remote_url
     });
 }
+
+function onPaperFigureClicked() {
+    if (event.target) {
+        const img = event.target;
+        if (img && img.width > 0 && img.height > 0) {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL("image/png");
+            webviewApi.postMessage({
+                name: 'sidebar_copy_img_by_url',
+                id: dataURL
+            });
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import {AnnotationItem, PaperItem, PaperMetadata, PaperReference} from "./lib/papers/papersLib";
+import {AnnotationItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "./lib/papers/papersLib";
 import {colorMap} from "./utils/paperCardGenerator";
 import {buildPaperUrl} from "./lib/papers/papersUtils";
 var md = require('markdown-it')()
@@ -25,6 +25,11 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
           <i class="fas fa-anchor"></i>
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="position-relative nav-link ${currTabIndex === 4 ? 'active' : ''}" onclick="paperTabClicked(4)" id="pills-paper-figure-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-figures" type="button" role="tab" aria-controls="pills-paper-figures" aria-selected="true">
+          <i class="fas fa-images"></i>
+        </button>
+      </li>
     `)
     result.push('</ul>')
 
@@ -40,8 +45,31 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
         result.push(generateRefsPage(metadata.references, refSearchStr));
     }
     result.push('</div>');
-
+    result.push(`<div class="tab-pane fade show ${currTabIndex === 4 ? 'active' : ''}" id="pills-paper-figures" role="tabpanel" aria-labelledby="pills-paper-figures-tab" tabindex="0">`);
+    if (metadata) {
+        result.push(generateFiguresPage(metadata.figures));
+    }
     result.push('</div>');
+    result.push('</div>');
+    result.push('</div>');
+    return result.join('');
+}
+
+
+function generateFiguresPage(figures: PaperFigure[]) {
+    const result = ['<div class="paper-figures-list">'];
+    result.push('<ul class="list-group">');
+
+    for (const figure of figures) {
+        result.push(`<li class="list-group-item">`);
+        result.push('<figure class="paper-figure">');
+        result.push(`<img src="${figure.url}" alt="${figure.caption}" onclick="onPaperFigureClicked()" loading="lazy">`);
+        result.push(`<figcaption>${figure.caption}</figcaption>`);
+        result.push('</figure>');
+        result.push('</li>');
+    }
+
+    result.push('</ul>');
     result.push('</div>');
     return result.join('');
 }
