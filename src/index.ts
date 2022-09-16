@@ -4,20 +4,19 @@ import outlinePlugin from "./outline";
 import todolistPlugin from "./inlineTodo";
 import dailyNotePlugin from "./dailyNote";
 import writingMarkerPlugin from "./writingMarker";
-import noteLinkPlugin from "./noteLink";
-import aggregateSearchPlugin from "./aggregateSearch";
 import historyPlugin from "./history";
 import {ContentScriptType} from "../api/types";
 import {
 	ENABLE_DAILY_NOTE,
 	ENABLE_HISTORY,
-	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS,
+	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
 	ENABLE_TODO,
 	ENABLE_WRITING_MARKER,
 	SideBarConfig
 } from "./common";
 import {settings} from "./settings";
 import readCubePlugin from "./readcube";
+import relatedNotesPlugin from "./relatedNotes";
 
 joplin.plugins.register({
 	onStart: async function() {
@@ -58,6 +57,10 @@ joplin.plugins.register({
 			plugins.push(readCubePlugin);
 		}
 
+		if (pluginConfig.relatedNotes) {
+			plugins.push(relatedNotesPlugin);
+		}
+
 		await sidebar.init(plugins);
 	},
 });
@@ -70,5 +73,6 @@ async function getConfig(): Promise<SideBarConfig> {
 	config.writingMarker = await joplin.settings.value(ENABLE_WRITING_MARKER);
 	config.history = await joplin.settings.value(ENABLE_HISTORY);
 	config.readcube = await joplin.settings.value(ENABLE_READCUBE_PAPERS);
+	config.relatedNotes = await joplin.settings.value(ENABLE_RELATED_NOTES);
 	return config;
 }

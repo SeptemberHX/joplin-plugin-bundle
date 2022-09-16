@@ -4,6 +4,7 @@ export const ENABLE_DAILY_NOTE = 'bundle_enable_daily_note';
 export const ENABLE_WRITING_MARKER = 'bundle_enable_writing_marker';
 export const ENABLE_HISTORY = 'bundle_enable_history';
 export const ENABLE_READCUBE_PAPERS = 'bundle_enable_readcube_papers';
+export const ENABLE_RELATED_NOTES = 'bundle_enable_related_notes';
 
 
 export enum MsgType {
@@ -19,4 +20,5 @@ export class SideBarConfig {
     writingMarker: boolean;
     history: boolean;
     readcube: boolean;
+    relatedNotes: boolean;
 }

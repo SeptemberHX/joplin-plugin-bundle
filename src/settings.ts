@@ -3,7 +3,7 @@ import {
     ENABLE_DAILY_NOTE,
     ENABLE_HISTORY,
     ENABLE_OUTLINE,
-    ENABLE_READCUBE_PAPERS,
+    ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
     ENABLE_TODO,
     ENABLE_WRITING_MARKER
 } from "./common";
@@ -55,7 +55,7 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.Bool,
             label: 'Enable Writing Marker in bundle',
-            description: "Syntax: (Tag1|Tag2::XXXXXXXXX). Requires restart",
+            description: "Syntax: (Tag1|Tag2::XXXXXXXXX). Still under development. Requires restart",
         }
 
         PLUGIN_SETTINGS[ENABLE_HISTORY] = {
@@ -74,6 +74,15 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Enable ReadCube Papers in bundle',
             description: "Requires restart",
+        }
+
+        PLUGIN_SETTINGS[ENABLE_RELATED_NOTES] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Enable Related Notes in bundle',
+            description: "It lists related notes based on title and tags. Still under development. Requires restart",
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);
