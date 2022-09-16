@@ -105,6 +105,7 @@ export class PapersWS {
         console.log('PapersWebSocket: Receive ', event.data);
         let changeItemIds = [];
         let removedItemIds = [];
+        let papersChanged = false;
         for (let message of messages) {
             if (message.channel.startsWith('/production/collections')) {  // collection change
                 for (let change of message.data.changes) {
@@ -113,6 +114,8 @@ export class PapersWS {
                         continue;
                     }
 
+                    papersChanged = true;
+
                     if (change.action === 'created' || change.action === 'updated') {  // new paper is created or updated
                         changeItemIds.push(change.id);
                     } else if (change.action === 'deleted') {  // paper is deleted
@@ -120,12 +123,14 @@ export class PapersWS {
                     } else if (change.action === 'annotated') {  // change of annotations
 
                     }
-                    this.onPaperChangeListener();
                 }
             }
         }
         await this.refreshItems(changeItemIds);
         await this.deleteItems(removedItemIds);
+        if (papersChanged) {
+            this.onPaperChangeListener();
+        }
     }
 
     async onPaperChange(callback) {
