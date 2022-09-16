@@ -6,7 +6,7 @@ export async function getAllNotes() {
     let notes;
     do {
         notes = await joplin.data.get(['notes'], {
-            fields: ['id', 'title', 'body'],
+            fields: ['id', 'title', 'body', 'parent_id'],
             page: page
         });
         results = results.concat(notes.items);
@@ -29,4 +29,9 @@ export async function getNoteTags(noteId) {
         page += 1;
     } while (searchResults.has_more);
     return results;
+}
+
+
+export async function getFolder(folderId) {
+    return await joplin.data.get(['folders', folderId], { fields: ['title', 'id'] });;
 }

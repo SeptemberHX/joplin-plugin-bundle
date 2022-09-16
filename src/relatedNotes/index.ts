@@ -1,6 +1,8 @@
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import relatedEngine from "./engine";
 import joplin from "../../api";
+import {panelHtml} from "./panelHtml";
+import {debounce} from "ts-debounce";
 
 class RelatedNotesPlugin extends SidebarPlugin {
 
@@ -13,9 +15,9 @@ class RelatedNotesPlugin extends SidebarPlugin {
         this.name = "Related Notes";
         this.icon = "fas fa-yin-yang";
         this.styles = [
+            './scripts/relatedNotes/relatedNotes.css',
         ];
-        this.scripts = [
-        ];
+        this.scripts = [];
     }
 
     async init(sidebars: Sidebars): Promise<void> {
@@ -23,13 +25,20 @@ class RelatedNotesPlugin extends SidebarPlugin {
         await relatedEngine.fullParse();
 
         await joplin.workspace.onNoteSelectionChange(async () => {
-            const note = await joplin.workspace.selectedNote();
-            if (note) {
-                console.log(relatedEngine.related(note.body));
-            }
+            await this.updateHtml();
         });
+
+        await this.updateHtml();
     }
+
+    updateHtml = debounce(async () => {
+        const note = await joplin.workspace.selectedNote();
+        if (note) {
+            await this.sidebar.updateHtml(this.id, panelHtml(relatedEngine.related(note.body)));
+        }
+    }, 100);
 }
+
 
 const relatedNotesPlugin = new RelatedNotesPlugin();
 export default relatedNotesPlugin;

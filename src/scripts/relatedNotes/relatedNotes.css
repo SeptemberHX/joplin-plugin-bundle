@@ -1,0 +1,38 @@
+span.related-element-parent.badge.text-bg-light {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.related-notes-div .related-element-info {
+    margin-top: 0.5em;
+    opacity: 0.75;
+}
+
+.related-notes-div .related-element-info {
+    margin-top: 0.5em;
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: auto auto;
+}
+
+.related-notes-div span.related-element-title {
+    display: block;
+    font-weight: bold;
+}
+
+.related-notes-div {
+    font-size: 0.9em;
+}
+
+.related-notes-div .related-element-body {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    font-size: smaller;
+    opacity: 0.6;
+}
