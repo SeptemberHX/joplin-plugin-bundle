@@ -17,10 +17,13 @@ import {
 import {settings} from "./settings";
 import readCubePlugin from "./readcube";
 import relatedNotesPlugin from "./relatedNotes";
+import noteUpdateNotify from "./utils/noteUpdateNotify";
 
 joplin.plugins.register({
 	onStart: async function() {
 		await settings.register();
+
+		await noteUpdateNotify.init();
 
 		await joplin.contentScripts.register(
 			ContentScriptType.CodeMirrorPlugin,

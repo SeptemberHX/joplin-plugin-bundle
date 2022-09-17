@@ -38,10 +38,6 @@ class NoteUpdateNotify {
     async init() {
         await this.readLastUpdateDate();
 
-        await joplin.workspace.onNoteChange(async () => {
-            await this.debounceRefresh();
-        });
-
         await joplin.workspace.onSyncComplete(async () => {
             await this.debounceRefresh();
         });
@@ -56,6 +52,8 @@ class NoteUpdateNotify {
                 for (const callback of this.deleteCallbacks) {
                     callback(event.id);
                 }
+            } else {
+                await this.debounceRefresh();
             }
         })
     }
