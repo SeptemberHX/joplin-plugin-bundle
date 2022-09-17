@@ -59,8 +59,11 @@ export class RelatedEngine {
             for (const note of notes) {
                 this.relatedElDict.set(note.id, RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id)));
             }
-            for (const callback of this.relatedUpdateCallback) {
-                await callback();
+
+            if (notes.length > 0) {
+                for (const callback of this.relatedUpdateCallback) {
+                    await callback();
+                }
             }
         });
 

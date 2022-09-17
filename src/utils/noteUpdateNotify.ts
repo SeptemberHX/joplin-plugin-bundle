@@ -17,11 +17,13 @@ class NoteUpdateNotify {
 
     debounceRefresh = debounce(async () => {
         const [notes, lastUpdatedTime] = await this.findUpdatedNotes();
-        this.lastUpdateDate = new Date(lastUpdatedTime);
-        await this.saveLastUpdateDate();
+        if (notes.length > 0) {
+            this.lastUpdateDate = new Date(lastUpdatedTime);
+            await this.saveLastUpdateDate();
 
-        for (const callback of this.updateCallbacks) {
-            await callback(notes);
+            for (const callback of this.updateCallbacks) {
+                await callback(notes);
+            }
         }
     }, 100);
 
