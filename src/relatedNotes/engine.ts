@@ -1,6 +1,10 @@
 import {getAllNotes, getFolder, getNoteTags} from "../utils/noteUtils";
 import noteUpdateNotify from "../utils/noteUpdateNotify";
 
+
+const ignoreTitles = ['default-history'];
+
+
 export class RelatedElement {
     id: string;         // note id
     title: string;      // note title
@@ -16,6 +20,10 @@ export class RelatedElement {
      * @param folder Folder object returned by joplin data api
      */
     static parseNote(note, tags, folder) {
+        if (note.is_conflict) {
+            return null;
+        }
+
         const relatedEl = new RelatedElement();
         relatedEl.id = note.id;
         relatedEl.title = note.title;
@@ -29,8 +37,16 @@ export class RelatedElement {
         return relatedEl;
     }
 
-    isRelated(text: string) {
-        if (text.includes(this.id) || text.includes(this.title)) {
+    isRelated(text: string, noteId: string, title: string) {
+        if (ignoreTitles.includes(this.title)) {
+            return false;
+        }
+
+        if (this.id === noteId) {
+            return false;
+        }
+
+        if (text.includes(this.id) || text.includes(this.title) || this.body.includes(title)) {
             return true;
         }
         return false;
@@ -57,7 +73,10 @@ export class RelatedEngine {
         await this.fullParse();
         await noteUpdateNotify.onNoteUpdates(async (notes) => {
             for (const note of notes) {
-                this.relatedElDict.set(note.id, RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id)));
+                const relatedEl = RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
+                if (relatedEl) {
+                    this.relatedElDict.set(note.id, relatedEl);
+                }
             }
 
             if (notes.length > 0) {
@@ -80,14 +99,16 @@ export class RelatedEngine {
         const notes = await getAllNotes();
         for (const note of notes) {
             const relatedEl = RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
-            this.relatedElDict.set(relatedEl.id, relatedEl);
+            if (relatedEl) {
+                this.relatedElDict.set(relatedEl.id, relatedEl);
+            }
         }
     }
 
-    related(text: string) {
+    related(text: string, noteId: string, title: string) {
         const results = [];
         for (const relatedEl of this.relatedElDict.values()) {
-            if (relatedEl.isRelated(text)) {
+            if (relatedEl.isRelated(text, noteId, title)) {
                 results.push(relatedEl);
             }
         }

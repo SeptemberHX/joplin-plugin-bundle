@@ -30,7 +30,7 @@ export async function getAllNotes() {
     let notes;
     do {
         notes = await joplin.data.get(['notes'], {
-            fields: ['id', 'title', 'body', 'parent_id'],
+            fields: ['id', 'title', 'body', 'parent_id', 'is_conflict'],
             page: page
         });
         if (notes.items) {

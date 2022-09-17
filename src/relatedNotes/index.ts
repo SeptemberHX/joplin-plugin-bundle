@@ -17,7 +17,19 @@ class RelatedNotesPlugin extends SidebarPlugin {
         this.styles = [
             './scripts/relatedNotes/relatedNotes.css',
         ];
-        this.scripts = [];
+        this.scripts = [
+            './scripts/relatedNotes/relatedNotes.js',
+        ];
+    }
+
+    async panelMsgProcess(msg: any): Promise<boolean> {
+        switch (msg.name) {
+            case 'sidebar_related_notes_item_clicked':
+                await joplin.commands.execute('openItem', `:/${msg.id}`);
+                return true;
+            default:
+                return false
+        }
     }
 
     async init(sidebars: Sidebars): Promise<void> {
@@ -38,7 +50,7 @@ class RelatedNotesPlugin extends SidebarPlugin {
     updateHtml = debounce(async () => {
         const note = await joplin.workspace.selectedNote();
         if (note) {
-            await this.sidebar.updateHtml(this.id, panelHtml(relatedEngine.related(note.body)));
+            await this.sidebar.updateHtml(this.id, panelHtml(relatedEngine.related(note.body, note.id, note.title)));
         }
     }, 100);
 }

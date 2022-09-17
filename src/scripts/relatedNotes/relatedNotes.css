@@ -18,6 +18,8 @@ span.related-element-parent.badge.text-bg-light {
 .related-notes-div span.related-element-title {
     display: block;
     font-weight: bold;
+    color: var(--joplin-url-color);
+    cursor: pointer;
 }
 
 .related-notes-div {
