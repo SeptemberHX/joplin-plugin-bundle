@@ -5,7 +5,8 @@ import {
     ENABLE_OUTLINE,
     ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
     ENABLE_TODO,
-    ENABLE_WRITING_MARKER
+    ENABLE_WRITING_MARKER,
+    LAST_NOTE_UPDATE_DATE
 } from "./common";
 import {SettingItemType} from "../api/types";
 import {localeString, MsgType} from "./locale";
@@ -83,6 +84,14 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Enable Related Notes in bundle',
             description: "It lists related notes based on title and tags. Still under development. Requires restart",
+        }
+
+        PLUGIN_SETTINGS[LAST_NOTE_UPDATE_DATE] = {
+            value: false,
+            public: false,
+            section: SECTION,
+            type: SettingItemType.String,
+            label: 'Used by the plugin. DO NOT MODIFY IT'
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

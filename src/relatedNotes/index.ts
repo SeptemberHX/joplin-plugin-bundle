@@ -22,9 +22,13 @@ class RelatedNotesPlugin extends SidebarPlugin {
 
     async init(sidebars: Sidebars): Promise<void> {
         this.sidebar = sidebars;
-        await relatedEngine.fullParse();
+        await relatedEngine.init();
 
         await joplin.workspace.onNoteSelectionChange(async () => {
+            await this.updateHtml();
+        });
+
+        await relatedEngine.onRelatedUpdate(async () => {
             await this.updateHtml();
         });
 

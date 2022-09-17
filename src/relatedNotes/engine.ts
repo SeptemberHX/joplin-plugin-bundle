@@ -1,4 +1,5 @@
 import {getAllNotes, getFolder, getNoteTags} from "../utils/noteUtils";
+import noteUpdateNotify from "../utils/noteUpdateNotify";
 
 export class RelatedElement {
     id: string;         // note id
@@ -39,11 +40,36 @@ export class RelatedElement {
 
 export class RelatedEngine {
     relatedElDict: Map<string, RelatedElement>;
+    relatedUpdateCallback;
     _folders;
 
     constructor() {
         this.relatedElDict = new Map<string, RelatedElement>();
         this._folders = {};
+        this.relatedUpdateCallback = [];
+    }
+
+    async onRelatedUpdate(callback: () => {}) {
+        this.relatedUpdateCallback.push(callback);
+    }
+
+    async init() {
+        await this.fullParse();
+        await noteUpdateNotify.onNoteUpdates(async (notes) => {
+            for (const note of notes) {
+                this.relatedElDict.set(note.id, RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id)));
+            }
+            for (const callback of this.relatedUpdateCallback) {
+                await callback();
+            }
+        });
+
+        await noteUpdateNotify.onNoteDeleted(async (noteId) => {
+            this.relatedElDict.delete(noteId);
+            for (const callback of this.relatedUpdateCallback) {
+                await callback();
+            }
+        });
     }
 
     async fullParse() {
