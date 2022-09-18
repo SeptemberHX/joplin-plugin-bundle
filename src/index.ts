@@ -7,6 +7,7 @@ import writingMarkerPlugin from "./writingMarker";
 import historyPlugin from "./history";
 import {ContentScriptType} from "../api/types";
 import {
+	ENABLE_CHAR_COUNT,
 	ENABLE_DAILY_NOTE,
 	ENABLE_HISTORY,
 	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
@@ -68,7 +69,7 @@ joplin.plugins.register({
 	},
 });
 
-async function getConfig(): Promise<SideBarConfig> {
+export async function getConfig(): Promise<SideBarConfig> {
 	const config = new SideBarConfig();
 	config.outline = await joplin.settings.value(ENABLE_OUTLINE);
 	config.inlineTodo = await joplin.settings.value(ENABLE_TODO);
@@ -77,5 +78,6 @@ async function getConfig(): Promise<SideBarConfig> {
 	config.history = await joplin.settings.value(ENABLE_HISTORY);
 	config.readcube = await joplin.settings.value(ENABLE_READCUBE_PAPERS);
 	config.relatedNotes = await joplin.settings.value(ENABLE_RELATED_NOTES);
+	config.charCount = await joplin.settings.value(ENABLE_CHAR_COUNT);
 	return config;
 }

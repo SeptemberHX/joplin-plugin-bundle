@@ -6,7 +6,8 @@ import {
     ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
     ENABLE_TODO,
     ENABLE_WRITING_MARKER,
-    LAST_NOTE_UPDATE_DATE
+    LAST_NOTE_UPDATE_DATE,
+    ENABLE_CHAR_COUNT
 } from "./common";
 import {SettingItemType} from "../api/types";
 import {localeString, MsgType} from "./locale";
@@ -92,6 +93,14 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.String,
             label: 'Used by the plugin. DO NOT MODIFY IT'
+        }
+
+        PLUGIN_SETTINGS[ENABLE_CHAR_COUNT] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Use character count instead of word count at the bottom status bar'
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

@@ -15,8 +15,10 @@ module.exports = {
                 CodeMirror.defineOption("cursorChangeNotification", [], async function(cm, val, old) {
                     const changeDebounce = debounce(async function() {
                         let selectedWordCount = 0;
+                        let selectedCharCount = 0;
                         for (const selected of cm.getDoc().getSelections()) {
                             selectedWordCount += wordsCount(selected);
+                            selectedCharCount += selected.length;
                         }
 
                         return await _context.postMessage({
@@ -24,7 +26,9 @@ module.exports = {
                             totalLineCount: cm.getDoc().lineCount(),
                             currentLineNumber: cm.getDoc().getCursor().line + 1,
                             totalWordCount: wordsCount(cm.getDoc().getValue()),
-                            selectedWordCount: selectedWordCount
+                            selectedWordCount: selectedWordCount,
+                            totalCharCount: cm.getDoc().getValue().length,
+                            selectedCharCount: selectedCharCount
                         });
                     }, 100);
                     cm.on('cursorActivity', changeDebounce);

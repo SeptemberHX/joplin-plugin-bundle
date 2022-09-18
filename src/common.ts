@@ -6,6 +6,7 @@ export const ENABLE_HISTORY = 'bundle_enable_history';
 export const ENABLE_READCUBE_PAPERS = 'bundle_enable_readcube_papers';
 export const ENABLE_RELATED_NOTES = 'bundle_enable_related_notes';
 export const LAST_NOTE_UPDATE_DATE = 'bundle_last_note_update_date';
+export const ENABLE_CHAR_COUNT = 'bundle_status_enable_char_count';
 
 
 export enum MsgType {
@@ -22,4 +23,5 @@ export class SideBarConfig {
     history: boolean;
     readcube: boolean;
     relatedNotes: boolean;
+    charCount: boolean;
 }

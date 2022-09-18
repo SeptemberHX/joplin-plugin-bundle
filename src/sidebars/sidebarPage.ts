@@ -1,5 +1,6 @@
 import joplin from "../../api";
-import {MsgType} from "../common";
+import {MsgType, SideBarConfig} from "../common";
+import {getConfig} from "../index";
 
 
 export abstract class SidebarPlugin {
@@ -35,6 +36,7 @@ export abstract class SidebarPlugin {
 
 
 export class Sidebars {
+    settings: SideBarConfig;
     plugins: SidebarPlugin[];
     panel;
     lastActiveTabPluginId: string;
@@ -43,6 +45,8 @@ export class Sidebars {
         currentLineNumber: number;
         totalWordCount: number;
         selectedWordCount: number;
+        totalCharCount: number;
+        selectedCharCount: number;
     }
 
     constructor() {
@@ -50,12 +54,15 @@ export class Sidebars {
 
     public async init(plugins) {
         this.plugins = plugins;
+        this.settings = await getConfig();
         this.panel = await joplin.views.panels.create('sidebar_bundle_panel');
         this.lineInfos = {
             totalLineCount: 0,
             currentLineNumber: 0,
             totalWordCount: 0,
-            selectedWordCount: 0
+            selectedWordCount: 0,
+            totalCharCount: 0,
+            selectedCharCount: 0
         };
 
         // Message processing
@@ -95,6 +102,10 @@ export class Sidebars {
                     }
                     break;
             }
+        });
+        await joplin.settings.onChange(async () => {
+            this.settings = await getConfig();
+            this.renderInfoLine();
         });
 
         // Html construction
@@ -169,9 +180,9 @@ export class Sidebars {
                     <span class="line-text-token">/</span>
                     <span class="total-line-number">${this.lineInfos.totalLineCount}</span>
                     <span class="line-text">Count: </span>
-                    <span class="total-word-count">${this.lineInfos.totalWordCount}</span>`;
+                    <span class="total-word-count">${this.settings.charCount ? this.lineInfos.totalCharCount : this.lineInfos.totalWordCount}</span>`;
         if (this.lineInfos.selectedWordCount > 0) {
-            result += `<span class="selected-word-count">(${this.lineInfos.selectedWordCount})</span>`
+            result += `<span class="selected-word-count">(${this.settings.charCount ? this.lineInfos.selectedCharCount : this.lineInfos.selectedWordCount})</span>`
         }
         result += `</div>`;
         return result;
