@@ -5,7 +5,6 @@ import {initPapers} from "./readcube";
 import {getPaperItemByNoteIdOrTitle} from "./lib/base/paperDB";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
-import {PapersWS} from "./lib/papers/papersWS";
 import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
 import {AnnotationItem, PaperItem, PaperMetadata} from "./lib/base/paperType";
 import paperSvc from "./lib/PaperSvcFactory";
@@ -20,7 +19,6 @@ class ReadCubePlugin extends SidebarPlugin {
     refSearchStr: string = '';
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
-    papersWS: PapersWS;
 
     constructor() {
         super();
@@ -80,7 +78,7 @@ class ReadCubePlugin extends SidebarPlugin {
         this.sidebar = sidebars;
 
         await settings.register();
-        this.papersWS = await initPapers();
+        await initPapers();
 
         await joplin.workspace.onNoteSelectionChange(async () => {
             this.annoSearchStr = '';
@@ -90,8 +88,8 @@ class ReadCubePlugin extends SidebarPlugin {
             await this.update();
         });
 
-        if (this.papersWS) {
-            await this.papersWS.onPaperChange(async () => {
+        if (paperSvc) {
+            await paperSvc.onPaperChange(async () => {
                 await this.update();
             });
         }

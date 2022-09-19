@@ -8,6 +8,7 @@ import {createRecord, deleteRecord, getRecord, removeInvalidSourceUrlByItemId, u
 import {syncAllPaperItems} from "./papersUtils";
 import paperSvc from "../PaperSvcFactory";
 import {ReadcubePaperSvc} from "./readcubePaperSvc";
+import {PaperNotify} from "../base/paperNotify";
 
 const options = {
     WebSocket: WebSocket, // custom WebSocket constructor
@@ -16,15 +17,15 @@ const options = {
 };
 
 
-export class PapersWS {
+export class PapersWS extends PaperNotify {
     ws: ReconnectingWebSocket;
     clientId: null;
     lastReceivedMessageDate: Date;
     currMessageId: 1;
     papers: ReadcubePaperSvc;
-    onPaperChangeListener;
 
     constructor() {
+        super();
         this.ws = new ReconnectingWebSocket('wss://push.readcube.com/bayeux', [], options);
         this.ws.onopen = this.onOpen.bind(this);
         this.ws.onmessage = this.onMessage.bind(this);
@@ -130,12 +131,10 @@ export class PapersWS {
         await this.refreshItems(changeItemIds);
         await this.deleteItems(removedItemIds);
         if (papersChanged) {
-            this.onPaperChangeListener();
+            for (const callback of this.onPaperChangeListeners) {
+                await callback();
+            }
         }
-    }
-
-    async onPaperChange(callback) {
-        this.onPaperChangeListener = callback;
     }
 
     onClose(event): void {

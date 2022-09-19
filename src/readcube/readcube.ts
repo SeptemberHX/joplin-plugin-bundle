@@ -43,10 +43,9 @@ export async function initPapers() {
         return;
     }
 
-    // init the database
+    // init the database and paper service
     await setupDatabase();
     await paperSvc.init(settings);
-    const paperWS = new PapersWS();
 
     await joplin.contentScripts.onMessage(
         'enhancement_paper_fence_renderer',
@@ -225,6 +224,4 @@ export async function initPapers() {
         'enhancement_cite_papers',
         ToolbarButtonLocation.EditorToolbar
     );
-
-    return paperWS;
 }
