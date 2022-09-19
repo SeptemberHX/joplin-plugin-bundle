@@ -1,4 +1,3 @@
-import {PapersLib, PaperItem} from "./papersLib";
 import joplin from "../../../../api";
 import {PAPERS_COOKIE, PAPERS_FOLDER_NAME, SOURCE_URL_PAPERS_PREFIX, updateInfo} from "../../common";
 import {
@@ -6,7 +5,9 @@ import {
     getAllRecords,
     getNoteId2PaperId, getNoteIdByPaperId, getPaperItemByNoteIdOrTitle, removeInvalidSourceUrlByAllItems,
     updateRecord
-} from "./papersDB";
+} from "../base/paperDB";
+import {PaperItem} from "../base/paperType";
+import paperSvc from "../PaperSvcFactory";
 
 export async function createNewNotesForPapers(selectedItemIds: string[], paperItems: PaperItem[]) {
     let noteId2PaperId = await getNoteId2PaperId();
@@ -49,7 +50,7 @@ export async function syncAllPaperItems() {
         return;
     }
 
-    const allRemotePapers = await PapersLib.getAllItems();
+    const allRemotePapers = await paperSvc.getSvc().getAllItems();
     let exitedPaperItemIds = new Set();
     const existedPapers = await getAllRecords();
     for (let paperItem of existedPapers) {

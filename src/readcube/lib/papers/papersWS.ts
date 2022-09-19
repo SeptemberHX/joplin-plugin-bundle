@@ -4,9 +4,10 @@ import WebSocket from 'ws';
 import ReconnectingWebSocket from "reconnecting-websocket";
 import joplin from "../../../../api";
 import {PAPERS_COOKIE} from "../../common";
-import { PapersLib } from "./papersLib";
-import {createRecord, deleteRecord, getRecord, removeInvalidSourceUrlByItemId, updateRecord} from "./papersDB";
+import {createRecord, deleteRecord, getRecord, removeInvalidSourceUrlByItemId, updateRecord} from "../base/paperDB";
 import {syncAllPaperItems} from "./papersUtils";
+import paperSvc from "../PaperSvcFactory";
+import {ReadcubePaperSvc} from "./readcubePaperSvc";
 
 const options = {
     WebSocket: WebSocket, // custom WebSocket constructor
@@ -20,7 +21,7 @@ export class PapersWS {
     clientId: null;
     lastReceivedMessageDate: Date;
     currMessageId: 1;
-    papers: typeof PapersLib;
+    papers: ReadcubePaperSvc;
     onPaperChangeListener;
 
     constructor() {
@@ -61,7 +62,7 @@ export class PapersWS {
             return;
         }
 
-        this.papers = PapersLib;
+        this.papers = <ReadcubePaperSvc>paperSvc.getSvc();
         this.lastReceivedMessageDate = null;
 
         let requestUrl = `https://push.readcube.com/bayeux?message=[{"channel":"/meta/handshake","version":"1.0","supportedConnectionTypes":["websocket","eventsource","long-polling","cross-origin-long-polling","callback-polling"],"id":"1"}]&jsonp=__jsonp1__`;
@@ -73,7 +74,7 @@ export class PapersWS {
                 this.clientId = responseJson[0].clientId;
                 console.log('PapersWebSocket: clientId = ', this.clientId);
                 this.sendHeartbeat();
-                this.sendSubscribe(PapersLib.defaultCollectionId);
+                this.sendSubscribe(this.papers.defaultCollectionId);
             }
         }
 
@@ -149,7 +150,7 @@ export class PapersWS {
         if (this.papers) {
             try {
                 for (let itemId of itemIds) {
-                    const item = await this.papers.getItem(PapersLib.defaultCollectionId, itemId);
+                    const item = await this.papers.getItem(this.papers.defaultCollectionId, itemId);
                     console.log(`PapersWebSocket: Update item ${item.id}|${item.title}`);
                     if (await getRecord(itemId)) {
                         await updateRecord(item.id, item);

@@ -1,6 +1,6 @@
-import {AnnotationItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "./lib/papers/papersLib";
 import {colorMap} from "./utils/paperCardGenerator";
 import {buildPaperUrl} from "./lib/papers/papersUtils";
+import {AnnotationItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "./lib/base/paperType";
 var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 

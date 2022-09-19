@@ -1,6 +1,12 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
-import {ENABLE_CUSTOM_STYLE, ENABLE_ENHANCED_BLOCKQUOTE, PAPERS_COOKIE} from "./common";
+import {
+    ENABLE_CUSTOM_STYLE,
+    ENABLE_ENHANCED_BLOCKQUOTE,
+    PAPERS_COOKIE,
+    ZOTERO_USER_API_KEY,
+    ZOTERO_USER_ID
+} from "./common";
 
 export namespace settings {
     const SECTION = 'FeatureSettings';
@@ -38,6 +44,22 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Enable created user name, modified date, and more colors for annotations',
             description: "NEED Enhancement plugin. It can add [color=red][name=SeptemberHX][date=19700101] to the annotation references",
+        }
+
+        PLUGIN_SETTINGS[ZOTERO_USER_ID] = {
+            value: 0,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Int,
+            label: 'Zotero User Id',
+        }
+
+        PLUGIN_SETTINGS[ZOTERO_USER_API_KEY] = {
+            value: '',
+            public: true,
+            section: SECTION,
+            type: SettingItemType.String,
+            label: 'Zotero User API Key',
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

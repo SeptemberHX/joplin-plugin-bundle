@@ -2,12 +2,13 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {settings} from "./settings";
 import joplin from "../../api";
 import {initPapers} from "./readcube";
-import {getAllRecords, getPaperItemByNoteIdOrTitle} from "./lib/papers/papersDB";
-import {AnnotationItem, PaperItem, PaperMetadata, PapersLib} from "./lib/papers/papersLib";
+import {getPaperItemByNoteIdOrTitle} from "./lib/base/paperDB";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
 import {PapersWS} from "./lib/papers/papersWS";
 import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
+import {AnnotationItem, PaperItem, PaperMetadata} from "./lib/base/paperType";
+import paperSvc from "./lib/PaperSvcFactory";
 
 class ReadCubePlugin extends SidebarPlugin {
 
@@ -107,12 +108,12 @@ class ReadCubePlugin extends SidebarPlugin {
 
         await this.updateHtml();
         if (this.currPaper) {
-            PapersLib.getAnnotation(this.currPaper.collection_id, this.currPaper.id).then(async annos => {
+            paperSvc.getAnnotation(this.currPaper).then(async annos => {
                 this.currAnnotations = annos;
                 await this.updateHtml();
             });
 
-            PapersLib.getMetadata(this.currPaper.doi).then(async metadata => {
+            paperSvc.getMetadata(this.currPaper.doi).then(async metadata => {
                 this.currMetadata = metadata;
                 await this.updateHtml();
             });

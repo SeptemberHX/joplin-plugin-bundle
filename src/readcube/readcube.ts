@@ -1,27 +1,51 @@
 import {ContentScriptType, MenuItem, MenuItemLocation, ToolbarButtonLocation} from "../../api/types";
 import joplin from "../../api";
-import {getAllRecords, getPaperItemByNoteIdOrTitle, getRecord, setupDatabase} from "./lib/papers/papersDB";
+import {getAllRecords, getPaperItemByNoteIdOrTitle, getRecord, setupDatabase} from "./lib/base/paperDB";
 import {
     appendPaperBlockIfMissing,
-    buildCitationForItem, buildPaperUrl,
+    buildCitationForItem,
+    buildPaperUrl,
     buildRefName,
     createNewNotesForPapers,
     syncAllPaperItems
 } from "./lib/papers/papersUtils";
 import {selectAnnotationPopup, selectPapersPopup} from "./ui/citation-popup";
-import {AnnotationItem, PaperItem, PapersLib} from "./lib/papers/papersLib";
 import {PapersWS} from "./lib/papers/papersWS";
-import {ENABLE_ENHANCED_BLOCKQUOTE, PAPERS_COOKIE} from "./common";
+import {
+    ENABLE_ENHANCED_BLOCKQUOTE,
+    PaperConfig,
+    PAPERS_COOKIE,
+    PaperServiceType,
+    ZOTERO_USER_API_KEY,
+    ZOTERO_USER_ID
+} from "./common";
+import {AnnotationItem, PaperItem} from "./lib/base/paperType";
+import paperSvc from "./lib/PaperSvcFactory";
+
+
+async function getSettings() {
+    const config = new PaperConfig();
+    config.type = PaperServiceType.READCUBE;
+    config.papersCookie = await joplin.settings.value(PAPERS_COOKIE);
+    config.zoteroUserId = await joplin.settings.value(ZOTERO_USER_ID);
+    config.zoteroApiKey = await joplin.settings.value(ZOTERO_USER_API_KEY);
+    return config;
+}
+
 
 export async function initPapers() {
-    // init the database
-    const papers_cookie = await joplin.settings.value(PAPERS_COOKIE);
-    if (!papers_cookie || papers_cookie.length === 0) {
+    const settings = await getSettings();
+
+    if (settings.type === PaperServiceType.READCUBE && settings.papersCookie.length === 0) {
+        return;
+    }
+    if (settings.type === PaperServiceType.ZOTERO && settings.zoteroApiKey.length === 0) {
         return;
     }
 
+    // init the database
     await setupDatabase();
-    await PapersLib.init(papers_cookie);
+    await paperSvc.init(settings);
     const paperWS = new PapersWS();
 
     await joplin.contentScripts.onMessage(
@@ -158,7 +182,7 @@ export async function initPapers() {
             if (currNote) {
                 const paper = await getPaperItemByNoteIdOrTitle(currNote.id, currNote.title);
                 if (paper) {
-                    const annotations: AnnotationItem[] = await PapersLib.getAnnotation(paper.collection_id, paper.id);
+                    const annotations: AnnotationItem[] = await paperSvc.getAnnotation(paper);
                     let annoId2Anno = {};
                     for (let index in annotations) {
                         annoId2Anno[annotations[index].id] = annotations[index];

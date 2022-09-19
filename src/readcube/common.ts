@@ -6,6 +6,23 @@ export const SOURCE_URL_PAPERS_PREFIX = 'papers_';
 export const SOURCE_URL_DIDA_PREFIX = 'dida_';
 export const ENABLE_CUSTOM_STYLE = 'PapersPluginEnableCustomStyle';
 export const ENABLE_ENHANCED_BLOCKQUOTE = 'PapersPluginEnableEnhancedQuote';
+export const ZOTERO_USER_ID = 'PapersZoteroUserId';
+export const ZOTERO_USER_API_KEY = 'PapersZoteroUserApiKey';
+
+
+export enum PaperServiceType {
+    READCUBE,
+    ZOTERO,
+}
+
+
+export class PaperConfig {
+    type: PaperServiceType;
+    papersCookie: string;
+    zoteroUserId: number;
+    zoteroApiKey: string;
+}
+
 
 export function extractInfo(data: string) {
     const splitResults = data.split(':');

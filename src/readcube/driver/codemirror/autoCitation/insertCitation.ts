@@ -1,5 +1,5 @@
-import {AnnotationItem} from "../../../lib/papers/papersLib";
 import {colorMap} from "../../../utils/paperCardGenerator";
+import {AnnotationItem} from "../../../lib/base/paperType";
 
 export default class InsertCitation {
     constructor(private readonly editor) {}

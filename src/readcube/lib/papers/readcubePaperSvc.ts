@@ -1,81 +1,14 @@
 import fetch from 'node-fetch';
-
-/**
- * API utils for Readcube PapersLib. All the apis are analyzed from the web application.
- */
+import {AnnotationItem, CollectionItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "../base/paperType";
+import {PaperSvc} from "../base/paperSvc";
 
 
-export class PaperReference {
-    title: string;
-    ordinal: number;
-    authors: string[];
-    year: string;
-    pagination: string;
-    label: string;
-    doi: string;
-    article_url: string;
-    journal: string;
-    reader_url: string;
-}
-
-
-export class PaperFigure {
-    url: string;
-    thumb: string;
-    download_url: string;
-    caption: string;
-}
-
-
-export class PaperMetadata {
-    references: PaperReference[];
-    figures: PaperFigure[];
-}
-
-
-export class PaperItem {
-    title: string;
-    journal: string;
-    authors: string[];
-    tags: string[];
-    rating: number;
-    abstract: string;
-    collection_id: string;
-    year: number;
-    id: string;
-    notes: string;
-    annotations: [];
-    issn: string;
-    volume: string;
-    url: string;
-    pagination: string;
-    journal_abbrev: string;
-    doi: string;
-}
-
-export type CollectionItem = {
-    id: string;
-}
-
-export type AnnotationItem = {
-    id: string;
-    type: string;
-    text: string;
-    note: string;
-    color_id: number;
-    page: number;
-    item_id: string;  // collection_id:paper_id
-    user_name: string;
-    modified: string;
-}
-
-
-class PapersLibTool {
+export class ReadcubePaperSvc extends PaperSvc {
     cookie: string;
     defaultCollectionId: string;
 
-    async init(cookie) {
-        this.cookie = cookie;
+    async init(settings) {
+        this.cookie = settings.papersCookie;
         this.defaultCollectionId = await this.getDefaultCollectionId();
     }
 
@@ -150,11 +83,9 @@ class PapersLibTool {
 
     /**
      * Get the user annotations of specific paper item created through ReadCube Papers
-     * @param collection_id
-     * @param item_id
      */
-    async getAnnotation(collection_id, item_id) {
-        let requestUrl = `https://sync.readcube.com/collections/${collection_id}/items/${item_id}/annotations`;
+    async getAnnotation(paperItem: PaperItem) {
+        let requestUrl = `https://sync.readcube.com/collections/${paperItem.collection_id}/items/${paperItem.id}/annotations`;
         let results: AnnotationItem[] = [];
         const response = await fetch(requestUrl, { headers: { cookie: this.cookie} });
         const resJson = await response.json();
@@ -244,5 +175,3 @@ class PapersLibTool {
         return item;
     }
 }
-
-export const PapersLib = new PapersLibTool();

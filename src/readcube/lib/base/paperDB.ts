@@ -1,8 +1,8 @@
 // following https://gitlab.com/beatlink-code/joplin-plugin-repeating-todos/-/blob/main/src/core/database.ts
 
 import joplin from "api";
-import {PaperItem} from "./papersLib";
 import {extractInfo, SOURCE_URL_PAPERS_PREFIX} from "../../common";
+import {PaperItem} from "./paperType";
 
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
@@ -59,7 +59,6 @@ export async function getAllRecords() {
         results.push(getRecordAsPaperItem(record));
     }
     return results;
-    return records.map((record) => getRecordAsPaperItem(record));
 }
 
 export async function createRecord(id: string, paperItem: PaperItem){

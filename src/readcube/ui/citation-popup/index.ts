@@ -1,6 +1,6 @@
 import joplin from "api";
-import {AnnotationItem, PaperItem} from "../../lib/papers/papersLib";
 import {CITATION_POPUP_ID} from "../../common";
+import {AnnotationItem, PaperItem} from "../../lib/base/paperType";
 const fs = joplin.require("fs-extra");
 
 let popupHandle: string = "";

@@ -1,4 +1,4 @@
-import {PaperItem} from "../lib/papers/papersLib";
+import {PaperItem} from "../lib/base/paperType";
 
 export const colorMap = {
     1: '#ffd638',
