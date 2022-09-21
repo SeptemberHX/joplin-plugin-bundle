@@ -171,18 +171,19 @@ function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
         result.push('<li class="list-group-item" onmouseenter="annotationMouseOverAndOut(true)" onmouseleave="annotationMouseOverAndOut(false)">');
         result.push('<div class="anno-info">');
         result.push(`<span class="anno-type">`);
+        const colorName = annotation.color_id > 0 ? colorMap[annotation.color_id] : annotation.color;
         switch (annotation.type) {
             case 'underline':
-                result.push(`<i class="fas fa-underline underline" style="color: ${colorMap[annotation.color_id]}"></i>`);
+                result.push(`<i class="fas fa-underline underline" style="color: ${colorName}"></i>`);
                 break;
             case 'highlight':
-                result.push(`<i class="fas fa-font highlight" style="background: ${colorMap[annotation.color_id]}; color: white;"></i>`);
+                result.push(`<i class="fas fa-font highlight" style="background: ${colorName}; color: white;"></i>`);
                 break;
             case 'strikethrough':
-                result.push(`<i class="fas fa-strikethrough strikethrough" style="color: ${colorMap[annotation.color_id]}"></i>`);
+                result.push(`<i class="fas fa-strikethrough strikethrough" style="color: ${colorName}"></i>`);
                 break;
             case 'note':
-                result.push(`<i class="fas fa-sticky-note sticky-note" style="color: ${colorMap[annotation.color_id]}"></i>`);
+                result.push(`<i class="fas fa-sticky-note sticky-note" style="color: ${colorName}"></i>`);
                 break;
             default:
                 break;
@@ -199,7 +200,7 @@ function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
 
         result.push(`<div class="anno-part">`);
         if (annotation.text) {
-            result.push(`<span class="anno-text" lang="en" style="border-left: 3px solid ${colorMap[annotation.color_id]};">
+            result.push(`<span class="anno-text" lang="en" style="border-left: 3px solid ${colorName};">
                 ${annotation.text}
             </span>`)
         }

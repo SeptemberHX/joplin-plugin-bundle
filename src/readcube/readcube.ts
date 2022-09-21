@@ -10,11 +10,11 @@ import {
     syncAllPaperItems
 } from "./lib/papers/papersUtils";
 import {selectAnnotationPopup, selectPapersPopup} from "./ui/citation-popup";
-import {PapersWS} from "./lib/papers/papersWS";
 import {
     ENABLE_ENHANCED_BLOCKQUOTE,
     PaperConfig,
     PAPERS_COOKIE,
+    PAPERS_SERVICE_PROVIDER,
     PaperServiceType,
     ZOTERO_USER_API_KEY,
     ZOTERO_USER_ID
@@ -25,7 +25,17 @@ import paperSvc from "./lib/PaperSvcFactory";
 
 async function getSettings() {
     const config = new PaperConfig();
-    config.type = PaperServiceType.READCUBE;
+    switch (await joplin.settings.value(PAPERS_SERVICE_PROVIDER)) {
+        case 'Zotero':
+            config.type = PaperServiceType.ZOTERO;
+            break;
+        case 'Readcube':
+            config.type = PaperServiceType.READCUBE;
+            break;
+        default:
+            config.type = PaperServiceType.ZOTERO;
+            break;
+    }
     config.papersCookie = await joplin.settings.value(PAPERS_COOKIE);
     config.zoteroUserId = await joplin.settings.value(ZOTERO_USER_ID);
     config.zoteroApiKey = await joplin.settings.value(ZOTERO_USER_API_KEY);
@@ -46,6 +56,8 @@ export async function initPapers() {
     // init the database and paper service
     await setupDatabase();
     await paperSvc.init(settings);
+
+    await syncAllPaperItems();
 
     await joplin.contentScripts.onMessage(
         'enhancement_paper_fence_renderer',

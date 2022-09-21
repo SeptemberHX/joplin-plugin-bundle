@@ -33,20 +33,21 @@
     "@fortawesome/fontawesome-free": "^5.15.1",
     "chrono-node": "^2.4.1",
     "dateformat": "^5.0.3",
+    "html-entities": "^2.3.3",
     "markdown-it": "^13.0.1",
     "markdown-it-mark": "^3.0.1",
     "moment": "^2.29.4",
+    "net": "^1.0.2",
+    "node-fetch": "^2.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "reconnecting-websocket": "^4.4.0",
     "string-to-color": "^2.2.2",
+    "tls": "^0.0.1",
     "ts-debounce": "^4.0.0",
     "uslug": "git+https://github.com/laurent22/uslug.git#emoji-support",
     "words-count": "^2.0.2",
-    "html-entities": "^2.3.3",
-    "net": "^1.0.2",
-    "node-fetch": "^2.6.1",
-    "reconnecting-websocket": "^4.4.0",
-    "tls": "^0.0.1",
-    "ws": "^8.6.0"
+    "ws": "^8.6.0",
+    "zotero-api-client": "^0.40.0"
   }
 }

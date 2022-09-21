@@ -8,7 +8,7 @@ export const ENABLE_CUSTOM_STYLE = 'PapersPluginEnableCustomStyle';
 export const ENABLE_ENHANCED_BLOCKQUOTE = 'PapersPluginEnableEnhancedQuote';
 export const ZOTERO_USER_ID = 'PapersZoteroUserId';
 export const ZOTERO_USER_API_KEY = 'PapersZoteroUserApiKey';
-
+export const PAPERS_SERVICE_PROVIDER = 'PapersServiceProvider';
 
 export enum PaperServiceType {
     READCUBE,

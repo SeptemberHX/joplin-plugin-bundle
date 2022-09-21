@@ -4,18 +4,21 @@ import {ReadcubePaperSvc} from "./papers/readcubePaperSvc";
 import {AnnotationItem, PaperItem, PaperMetadata} from "./base/paperType";
 import { PaperNotify } from "./base/paperNotify";
 import {PapersWS} from "./papers/papersWS";
+import {ZoteroPaperSvc} from "./zotero/zoteroPaperSvc";
 
 class PaperSvcFactory extends PaperSvc {
     paperSvc: PaperSvc;
     paperNotify: PaperNotify;
 
     async init(settings: PaperConfig) {
+        console.log('Papers: Init paper service...');
         switch (settings.type) {
             case PaperServiceType.READCUBE:
                 this.paperSvc = new ReadcubePaperSvc();
                 this.paperNotify = new PapersWS();
                 break;
             case PaperServiceType.ZOTERO:
+                this.paperSvc = new ZoteroPaperSvc();
                 break;
             default:
                 break;
@@ -28,10 +31,13 @@ class PaperSvcFactory extends PaperSvc {
     }
 
     async onPaperChange(callback) {
-        this.paperNotify.onPaperChangeListeners.push(callback);
+        if (this.paperNotify) {
+            this.paperNotify.onPaperChangeListeners.push(callback);
+        }
     }
 
     async getAllItems(): Promise<PaperItem[]> {
+        console.log('Papers: Get all items...');
         return await this.paperSvc.getAllItems();
     }
 

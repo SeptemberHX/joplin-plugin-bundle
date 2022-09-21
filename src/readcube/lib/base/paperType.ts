@@ -46,6 +46,9 @@ export class PaperItem {
     pagination: string;
     journal_abbrev: string;
     doi: string;
+
+    // zotero can have multiple notes for each paper
+    zoteroNotes: string[];
 }
 
 export type CollectionItem = {
@@ -61,4 +64,5 @@ export type AnnotationItem = {
     item_id: string;  // collection_id:paper_id
     user_name: string;
     modified: string;
+    color: string;    // if color_id < 0, color is used instead
 }

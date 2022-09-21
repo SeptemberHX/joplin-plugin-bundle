@@ -91,9 +91,6 @@ export class PapersWS extends PaperNotify {
                 }
             }
         }.bind(this), 1000);
-
-        // once connect to the server successfully, update the database immediately.
-        await syncAllPaperItems();
     }
 
     async onMessage(event: any) {

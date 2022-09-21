@@ -100,7 +100,8 @@ export class ReadcubePaperSvc extends PaperSvc {
                     page: anno.page_start,
                     item_id: anno.item_id,
                     user_name: anno.user_name,
-                    modified: anno.modified
+                    modified: anno.modified,
+                    color: ''
                 });
             }
         }
@@ -170,7 +171,8 @@ export class ReadcubePaperSvc extends PaperSvc {
             url: 'url' in itemData.article ? itemData.article.url : '',
             pagination: 'pagination' in itemData.article ? itemData.article.pagination : '',
             journal_abbrev: 'journal_abbrev' in itemData.article ? itemData.article.journal_abbrev : '',
-            doi: 'doi' in itemData.ext_ids ? itemData.ext_ids.doi : ''
+            doi: 'doi' in itemData.ext_ids ? itemData.ext_ids.doi : '',
+            zoteroNotes: []
         }
         return item;
     }

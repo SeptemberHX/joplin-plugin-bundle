@@ -44,12 +44,6 @@ export async function createNewNotesForPapers(selectedItemIds: string[], paperIt
 
 export async function syncAllPaperItems() {
     console.log('Enhancement: In syncAllPaperItems...');
-    const papersCookie = await joplin.settings.value(PAPERS_COOKIE);
-    if (papersCookie.length === 0) {
-        console.log('Empty cookie for Papers. Please set it in the preferences.');
-        return;
-    }
-
     const allRemotePapers = await paperSvc.getSvc().getAllItems();
     let exitedPaperItemIds = new Set();
     const existedPapers = await getAllRecords();

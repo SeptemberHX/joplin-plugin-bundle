@@ -3,7 +3,7 @@ import { SettingItemType } from "api/types";
 import {
     ENABLE_CUSTOM_STYLE,
     ENABLE_ENHANCED_BLOCKQUOTE,
-    PAPERS_COOKIE,
+    PAPERS_COOKIE, PAPERS_SERVICE_PROVIDER, PaperServiceType,
     ZOTERO_USER_API_KEY,
     ZOTERO_USER_ID
 } from "./common";
@@ -18,6 +18,20 @@ export namespace settings {
         });
 
         let PLUGIN_SETTINGS = {};
+
+        PLUGIN_SETTINGS[PAPERS_SERVICE_PROVIDER] = {
+            value: 'Zotero',
+            public: true,
+            isEnum: true,
+            options: {
+                Readcube : 'ReadCube Papers',
+                Zotero: 'Zotero'
+            },
+            section: SECTION,
+            type: SettingItemType.String,
+            label: 'Your paper reference provider',
+            description: "You MUST delete the papers.sqlite file after switching the provider. You can find it in the directory contains userchrome.css -> plugin-data -> com.septemberhx.pluginBundle",
+        }
 
         PLUGIN_SETTINGS[PAPERS_COOKIE] = {
             value: '',
