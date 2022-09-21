@@ -50,6 +50,10 @@ class PaperSvcFactory extends PaperSvc {
     async getMetadata(doi: string): Promise<PaperMetadata> {
         return await this.paperSvc.getMetadata(doi);
     }
+
+    async extractNotes(paperItem: PaperItem): Promise<string[]> {
+        return await this.paperSvc.extractNotes(paperItem);
+    }
 }
 
 

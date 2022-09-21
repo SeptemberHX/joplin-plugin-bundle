@@ -11,11 +11,9 @@ export class ZoteroPaperSvc extends PaperSvc {
     version: number = 0;
     items: PaperItem[] = [];
 
-    headers() {
-        return {
-            'Zotero-API-Version': '3',
-            'Zotero-API-Key': this.apiKey
-        };
+    async extractNotes(paperItem: PaperItem): Promise<string[]> {
+        console.log('Zotero: Extracting notes');
+        return await this.getNotes(paperItem);
     }
 
     cachedItems() {
@@ -77,6 +75,7 @@ export class ZoteroPaperSvc extends PaperSvc {
                 notes.push(item.data.note);
             }
         }
+        return notes;
     }
 
     async init(settings: PaperConfig): Promise<void> {

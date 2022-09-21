@@ -15,6 +15,7 @@ class ReadCubePlugin extends SidebarPlugin {
     currPaper: PaperItem;
     currAnnotations: AnnotationItem[] = [];
     currMetadata: PaperMetadata;
+    currNotes: string[] = [];
     annoSearchStr: string = '';
     refSearchStr: string = '';
     paperList: PaperItem[] = [];
@@ -85,6 +86,7 @@ class ReadCubePlugin extends SidebarPlugin {
             this.refSearchStr = '';
             this.currAnnotations = [];
             this.currMetadata = null;
+            this.currNotes = [];
             await this.update();
         });
 
@@ -111,6 +113,12 @@ class ReadCubePlugin extends SidebarPlugin {
                 await this.updateHtml();
             });
 
+            paperSvc.extractNotes(this.currPaper).then(async notes => {
+                console.log('===========>', notes);
+                this.currNotes = notes;
+                await this.updateHtml();
+            });
+
             paperSvc.getMetadata(this.currPaper.doi).then(async metadata => {
                 this.currMetadata = metadata;
                 await this.updateHtml();
@@ -123,7 +131,7 @@ class ReadCubePlugin extends SidebarPlugin {
     })
 
     async updateHtml() {
-        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currTabIndex, this.annoSearchStr, this.refSearchStr));
+        await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currNotes, this.currTabIndex, this.annoSearchStr, this.refSearchStr));
     }
 }
 

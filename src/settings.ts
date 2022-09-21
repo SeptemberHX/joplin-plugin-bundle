@@ -74,7 +74,7 @@ export namespace settings {
             public: true,
             section: SECTION,
             type: SettingItemType.Bool,
-            label: 'Enable ReadCube Papers in bundle',
+            label: 'Enable Papers in bundle',
             description: "Requires restart",
         }
 

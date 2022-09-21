@@ -26,4 +26,9 @@ export abstract class PaperSvc {
     }
 
     async init(settings: PaperConfig): Promise<void> { }
+
+    async extractNotes(paperItem: PaperItem): Promise<string[]> {
+        console.log("PaperSvc: Extracting notes");
+        return [];
+    }
 }

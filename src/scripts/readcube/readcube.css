@@ -213,3 +213,9 @@ div.paper-refs-list .ref-info-title {
 .paper-figures-list figcaption {
     opacity: 0.75;
 }
+
+.paper-info .note {
+    border-bottom: 1px solid lightgray;
+    margin-top: 1em;
+    padding-bottom: 1em;
+}

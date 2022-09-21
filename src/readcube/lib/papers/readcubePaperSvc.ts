@@ -12,6 +12,14 @@ export class ReadcubePaperSvc extends PaperSvc {
         this.defaultCollectionId = await this.getDefaultCollectionId();
     }
 
+    async extractNotes(paperItem: PaperItem): Promise<string[]> {
+        if (paperItem.notes && paperItem.notes.length > 0) {
+            return [paperItem.notes];
+        } else {
+            return [];
+        }
+    }
+
     /**
      * Get all the collections
      */

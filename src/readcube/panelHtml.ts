@@ -1,11 +1,12 @@
 import {colorMap} from "./utils/paperCardGenerator";
 import {buildPaperUrl} from "./lib/papers/papersUtils";
 import {AnnotationItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "./lib/base/paperType";
+import paperSvc from "./lib/PaperSvcFactory";
 var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
 
 
-export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currTabIndex: number, annoSearchStr: string, refSearchStr: string) {
+export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currNotes: string[], currTabIndex: number, annoSearchStr: string, refSearchStr: string) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
@@ -35,7 +36,7 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
 
     result.push(`<div class="tab-content" id="pills-tabContent">`);
     result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info" role="tabpanel" aria-labelledby="pills-paper-info-tab" tabindex="0"><ul class="list-group">`);
-    result.push(generatePaperInfoPage(currItem));
+    result.push(generatePaperInfoPage(currItem, currNotes));
     result.push('</ul></div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno" role="tabpanel" aria-labelledby="pills-paper-anno-tab" tabindex="0">`);
     result.push(generateAnnoPage(currAnnos, annoSearchStr));
@@ -218,7 +219,7 @@ function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
 }
 
 
-export function generatePaperInfoPage(item: PaperItem) {
+export function generatePaperInfoPage(item: PaperItem, currNotes: string[]) {
     if (item) {
         let stars;
         switch (item.rating) {
@@ -273,11 +274,16 @@ export function generatePaperInfoPage(item: PaperItem) {
             result.push(`<div class="abstract" lang="en">${item.abstract}</div>`);
         }
 
-        if (item.notes) {
-            result.push(`<div class="notes">
-                <div class="user-note-label">User Note</div>
-                ${md.render(item.notes)}
-            </div>`);
+        if (currNotes.length > 0) {
+            result.push(`<div class="notes"><div class="user-note-label">User Note</div>`);
+            for (const note of currNotes) {
+                if (note.includes('<div')) {
+                    result.push(`<div class="note">${note}</div>`);
+                } else {
+                    result.push(`<div class="note">${md.render(note)}</div>`);
+                }
+            }
+            result.push(`</div>`);
         }
 
         return result.join('');
