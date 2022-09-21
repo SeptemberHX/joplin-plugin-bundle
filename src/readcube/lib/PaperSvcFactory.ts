@@ -5,6 +5,7 @@ import {AnnotationItem, PaperItem, PaperMetadata} from "./base/paperType";
 import { PaperNotify } from "./base/paperNotify";
 import {PapersWS} from "./papers/papersWS";
 import {ZoteroPaperSvc} from "./zotero/zoteroPaperSvc";
+import {ZoteroWS} from "./zotero/zoteroWS";
 
 class PaperSvcFactory extends PaperSvc {
     paperSvc: PaperSvc;
@@ -15,10 +16,11 @@ class PaperSvcFactory extends PaperSvc {
         switch (settings.type) {
             case PaperServiceType.READCUBE:
                 this.paperSvc = new ReadcubePaperSvc();
-                this.paperNotify = new PapersWS();
+                this.paperNotify = new PapersWS(settings);
                 break;
             case PaperServiceType.ZOTERO:
                 this.paperSvc = new ZoteroPaperSvc();
+                this.paperNotify = new ZoteroWS(settings);
                 break;
             default:
                 break;

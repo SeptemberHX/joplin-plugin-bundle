@@ -66,6 +66,7 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.Int,
             label: 'Zotero User Id',
+            description: 'Get your user id from https://www.zotero.org/settings/keys'
         }
 
         PLUGIN_SETTINGS[ZOTERO_USER_API_KEY] = {
@@ -74,6 +75,7 @@ export namespace settings {
             section: SECTION,
             type: SettingItemType.String,
             label: 'Zotero User API Key',
+            description: 'Get your API Key from https://www.zotero.org/settings/keys. PLEASE create separate keys for different Joplin clients. Otherwise the information may not be updated in time due to the subscription limitation of each API key'
         }
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

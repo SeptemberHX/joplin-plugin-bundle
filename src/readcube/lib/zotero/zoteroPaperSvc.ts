@@ -8,6 +8,8 @@ export class ZoteroPaperSvc extends PaperSvc {
     userId: number;
     apiKey: string;
     myapi;
+    version: number = 0;
+    items: PaperItem[] = [];
 
     headers() {
         return {
@@ -16,14 +18,26 @@ export class ZoteroPaperSvc extends PaperSvc {
         };
     }
 
+    cachedItems() {
+        return this.items;
+    }
+
     async getAllItems(): Promise<PaperItem[]> {
         console.log('Papers: Get all items in zotero...');
-        const items = [];
-        for (const item of (await this.myapi.items().top().get()).raw) {
-            items.push(this.parseItemJson(item));
+        const response = await this.myapi.version(this.version).items().top().get();
+
+        if (!response.getVersion() || this.version === response.getVersion()) {
+            ;
+        } else {
+            const items = [];
+            for (const item of response.raw) {
+                items.push(this.parseItemJson(item));
+            }
+            this.version = response.getVersion();
+            this.items = items;
         }
-        console.log('Papers: ', items);
-        return items;
+        console.log('Papers:', this.items);
+        return this.items;
     }
 
     async getAnnotation(paperItem: PaperItem): Promise<AnnotationItem[]> {

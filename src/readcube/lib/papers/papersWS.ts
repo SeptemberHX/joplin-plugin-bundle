@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import WebSocket from 'ws';
 import ReconnectingWebSocket from "reconnecting-websocket";
 import joplin from "../../../../api";
-import {PAPERS_COOKIE} from "../../common";
+import {PaperConfig, PAPERS_COOKIE} from "../../common";
 import {createRecord, deleteRecord, getRecord, removeInvalidSourceUrlByItemId, updateRecord} from "../base/paperDB";
 import {syncAllPaperItems} from "./papersUtils";
 import paperSvc from "../PaperSvcFactory";
@@ -24,8 +24,8 @@ export class PapersWS extends PaperNotify {
     currMessageId: 1;
     papers: ReadcubePaperSvc;
 
-    constructor() {
-        super();
+    constructor(config: PaperConfig) {
+        super(config);
         this.ws = new ReconnectingWebSocket('wss://push.readcube.com/bayeux', [], options);
         this.ws.onopen = this.onOpen.bind(this);
         this.ws.onmessage = this.onMessage.bind(this);
