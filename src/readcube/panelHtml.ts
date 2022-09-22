@@ -21,17 +21,20 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
           <i class="fas fa-marker"></i>
         </button>
       </li>
-      <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-refs-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-refs" type="button" role="tab" aria-controls="pills-paper-refs" aria-selected="true">
-          <i class="fas fa-anchor"></i>
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 4 ? 'active' : ''}" onclick="paperTabClicked(4)" id="pills-paper-figure-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-figures" type="button" role="tab" aria-controls="pills-paper-figures" aria-selected="true">
-          <i class="fas fa-images"></i>
-        </button>
-      </li>
-    `)
+    `);
+    if (metadata) {
+        result.push(`<li class="nav-item" role="presentation">
+            <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-paper-refs-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-refs" type="button" role="tab" aria-controls="pills-paper-refs" aria-selected="true">
+              <i class="fas fa-anchor"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="position-relative nav-link ${currTabIndex === 4 ? 'active' : ''}" onclick="paperTabClicked(4)" id="pills-paper-figure-tab" data-bs-toggle="pill" data-bs-target="#pills-paper-figures" type="button" role="tab" aria-controls="pills-paper-figures" aria-selected="true">
+              <i class="fas fa-images"></i>
+            </button>
+          </li>
+        `);
+    }
     result.push('</ul>')
 
     result.push(`<div class="tab-content" id="pills-tabContent">`);
@@ -41,16 +44,14 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno" role="tabpanel" aria-labelledby="pills-paper-anno-tab" tabindex="0">`);
     result.push(generateAnnoPage(currAnnos, annoSearchStr));
     result.push('</div>');
-    result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-refs" role="tabpanel" aria-labelledby="pills-paper-refs-tab" tabindex="0">`);
     if (metadata) {
+        result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-paper-refs" role="tabpanel" aria-labelledby="pills-paper-refs-tab" tabindex="0">`);
         result.push(generateRefsPage(metadata.references, refSearchStr));
-    }
-    result.push('</div>');
-    result.push(`<div class="tab-pane fade show ${currTabIndex === 4 ? 'active' : ''}" id="pills-paper-figures" role="tabpanel" aria-labelledby="pills-paper-figures-tab" tabindex="0">`);
-    if (metadata) {
+        result.push('</div>');
+        result.push(`<div class="tab-pane fade show ${currTabIndex === 4 ? 'active' : ''}" id="pills-paper-figures" role="tabpanel" aria-labelledby="pills-paper-figures-tab" tabindex="0">`);
         result.push(generateFiguresPage(metadata.figures));
+        result.push('</div>');
     }
-    result.push('</div>');
     result.push('</div>');
     result.push('</div>');
     return result.join('');
