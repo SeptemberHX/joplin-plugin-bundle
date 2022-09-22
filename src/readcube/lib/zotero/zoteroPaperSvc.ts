@@ -64,10 +64,6 @@ export class ZoteroPaperSvc extends PaperSvc {
         return annotations;
     }
 
-    async getMetadata(doi: string): Promise<PaperMetadata> {
-        return super.getMetadata(doi);
-    }
-
     async getNotes(paperItem: PaperItem) {
         let notes = [];
         for (const item of (await this.myapi.items(paperItem.id).children().get()).raw) {

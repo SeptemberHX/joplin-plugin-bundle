@@ -114,7 +114,6 @@ class ReadCubePlugin extends SidebarPlugin {
             });
 
             paperSvc.extractNotes(this.currPaper).then(async notes => {
-                console.log('===========>', notes);
                 this.currNotes = notes;
                 await this.updateHtml();
             });

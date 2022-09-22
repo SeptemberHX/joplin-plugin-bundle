@@ -6,10 +6,12 @@ import { PaperNotify } from "./base/paperNotify";
 import {PapersWS} from "./papers/papersWS";
 import {ZoteroPaperSvc} from "./zotero/zoteroPaperSvc";
 import {ZoteroWS} from "./zotero/zoteroWS";
+import {PaperExtend} from "./base/paperExtend";
 
 class PaperSvcFactory extends PaperSvc {
     paperSvc: PaperSvc;
     paperNotify: PaperNotify;
+    paperExtend: PaperExtend;
 
     async init(settings: PaperConfig) {
         console.log('Papers: Init paper service...');
@@ -25,6 +27,12 @@ class PaperSvcFactory extends PaperSvc {
             default:
                 break;
         }
+
+        if (settings.papersCookie && settings.papersCookie.length > 0) {
+            this.paperExtend = new PaperExtend();
+            this.paperExtend.init(settings);
+        }
+
         await this.paperSvc.init(settings);
     }
 
@@ -48,7 +56,10 @@ class PaperSvcFactory extends PaperSvc {
     }
 
     async getMetadata(doi: string): Promise<PaperMetadata> {
-        return await this.paperSvc.getMetadata(doi);
+        if (this.paperExtend) {
+            return await this.paperExtend.getMetadata(doi);
+        }
+        return null;
     }
 
     async extractNotes(paperItem: PaperItem): Promise<string[]> {

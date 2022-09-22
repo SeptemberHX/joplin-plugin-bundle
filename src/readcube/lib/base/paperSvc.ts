@@ -17,14 +17,6 @@ export abstract class PaperSvc {
         return [];
     }
 
-    /**
-     * Get metadata for given paper
-     * @param doi
-     */
-    async getMetadata(doi: string): Promise<PaperMetadata> {
-        return null;
-    }
-
     async init(settings: PaperConfig): Promise<void> { }
 
     async extractNotes(paperItem: PaperItem): Promise<string[]> {
