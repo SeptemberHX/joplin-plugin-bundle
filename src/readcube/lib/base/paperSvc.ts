@@ -23,4 +23,8 @@ export abstract class PaperSvc {
         console.log("PaperSvc: Extracting notes");
         return [];
     }
+
+    externalLink(paperItem: PaperItem): String {
+        return null;
+    }
 }

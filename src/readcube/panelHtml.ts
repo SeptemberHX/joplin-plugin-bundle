@@ -1,5 +1,4 @@
 import {colorMap} from "./utils/paperCardGenerator";
-import {buildPaperUrl} from "./lib/papers/papersUtils";
 import {AnnotationItem, PaperFigure, PaperItem, PaperMetadata, PaperReference} from "./lib/base/paperType";
 import paperSvc from "./lib/PaperSvcFactory";
 var md = require('markdown-it')()
@@ -247,7 +246,7 @@ export function generatePaperInfoPage(item: PaperItem, currNotes: string[]) {
             result.push(`<div class="journal">${item.journal} ${item.year ? item.year : ''}</div>`);
         }
         if (item.title) {
-            result.push(`<div class="title" lang="en" onclick="onPaperTitleClicked('${buildPaperUrl(item.collection_id, item.id)}')">${item.title}</div>`);
+            result.push(`<div class="title" lang="en" onclick="onPaperTitleClicked('${paperSvc.externalLink(item)}')">${item.title}</div>`);
         }
         if (item.authors && item.authors.length > 0) {
             result.push(`<div class="authors">`);

@@ -4,7 +4,6 @@ import {getAllRecords, getPaperItemByNoteIdOrTitle, getRecord, setupDatabase} fr
 import {
     appendPaperBlockIfMissing,
     buildCitationForItem,
-    buildPaperUrl,
     buildRefName,
     createNewNotesForPapers,
     syncAllPaperItems
@@ -74,7 +73,7 @@ export async function initPapers() {
                     return await getRecord(msg.content);
                 case 'openPaper':
                     const paperItem = await getRecord(msg.content);
-                    await joplin.commands.execute('openItem', buildPaperUrl(paperItem.collection_id, paperItem.id));
+                    await joplin.commands.execute('openItem', paperSvc.externalLink(paperItem));
                     break;
                 default:
                     break;

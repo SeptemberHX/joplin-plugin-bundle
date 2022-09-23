@@ -20,6 +20,10 @@ export class ZoteroPaperSvc extends PaperSvc {
         return this.items;
     }
 
+    externalLink(paperItem: PaperItem): String {
+        return `zotero://select/items/1_${paperItem.id}`;
+    }
+
     async getAllItems(): Promise<PaperItem[]> {
         console.log('Papers: Get all items in zotero...');
         const response = await this.myapi.version(this.version).items().top().get();

@@ -45,6 +45,10 @@ export class ReadcubePaperSvc extends PaperSvc {
         return ids[0].id;
     }
 
+    externalLink(paperItem: PaperItem): String {
+        return `https://www.readcube.com/library/${paperItem.collection_id}:${paperItem.id}`;
+    }
+
     /**
      * Get all the items in the given collection
      * @param collection_id

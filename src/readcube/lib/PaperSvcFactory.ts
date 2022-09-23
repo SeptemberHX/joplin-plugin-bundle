@@ -36,6 +36,10 @@ class PaperSvcFactory extends PaperSvc {
         await this.paperSvc.init(settings);
     }
 
+    externalLink(paperItem: PaperItem): String {
+        return this.paperSvc.externalLink(paperItem);
+    }
+
     getSvc(): PaperSvc{
         return this.paperSvc;
     }
