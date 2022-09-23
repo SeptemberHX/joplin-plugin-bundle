@@ -8,6 +8,7 @@ export const DAILY_NOTE_HEATMAP_LEVEL_STEP = 'bundle_daily_note_heatmap_level_st
 export const DAILY_NOTE_HEATMAP_COLOR = 'bundle_daily_note_heatmap_color';
 export const DAILY_NOTE_WORD_COUNT_STEP = 'bundle_daily_note_word_count_step';
 export const DAILY_NOTE_USE_TODO_NOTE = 'bundle_daily_note_use_todo_note';
+export const DAILY_NOTE_MONDAY_FIRST_WEEKDAY = 'bundle_daily_note_monday_first_weekday';
 
 
 export class DailyNoteConfig {
@@ -18,6 +19,7 @@ export class DailyNoteConfig {
     step: number;
     wordStep: number;
     todoNote: boolean;
+    mondayAsFirst: boolean;
 }
 
 
@@ -30,6 +32,7 @@ export async function getConfig() {
     config.step = await joplin.settings.value(DAILY_NOTE_HEATMAP_LEVEL_STEP);
     config.wordStep = await joplin.settings.value(DAILY_NOTE_WORD_COUNT_STEP);
     config.todoNote = await joplin.settings.value(DAILY_NOTE_USE_TODO_NOTE);
+    config.mondayAsFirst = await joplin.settings.value(DAILY_NOTE_MONDAY_FIRST_WEEKDAY);
     return config;
 }
 
@@ -61,6 +64,14 @@ export namespace settings {
             type: SettingItemType.String,
             label: 'Daily Note Template',
             description: "Template when you create a new daily note. Use '\\n' for new line",
+        };
+
+        PLUGIN_SETTINGS[DAILY_NOTE_MONDAY_FIRST_WEEKDAY] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Use Monday as the first day of each week instead of Sunday'
         };
 
         PLUGIN_SETTINGS[DAILY_NOTE_USE_TODO_NOTE] = {

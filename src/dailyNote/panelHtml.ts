@@ -13,6 +13,7 @@ function createCalendarTable(year, month, noteDaysInfo, config: DailyNoteConfig)
     const currMonth = moment({year: year, month: month});
     const lastMonth = moment({year: year, month: month}).add(-1, 'day');
     const nextMonth = moment({year: year, month: month}).add(1, 'month');
+    let offset = config.mondayAsFirst ? 1 : 0;
 
     let table = `
         <div class="month-container btn-group" role="group">
@@ -22,30 +23,39 @@ function createCalendarTable(year, month, noteDaysInfo, config: DailyNoteConfig)
         </div>
         <table class="dailynote-table">
             <thead>
-                <tr>
+                <tr>`;
+    if (offset === 0) {
+        table += `
                     <td>Su</td>
                     <td>Mo</td>
                     <td>Tu</td>
                     <td>We</td>
                     <td>Th</td>
                     <td>Fr</td>
+                    <td>Sa</td>`;
+    } else {
+        table += `
+                    <td>Mo</td>
+                    <td>Tu</td>
+                    <td>We</td>
+                    <td>Th</td>
+                    <td>Fr</td>
                     <td>Sa</td>
-                </tr>
-            </thead>
-            <tbody>
-    `;
+                    <td>Su</td>`;
+    }
+    table += `</tr></thead><tbody>`
 
-    while (lastMonth.weekday() > 0 && lastMonth.weekday() <= 5) {
+    while (lastMonth.weekday() >= 1 + offset && lastMonth.weekday() <= 5 + offset) {
         lastMonth.add(-1, 'day');
     }
-    if (lastMonth.weekday() === 0) {
+    if (lastMonth.weekday() === 0 + offset) {
         table += `
                 <tr>`;
         while (lastMonth < currMonth) {
             table += createCell('prev-month', false, false, lastMonth);
             lastMonth.add(1, 'day');
         }
-        while (currMonth.weekday() > 0 && currMonth.weekday() <= 6) {
+        while (currMonth.weekday() !== 0 + offset) {
             const hasNote = currMonth.format('DD') in noteDaysInfo;
             const noteInfo = noteDaysInfo[currMonth.format('DD')];
             table += createCell('curr-month', hasNote,

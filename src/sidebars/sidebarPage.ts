@@ -78,25 +78,25 @@ export class Sidebars {
             const notePath = await getPath(currNote.parent_id);
             let targetPluginId;
             for (const folderTitle of notePath) {
-                if (this.settings.papersDefaultDirs.includes(folderTitle)) {
+                if (this.settings.readcube && this.settings.papersDefaultDirs.includes(folderTitle)) {
                     targetPluginId = PAPERS_PLUGIN_ID;
                     break;
-                } else if (this.settings.relatedNotesDefaultDirs.includes(folderTitle)) {
+                } else if (this.settings.relatedNotes && this.settings.relatedNotesDefaultDirs.includes(folderTitle)) {
                     targetPluginId = RELATED_NOTE_PLUGIN_ID;
                     break;
-                } else if (this.settings.dailyNoteDefaultOpenDirs.includes(folderTitle)) {
+                } else if (this.settings.dailyNote && this.settings.dailyNoteDefaultOpenDirs.includes(folderTitle)) {
                     targetPluginId = DAILY_NOTE_PLUGIN_ID;
                     break;
-                } else if (this.settings.historyDefaultOpenDirs.includes(folderTitle)) {
+                } else if (this.settings.history && this.settings.historyDefaultOpenDirs.includes(folderTitle)) {
                     targetPluginId = HISTORY_PLUGIN_ID;
                     break;
-                } else if (this.settings.inlineTodoDefaultOpenDirs.includes(folderTitle)) {
+                } else if (this.settings.inlineTodo && this.settings.inlineTodoDefaultOpenDirs.includes(folderTitle)) {
                     targetPluginId = TODO_PLUGIN_ID;
                     break;
-                } else if (this.settings.outlineDefaultOpenDirs.includes(folderTitle)) {
+                } else if (this.settings.outline && this.settings.outlineDefaultOpenDirs.includes(folderTitle)) {
                     targetPluginId = OUTLINE_PLUGIN_ID;
                     break;
-                } else if (this.settings.writingMarkerDefaultOpenDirs.includes(folderTitle)) {
+                } else if (this.settings.writingMarker && this.settings.writingMarkerDefaultOpenDirs.includes(folderTitle)) {
                     targetPluginId = WRITING_MARKER_PLUGIN_ID;
                     break;
                 }
