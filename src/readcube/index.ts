@@ -53,7 +53,7 @@ class ReadCubePlugin extends SidebarPlugin {
                     if (anno.id === msg.id) {
                         await joplin.commands.execute('editor.execCommand', {
                             name: 'enhancement_insertAnnotation',
-                            args: [[[anno], await joplin.settings.value(ENABLE_ENHANCED_BLOCKQUOTE)]]
+                            args: [[[anno], await joplin.settings.value(ENABLE_ENHANCED_BLOCKQUOTE), [paperSvc.externalAnnotationLink(anno)]]]
                         });
                         break;
                     }

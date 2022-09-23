@@ -27,4 +27,8 @@ export abstract class PaperSvc {
     externalLink(paperItem: PaperItem): String {
         return null;
     }
+
+    externalAnnotationLink(anno: AnnotationItem): String {
+        return null;
+    }
 }

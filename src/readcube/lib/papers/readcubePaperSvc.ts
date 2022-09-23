@@ -49,6 +49,10 @@ export class ReadcubePaperSvc extends PaperSvc {
         return `https://www.readcube.com/library/${paperItem.collection_id}:${paperItem.id}`;
     }
 
+    externalAnnotationLink(anno: AnnotationItem): String {
+        return `https://www.readcube.com/library/${anno.item_id}#annotation:${anno.id}`;
+    }
+
     /**
      * Get all the items in the given collection
      * @param collection_id

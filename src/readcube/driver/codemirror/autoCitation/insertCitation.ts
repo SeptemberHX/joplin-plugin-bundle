@@ -41,6 +41,7 @@ export default class InsertCitation {
     insertAnnotationCitations(options) {
         const annotations: AnnotationItem[] = options[0];
         const enableEnhanced: boolean = options[1];
+        const annotationLinks: string = options[2];
         const selections = this.doc.listSelections();
         if (annotations.length == 0 || !selections || selections.length == 0) {
             return;
@@ -48,20 +49,22 @@ export default class InsertCitation {
         const currSelection = selections[0];
 
         let insertedText = "";
+        let i = 0;
         for (const anno of annotations) {
             insertedText += '\n';
             if (anno.text && anno.text.length > 0) {
-                insertedText += `> [📜](https://www.readcube.com/library/${anno.item_id}#annotation:${anno.id}) ${anno.text.replace('\n', ' ')}`;
+                insertedText += `> [📜](${annotationLinks[i]}) ${anno.text.replace('\n', ' ')}`;
                 if (enableEnhanced) {
-                    insertedText += ` [color=${colorMap[anno.color_id]}][name=${anno.user_name}][date=${new Date(anno.modified).toLocaleString()}]`;
+                    insertedText += ` [color=${anno.color_id < 0 ? anno.color : colorMap[anno.color_id]}][name=${anno.user_name}][date=${new Date(anno.modified).toLocaleString()}]`;
                 }
                 insertedText += '\n';
             }
 
             if (anno.note && anno.note.length > 0) {
-                insertedText += `> [🎶](https://www.readcube.com/library/${anno.item_id}#annotation:${anno.id}) ${anno.note.replace('\n', ' ')}`;
+                insertedText += `> [🎶](${annotationLinks[i]}) ${anno.note.replace('\n', ' ')}`;
                 insertedText += '\n';
             }
+            i += 1;
         }
         this.doc.replaceRange(insertedText, currSelection.to());
         this.editor.focus();

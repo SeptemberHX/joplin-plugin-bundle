@@ -24,6 +24,10 @@ export class ZoteroPaperSvc extends PaperSvc {
         return `zotero://select/items/1_${paperItem.id}`;
     }
 
+    externalAnnotationLink(anno: AnnotationItem): String {
+        return `zotero://open-pdf/library/items/${anno.item_id}?page=${anno.page}&annotation=${anno.id}`;
+    }
+
     async getAllItems(): Promise<PaperItem[]> {
         console.log('Papers: Get all items in zotero...');
         const response = await this.myapi.version(this.version).items().top().get();

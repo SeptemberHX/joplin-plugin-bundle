@@ -40,6 +40,10 @@ class PaperSvcFactory extends PaperSvc {
         return this.paperSvc.externalLink(paperItem);
     }
 
+    externalAnnotationLink(anno: AnnotationItem): String {
+        return this.paperSvc.externalAnnotationLink(anno);
+    }
+
     getSvc(): PaperSvc{
         return this.paperSvc;
     }
