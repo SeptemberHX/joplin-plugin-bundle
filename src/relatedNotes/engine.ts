@@ -1,5 +1,6 @@
 import {getAllNotes, getFolder, getNoteTags} from "../utils/noteUtils";
 import noteUpdateNotify from "../utils/noteUpdateNotify";
+import wordsCount from 'words-count';
 
 
 const ignoreTitles = ['default-history'];
@@ -83,26 +84,26 @@ export class NoteElement {
                 if (mentionId) {
                     relationship.score = 100;
                 } else {
-                    relationship.score = 10 * Math.min(10, title.split(' ').length);
+                    relationship.score = 10 * Math.min(10, wordsCount(title));
                 }
             } else if (!mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.MENTIONED;
                 if (mentionedId) {
                     relationship.score = 100;
                 } else {
-                    relationship.score = 10 * Math.min(10, this.title.split(' ').length);
+                    relationship.score = 10 * Math.min(10, wordsCount(this.title));
                 }
             } else if (mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.BIDIRECTION;
                 if (mentionId && mentionedId) {
                     relationship.score = 200;
                 } else if (!mentionId && mentionedId) {
-                    relationship.score = 100 + 10 * Math.min(10, this.title.split(' ').length);
+                    relationship.score = 100 + 10 * Math.min(10, wordsCount(this.title));
                 } else if (mentionId && !mentionedId) {
-                    relationship.score = 100 + 10 * Math.min(10, title.split(' ').length);
+                    relationship.score = 100 + 10 * Math.min(10, wordsCount(title));
                 } else {
-                    relationship.score = 10 * Math.min(10, this.title.split(' ').length)
-                                        + 10 * Math.min(10, title.split(' ').length);
+                    relationship.score = 10 * Math.min(10, wordsCount(this.title))
+                                        + 10 * Math.min(10, wordsCount(title));
                 }
             }
         }

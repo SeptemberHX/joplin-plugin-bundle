@@ -46,4 +46,5 @@ span.related-element-parent.badge.text-bg-light {
 
 .related-notes-div span.related-element-type {
     margin-left: 0.5em;
+    opacity: 0.5;
 }
