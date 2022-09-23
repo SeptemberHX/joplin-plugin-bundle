@@ -7,6 +7,7 @@ import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 import {INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
+import {TODO_PLUGIN_ID} from "../common";
 
 class TodolistPlugin extends SidebarPlugin {
 
@@ -51,7 +52,7 @@ class TodolistPlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = "inline-todo";
+        this.id = TODO_PLUGIN_ID;
         this.name = "Inline Todo";
         this.icon = "fas fa-check";
         this.styles = [

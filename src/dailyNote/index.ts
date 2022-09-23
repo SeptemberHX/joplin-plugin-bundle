@@ -5,6 +5,7 @@ import joplin from "../../api";
 import {debounce} from "ts-debounce";
 import * as moment from "moment";
 import {DailyNoteConfig, getConfig, settings} from "./settings";
+import {DAILY_NOTE_PLUGIN_ID} from "../common";
 
 class DailyNotePlugin extends SidebarPlugin {
 
@@ -17,7 +18,7 @@ class DailyNotePlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = "dailyNote";
+        this.id = DAILY_NOTE_PLUGIN_ID;
         this.name = "Daily Note";
         this.icon = "fas fa-calendar-alt";
         this.styles = [

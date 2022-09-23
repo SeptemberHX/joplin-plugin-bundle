@@ -69,6 +69,22 @@ export class ZoteroPaperSvc extends PaperSvc {
                 }
             }
         }
+
+        annotations = annotations.sort((a, b) => {
+            if (a.page < b.page) {
+                return -1;
+            } else if (a.page > b.page) {
+                return 1;
+            } else {
+                if (a.modified < b.modified) {
+                    return -1;
+                } else if (a.modified > b.modified) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         return annotations;
     }
 

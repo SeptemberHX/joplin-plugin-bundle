@@ -4,7 +4,7 @@ import { registerSettings, settingValue } from './settings';
 import mdHeaders from './mdHeaders';
 import panelHtml from './panelHtml';
 import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
-import {MsgType} from "../common";
+import {MsgType, OUTLINE_PLUGIN_ID} from "../common";
 
 
 class OutlinePlugin extends SidebarPlugin {
@@ -17,7 +17,7 @@ class OutlinePlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = 'outline';
+        this.id = OUTLINE_PLUGIN_ID;
         this.name = 'Outline';
         this.icon = 'fas fa-list';
         this.styles = [

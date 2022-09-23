@@ -10,11 +10,17 @@ import {
 	ENABLE_CHAR_COUNT,
 	ENABLE_DAILY_NOTE,
 	ENABLE_HISTORY,
-	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
+	ENABLE_OUTLINE,
+	ENABLE_READCUBE_PAPERS,
+	ENABLE_RELATED_NOTES,
 	ENABLE_TODO,
-	ENABLE_WRITING_MARKER, PAPERS_DEFAULT_OPEN_DIRS,
+	ENABLE_WRITING_MARKER,
+	PAPERS_DEFAULT_OPEN_DIRS,
 	SideBarConfig,
-    RELATED_NOTES_DEFAULT_OPEN_DIRS
+	RELATED_NOTES_DEFAULT_OPEN_DIRS,
+	HISTORY_DEFAULT_OPEN_DIRS,
+	WRITING_MARKER_DEFAULT_OPEN_DIRS,
+	DAILY_NOTE_DEFAULT_OPEN_DIRS, TODO_DEFAULT_OPEN_DIRS, OUTLINE_DEFAULT_OPEN_DIRS
 } from "./common";
 import {settings} from "./settings";
 import readCubePlugin from "./readcube";
@@ -73,26 +79,37 @@ joplin.plugins.register({
 export async function getConfig(): Promise<SideBarConfig> {
 	const config = new SideBarConfig();
 	config.outline = await joplin.settings.value(ENABLE_OUTLINE);
+	config.outlineDefaultOpenDirs = await getFolderSetting(OUTLINE_DEFAULT_OPEN_DIRS);
+
 	config.inlineTodo = await joplin.settings.value(ENABLE_TODO);
+	config.inlineTodoDefaultOpenDirs = await getFolderSetting(TODO_DEFAULT_OPEN_DIRS);
+
 	config.dailyNote = await joplin.settings.value(ENABLE_DAILY_NOTE);
+	config.dailyNoteDefaultOpenDirs = await getFolderSetting(DAILY_NOTE_DEFAULT_OPEN_DIRS);
+
 	config.writingMarker = await joplin.settings.value(ENABLE_WRITING_MARKER);
+	config.writingMarkerDefaultOpenDirs = await getFolderSetting(WRITING_MARKER_DEFAULT_OPEN_DIRS);
+
 	config.history = await joplin.settings.value(ENABLE_HISTORY);
+	config.historyDefaultOpenDirs = await getFolderSetting(HISTORY_DEFAULT_OPEN_DIRS);
+
 	config.readcube = await joplin.settings.value(ENABLE_READCUBE_PAPERS);
-	const paperFolders = await joplin.settings.value(PAPERS_DEFAULT_OPEN_DIRS);
-	config.papersDefaultDirs = [];
-	for (const paperFolder of paperFolders.split('|')) {
-		if (paperFolder.length > 0) {
-			config.papersDefaultDirs.push(paperFolder);
-		}
-	}
+	config.papersDefaultDirs = await getFolderSetting(PAPERS_DEFAULT_OPEN_DIRS);
+
 	config.relatedNotes = await joplin.settings.value(ENABLE_RELATED_NOTES);
-	const relatedNoteFolders = await joplin.settings.value(RELATED_NOTES_DEFAULT_OPEN_DIRS);
-	config.relatedNotesDefaultDirs = [];
-	for (const noteFolder of relatedNoteFolders.split('|')) {
-		if (noteFolder.length > 0) {
-			config.relatedNotesDefaultDirs.push(noteFolder);
-		}
-	}
+	config.relatedNotesDefaultDirs = await getFolderSetting(RELATED_NOTES_DEFAULT_OPEN_DIRS)
+
 	config.charCount = await joplin.settings.value(ENABLE_CHAR_COUNT);
 	return config;
+}
+
+async function getFolderSetting(configName: string) {
+	const folderNames = await joplin.settings.value(configName);
+	const results = [];
+	for (const noteFolder of folderNames.split('|')) {
+		if (noteFolder.length > 0) {
+			results.push(noteFolder);
+		}
+	}
+	return results;
 }

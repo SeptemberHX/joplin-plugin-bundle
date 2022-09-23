@@ -186,6 +186,9 @@ function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
             case 'note':
                 result.push(`<i class="fas fa-sticky-note sticky-note" style="color: ${colorName}"></i>`);
                 break;
+            case 'image':
+                result.push(`<i class="fas fa-image sticky-note" style="color: ${colorName}"></i>`);
+                break;
             default:
                 break;
         }

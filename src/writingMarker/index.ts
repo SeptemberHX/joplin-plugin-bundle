@@ -5,6 +5,7 @@ import {panelHtml} from "./panelHtml";
 import {getAllTaggedSentences, searchTaggedSentencesInNote} from "./utils";
 import {debounce} from "ts-debounce";
 import {TaggedSentence} from "./common";
+import {WRITING_MARKER_PLUGIN_ID} from "../common";
 
 class WritingMarkerPlugin extends SidebarPlugin {
 
@@ -43,7 +44,7 @@ class WritingMarkerPlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = "writingMarker";
+        this.id = WRITING_MARKER_PLUGIN_ID;
         this.name = "Writing Marker";
         this.icon = "fas fa-tags";
         this.styles = [

@@ -1,5 +1,12 @@
 import joplin from "../../api";
-import {MsgType, PAPERS_PLUGIN_ID, RELATED_NOTE_PLUGIN_ID, SideBarConfig} from "../common";
+import {
+    DAILY_NOTE_PLUGIN_ID,
+    HISTORY_PLUGIN_ID,
+    MsgType, OUTLINE_PLUGIN_ID,
+    PAPERS_PLUGIN_ID,
+    RELATED_NOTE_PLUGIN_ID,
+    SideBarConfig, TODO_PLUGIN_ID, WRITING_MARKER_PLUGIN_ID
+} from "../common";
 import {getConfig} from "../index";
 import {getPath} from "../utils/noteUtils";
 
@@ -76,6 +83,21 @@ export class Sidebars {
                     break;
                 } else if (this.settings.relatedNotesDefaultDirs.includes(folderTitle)) {
                     targetPluginId = RELATED_NOTE_PLUGIN_ID;
+                    break;
+                } else if (this.settings.dailyNoteDefaultOpenDirs.includes(folderTitle)) {
+                    targetPluginId = DAILY_NOTE_PLUGIN_ID;
+                    break;
+                } else if (this.settings.historyDefaultOpenDirs.includes(folderTitle)) {
+                    targetPluginId = HISTORY_PLUGIN_ID;
+                    break;
+                } else if (this.settings.inlineTodoDefaultOpenDirs.includes(folderTitle)) {
+                    targetPluginId = TODO_PLUGIN_ID;
+                    break;
+                } else if (this.settings.outlineDefaultOpenDirs.includes(folderTitle)) {
+                    targetPluginId = OUTLINE_PLUGIN_ID;
+                    break;
+                } else if (this.settings.writingMarkerDefaultOpenDirs.includes(folderTitle)) {
+                    targetPluginId = WRITING_MARKER_PLUGIN_ID;
                     break;
                 }
             }

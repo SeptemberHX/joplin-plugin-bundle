@@ -13,6 +13,7 @@ import joplin from "../../api";
 import updateHistView from "./panel";
 import {MenuItemLocation, ToolbarButtonLocation} from "../../api/types";
 import addHistItem from "./history";
+import {HISTORY_PLUGIN_ID} from "../common";
 
 const settings: HistSettings = {
     currentLine: 0,
@@ -51,7 +52,7 @@ class HistoryPlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = "history-panel";
+        this.id = HISTORY_PLUGIN_ID;
         this.name = "History";
         this.icon = "fas fa-hourglass";
         this.styles = [
