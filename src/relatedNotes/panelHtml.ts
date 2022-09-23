@@ -39,7 +39,7 @@ function renderRelationshipType(relatedId) {
             case RelationshipType.MENTIONED:
                 return `<i class="fas fa-arrow-right"></i>`;
             case RelationshipType.BIDIRECTION:
-                return `<i class="fas fa-arrows-h"></i>`;
+                return `<i class="fas fa-arrows-alt-h"></i>`;
             default:
                 break;
         }
