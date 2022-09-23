@@ -12,8 +12,9 @@ import {
 	ENABLE_HISTORY,
 	ENABLE_OUTLINE, ENABLE_READCUBE_PAPERS, ENABLE_RELATED_NOTES,
 	ENABLE_TODO,
-	ENABLE_WRITING_MARKER,
-	SideBarConfig
+	ENABLE_WRITING_MARKER, PAPERS_DEFAULT_OPEN_DIRS,
+	SideBarConfig,
+    RELATED_NOTES_DEFAULT_OPEN_DIRS
 } from "./common";
 import {settings} from "./settings";
 import readCubePlugin from "./readcube";
@@ -77,7 +78,21 @@ export async function getConfig(): Promise<SideBarConfig> {
 	config.writingMarker = await joplin.settings.value(ENABLE_WRITING_MARKER);
 	config.history = await joplin.settings.value(ENABLE_HISTORY);
 	config.readcube = await joplin.settings.value(ENABLE_READCUBE_PAPERS);
+	const paperFolders = await joplin.settings.value(PAPERS_DEFAULT_OPEN_DIRS);
+	config.papersDefaultDirs = [];
+	for (const paperFolder of paperFolders.split('|')) {
+		if (paperFolder.length > 0) {
+			config.papersDefaultDirs.push(paperFolder);
+		}
+	}
 	config.relatedNotes = await joplin.settings.value(ENABLE_RELATED_NOTES);
+	const relatedNoteFolders = await joplin.settings.value(RELATED_NOTES_DEFAULT_OPEN_DIRS);
+	config.relatedNotesDefaultDirs = [];
+	for (const noteFolder of relatedNoteFolders.split('|')) {
+		if (noteFolder.length > 0) {
+			config.relatedNotesDefaultDirs.push(noteFolder);
+		}
+	}
 	config.charCount = await joplin.settings.value(ENABLE_CHAR_COUNT);
 	return config;
 }

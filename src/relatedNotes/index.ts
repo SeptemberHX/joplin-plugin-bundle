@@ -3,6 +3,7 @@ import relatedEngine from "./engine";
 import joplin from "../../api";
 import {panelHtml} from "./panelHtml";
 import {debounce} from "ts-debounce";
+import {RELATED_NOTE_PLUGIN_ID} from "../common";
 
 class RelatedNotesPlugin extends SidebarPlugin {
 
@@ -11,7 +12,7 @@ class RelatedNotesPlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = "relatedNotesPlugin";
+        this.id = RELATED_NOTE_PLUGIN_ID;
         this.name = "Related Notes";
         this.icon = "fas fa-yin-yang";
         this.styles = [

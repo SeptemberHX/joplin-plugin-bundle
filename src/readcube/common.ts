@@ -1,5 +1,5 @@
 export const PAPERS_COOKIE = 'PapersPluginCookie';
-export const PAPERS_FOLDER_NAME = 'ReadCube Papers';
+export const PAPERS_FOLDER_NAME = 'Papers';
 export const CITATION_POPUP_ID = 'enhancement_citation_popup_id';
 export const PAPERS_NOTEID_TO_PAPERID_TITLE = 'papers.db';
 export const SOURCE_URL_PAPERS_PREFIX = 'papers_';

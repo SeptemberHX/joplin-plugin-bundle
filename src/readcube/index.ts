@@ -8,6 +8,7 @@ import {panelHtml} from "./panelHtml";
 import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
 import {AnnotationItem, PaperItem, PaperMetadata} from "./lib/base/paperType";
 import paperSvc from "./lib/PaperSvcFactory";
+import {PAPERS_PLUGIN_ID} from "../common";
 
 class ReadCubePlugin extends SidebarPlugin {
 
@@ -24,8 +25,8 @@ class ReadCubePlugin extends SidebarPlugin {
     constructor() {
         super();
 
-        this.id = 'readcubePapers';
-        this.name = 'ReadCube Papers';
+        this.id = PAPERS_PLUGIN_ID;
+        this.name = 'Papers';
         this.icon = 'fas fa-graduation-cap';
         this.styles = [
             './scripts/readcube/readcube.css'

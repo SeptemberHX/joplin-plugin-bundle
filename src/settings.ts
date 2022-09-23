@@ -7,7 +7,7 @@ import {
     ENABLE_TODO,
     ENABLE_WRITING_MARKER,
     LAST_NOTE_UPDATE_DATE,
-    ENABLE_CHAR_COUNT
+    ENABLE_CHAR_COUNT, PAPERS_DEFAULT_OPEN_DIRS, RELATED_NOTES_DEFAULT_OPEN_DIRS
 } from "./common";
 import {SettingItemType} from "../api/types";
 import {localeString, MsgType} from "./locale";
@@ -78,6 +78,15 @@ export namespace settings {
             description: "Requires restart",
         }
 
+        PLUGIN_SETTINGS[PAPERS_DEFAULT_OPEN_DIRS] = {
+            value: '',
+            public: true,
+            section: SECTION,
+            type: SettingItemType.String,
+            label: 'Switch to Paper tab when the any parent folders are set',
+            description: "folder name1|folder name2|folder name3, Requires restart",
+        }
+
         PLUGIN_SETTINGS[ENABLE_RELATED_NOTES] = {
             value: false,
             public: true,
@@ -85,6 +94,15 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Enable Related Notes in bundle',
             description: "It lists related notes based on title and tags. Still under development. Requires restart",
+        }
+
+        PLUGIN_SETTINGS[RELATED_NOTES_DEFAULT_OPEN_DIRS] = {
+            value: '',
+            public: true,
+            section: SECTION,
+            type: SettingItemType.String,
+            label: 'Switch to Related Note tab when the any parent folders are set',
+            description: "folder name1|folder name2|folder name3, Requires restart",
         }
 
         PLUGIN_SETTINGS[LAST_NOTE_UPDATE_DATE] = {

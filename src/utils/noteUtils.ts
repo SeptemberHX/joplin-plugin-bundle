@@ -60,6 +60,18 @@ export async function getNoteTags(noteId) {
 }
 
 
+export async function getPath(noteParentId: string) {
+    const results = [];
+    let folder;
+    do {
+        folder = await getFolder(noteParentId);
+        results.push(folder.title);
+        noteParentId = folder.parent_id;
+    } while (noteParentId);
+    return results.reverse();
+}
+
+
 export async function getFolder(folderId) {
-    return await joplin.data.get(['folders', folderId], { fields: ['title', 'id'] });;
+    return await joplin.data.get(['folders', folderId], { fields: ['title', 'id', 'parent_id'] });
 }

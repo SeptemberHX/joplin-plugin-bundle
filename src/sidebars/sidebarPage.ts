@@ -1,6 +1,7 @@
 import joplin from "../../api";
-import {MsgType, SideBarConfig} from "../common";
+import {MsgType, PAPERS_PLUGIN_ID, RELATED_NOTE_PLUGIN_ID, SideBarConfig} from "../common";
 import {getConfig} from "../index";
+import {getPath} from "../utils/noteUtils";
 
 
 export abstract class SidebarPlugin {
@@ -64,6 +65,26 @@ export class Sidebars {
             totalCharCount: 0,
             selectedCharCount: 0
         };
+
+        await joplin.workspace.onNoteSelectionChange(async () => {
+            const currNote = await joplin.workspace.selectedNote();
+            const notePath = await getPath(currNote.parent_id);
+            let targetPluginId;
+            for (const folderTitle of notePath) {
+                if (this.settings.papersDefaultDirs.includes(folderTitle)) {
+                    targetPluginId = PAPERS_PLUGIN_ID;
+                    break;
+                } else if (this.settings.relatedNotesDefaultDirs.includes(folderTitle)) {
+                    targetPluginId = RELATED_NOTE_PLUGIN_ID;
+                    break;
+                }
+            }
+
+            if (targetPluginId && targetPluginId !== this.lastActiveTabPluginId) {
+                this.lastActiveTabPluginId = targetPluginId;
+                await this.render();
+            }
+        })
 
         // Message processing
         await joplin.contentScripts.onMessage('sidebar_cm_commands', async(msg) => {
