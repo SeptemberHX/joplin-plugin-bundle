@@ -5,7 +5,22 @@ import noteUpdateNotify from "../utils/noteUpdateNotify";
 const ignoreTitles = ['default-history'];
 
 
-export class RelatedElement {
+export enum RelationshipType {
+    NULL,
+    MENTION,
+    MENTIONED,
+    BIDIRECTION,
+}
+
+
+export class Relationship {
+    elementId: string;      // note id
+    type: RelationshipType;
+    score: number;          // relationship score. High is better
+}
+
+
+export class NoteElement {
     id: string;         // note id
     title: string;      // note title
     body: string;       // note body
@@ -24,17 +39,17 @@ export class RelatedElement {
             return null;
         }
 
-        const relatedEl = new RelatedElement();
-        relatedEl.id = note.id;
-        relatedEl.title = note.title;
-        relatedEl.body = note.body;
-        relatedEl.tags = [];
-        relatedEl.parentId = folder.id;
-        relatedEl.parentTitle = folder.title;
+        const noteEl = new NoteElement();
+        noteEl.id = note.id;
+        noteEl.title = note.title;
+        noteEl.body = note.body;
+        noteEl.tags = [];
+        noteEl.parentId = folder.id;
+        noteEl.parentTitle = folder.title;
         for (const tag of tags) {
-            relatedEl.tags.push(tag.title);
+            noteEl.tags.push(tag.title);
         }
-        return relatedEl;
+        return noteEl;
     }
 
     isRelated(text: string, noteId: string, title: string) {
@@ -51,16 +66,61 @@ export class RelatedElement {
         }
         return false;
     }
+
+    checkRelationShip(text: string, noteId: string, title: string) {
+        const relationship = new Relationship();
+        relationship.elementId = this.id;
+        relationship.type = RelationshipType.NULL;
+        relationship.score = 0;
+
+        if (!ignoreTitles.includes(this.title) && this.id !== noteId) {
+            const mentionId = this.body.includes(noteId);
+            const mentionFlag = this.body.includes(title) || mentionId;
+            const mentionedId = text.includes(this.id);
+            const mentionedFlag = text.includes(this.title) || mentionedId;
+            if (mentionFlag && !mentionedFlag) {
+                relationship.type = RelationshipType.MENTION;
+                if (mentionId) {
+                    relationship.score = 100;
+                } else {
+                    relationship.score = 10 * Math.min(10, title.split(' ').length);
+                }
+            } else if (!mentionFlag && mentionedFlag) {
+                relationship.type = RelationshipType.MENTIONED;
+                if (mentionedId) {
+                    relationship.score = 100;
+                } else {
+                    relationship.score = 10 * Math.min(10, this.title.split(' ').length);
+                }
+            } else if (mentionFlag && mentionedFlag) {
+                relationship.type = RelationshipType.BIDIRECTION;
+                if (mentionId && mentionedId) {
+                    relationship.score = 200;
+                } else if (!mentionId && mentionedId) {
+                    relationship.score = 100 + 10 * Math.min(10, this.title.split(' ').length);
+                } else if (mentionId && !mentionedId) {
+                    relationship.score = 100 + 10 * Math.min(10, title.split(' ').length);
+                } else {
+                    relationship.score = 10 * Math.min(10, this.title.split(' ').length)
+                                        + 10 * Math.min(10, title.split(' ').length);
+                }
+            }
+        }
+
+        return relationship;
+    }
 }
 
 
 export class RelatedEngine {
-    relatedElDict: Map<string, RelatedElement>;
+    relatedElDict: Map<string, NoteElement>;
+    relationships: Map<string, Relationship>;
     relatedUpdateCallback;
     _folders;
 
     constructor() {
-        this.relatedElDict = new Map<string, RelatedElement>();
+        this.relatedElDict = new Map<string, NoteElement>();
+        this.relationships = new Map<string, Relationship>();
         this._folders = {};
         this.relatedUpdateCallback = [];
     }
@@ -73,7 +133,7 @@ export class RelatedEngine {
         await this.fullParse();
         await noteUpdateNotify.onNoteUpdates(async (notes) => {
             for (const note of notes) {
-                const relatedEl = RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
+                const relatedEl = NoteElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
                 if (relatedEl) {
                     this.relatedElDict.set(note.id, relatedEl);
                 }
@@ -96,9 +156,10 @@ export class RelatedEngine {
 
     async fullParse() {
         this.relatedElDict.clear();
+        this.relationships.clear();
         const notes = await getAllNotes();
         for (const note of notes) {
-            const relatedEl = RelatedElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
+            const relatedEl = NoteElement.parseNote(note, await getNoteTags(note.id), await this.get_parent_title(note.parent_id));
             if (relatedEl) {
                 this.relatedElDict.set(relatedEl.id, relatedEl);
             }
@@ -107,11 +168,28 @@ export class RelatedEngine {
 
     related(text: string, noteId: string, title: string) {
         const results = [];
+        let relationships = [];
         for (const relatedEl of this.relatedElDict.values()) {
-            if (relatedEl.isRelated(text, noteId, title)) {
-                results.push(relatedEl);
+            const ship = relatedEl.checkRelationShip(text, noteId, title);
+            if (ship.type !== RelationshipType.NULL) {
+                relationships.push(ship);
             }
         }
+        relationships = relationships.sort((a, b) => {
+            if (a.score > b.score) {
+                return -1;
+            } else if (a.score < b.score) {
+                return 1;
+            } else {
+                return 0;
+            }
+        })
+        this.relationships.clear();
+        for (const ship of relationships) {
+            this.relationships.set(ship.elementId, ship);
+            results.push(this.relatedElDict.get(ship.elementId));
+        }
+
         return results;
     }
 
@@ -123,6 +201,10 @@ export class RelatedEngine {
         }
 
         return this._folders[id];
+    }
+
+    getRelationShip(elementId) {
+        return this.relationships.get(elementId);
     }
 }
 

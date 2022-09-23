@@ -16,7 +16,6 @@ span.related-element-parent.badge.text-bg-light {
 }
 
 .related-notes-div span.related-element-title {
-    display: block;
     font-weight: bold;
     color: var(--joplin-url-color);
     cursor: pointer;
@@ -37,4 +36,14 @@ span.related-element-parent.badge.text-bg-light {
     hyphens: auto;
     font-size: smaller;
     opacity: 0.6;
+}
+
+.related-notes-div .related-element-title {
+    display: grid;
+    justify-content: space-between;
+    grid-template-columns: auto auto;
+}
+
+.related-notes-div span.related-element-type {
+    margin-left: 0.5em;
 }
