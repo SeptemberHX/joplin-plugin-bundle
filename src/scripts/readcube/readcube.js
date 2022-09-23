@@ -9,7 +9,7 @@ function annotationMouseOverAndOut(over) {
     if (event.target) {
         const buttonsEle = event.target.querySelector('.anno-buttons');
         if (buttonsEle) {
-            buttonsEle.style.visibility = over ? 'visible' : 'hidden';
+            buttonsEle.style.opacity = over ? 1 : 0;
         }
     }
 }
@@ -18,7 +18,7 @@ function paperItemMouseOverAndOut(over) {
     if (event.target) {
         const buttonsEle = event.target.querySelector('.paper-info-buttons');
         if (buttonsEle) {
-            buttonsEle.style.visibility = over ? 'visible' : 'hidden';
+            buttonsEle.style.opacity = over ? 1 : 0;
         }
     }
 }
@@ -27,9 +27,16 @@ function refItemMouseOverAndOut(over) {
     if (event.target) {
         const buttonsEle = event.target.querySelector('.ref-info-buttons');
         if (buttonsEle) {
-            buttonsEle.style.visibility = over ? 'visible' : 'hidden';
+            buttonsEle.style.opacity = over ? 1 : 0;
         }
     }
+}
+
+function annotationExternalLinkClicked(annotation_link) {
+    webviewApi.postMessage({
+        name: 'sidebar_open_item',
+        id: annotation_link
+    });
 }
 
 function annotationCopyClicked(annotation_id) {

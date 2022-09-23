@@ -133,8 +133,9 @@ div#pills-paper-info {
 .paper-annos .anno-buttons,
 .paper-list .paper-info-buttons,
 .paper-refs-list .ref-info-buttons {
-    visibility: hidden;
+    opacity: 0;
     color: dimgray;
+    transition: opacity 500ms;
 }
 
 .paper-list li.list-group-item {

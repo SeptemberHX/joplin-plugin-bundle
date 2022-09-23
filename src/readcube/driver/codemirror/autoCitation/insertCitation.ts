@@ -53,7 +53,7 @@ export default class InsertCitation {
         for (const anno of annotations) {
             insertedText += '\n';
             if (anno.text && anno.text.length > 0) {
-                insertedText += `> [📜](${annotationLinks[i]}) ${anno.text.replace('\n', ' ')}`;
+                insertedText += `!!! note [📜](${annotationLinks[i]}) ${anno.text.replace('\n', ' ')}`;
                 if (enableEnhanced) {
                     insertedText += ` [color=${anno.color_id < 0 ? anno.color : colorMap[anno.color_id]}][name=${anno.user_name}][date=${new Date(anno.modified).toLocaleString()}]`;
                 }
@@ -61,11 +61,12 @@ export default class InsertCitation {
             }
 
             if (anno.note && anno.note.length > 0) {
-                insertedText += `> [🎶](${annotationLinks[i]}) ${anno.note.replace('\n', ' ')}`;
+                insertedText += `[🎶](${annotationLinks[i]}) ${anno.note.replace('\n', ' ')}`;
                 insertedText += '\n';
             }
             i += 1;
         }
+        insertedText += '!!!\n';
         this.doc.replaceRange(insertedText, currSelection.to());
         this.editor.focus();
     }

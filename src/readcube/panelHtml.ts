@@ -191,6 +191,7 @@ function generateAnnoPage(annos: AnnotationItem[], annoSearchStr: string) {
         }
         result.push(`</span>`);
         result.push(`<span class="anno-buttons">
+            <i class="fas fa-link" onclick="annotationExternalLinkClicked('${paperSvc.externalAnnotationLink(annotation)}')"></i>
             <i class="fas fa-copy" onclick="annotationCopyClicked('${annotation.id}')"></i>
             <i class="fas fa-quote-right" onclick="annotationCiteClicked('${annotation.id}')"></i>
         </span>`);
