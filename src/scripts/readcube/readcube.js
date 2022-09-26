@@ -102,3 +102,11 @@ function onPaperFigureClicked() {
         }
     }
 }
+
+function onPaperSelectorChanged() {
+    var x = document.getElementById("paper-selector").value;
+    webviewApi.postMessage({
+        name: 'sidebar_paper_selector_changed',
+        id: x
+    });
+}

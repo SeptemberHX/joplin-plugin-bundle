@@ -8,6 +8,14 @@ var md = require('markdown-it')()
 export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], paperList: PaperItem[], metadata: PaperMetadata, currNotes: string[], currTabIndex: number, annoSearchStr: string, refSearchStr: string) {
     let result = [];
     result.push(`<div class="readcube-paper-div">`);
+    if (paperList.length > 1) {
+        result.push(`<div class="paper-selector">`);
+        result.push(`<select id="paper-selector" class="form-select form-select-sm" onchange="onPaperSelectorChanged()" aria-label="Paper Selector">`);
+        for (const paper of paperList) {
+            result.push(`<option value="${paper.id}" ${paper.id === currItem.id ? 'selected' : ''}>${paper.title}</option>`);
+        }
+        result.push(`</select></div>`);
+    }
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-paper-tab" role="tablist">`);
     result.push(`
       <li class="nav-item" role="presentation">

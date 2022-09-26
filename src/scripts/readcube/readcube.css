@@ -167,6 +167,11 @@ div.readcube-paper-div p {
     margin-bottom: 0;
 }
 
+div.readcube-paper-div .paper-selector {
+    margin: 0 20px;
+    padding-top: 10px;
+}
+
 div.paper-refs-list .ref-info-header {
     margin-bottom: 5px;
 }

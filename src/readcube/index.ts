@@ -2,7 +2,7 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {settings} from "./settings";
 import joplin from "../../api";
 import {initPapers} from "./readcube";
-import {getPaperItemByNoteIdOrTitle} from "./lib/base/paperDB";
+import {getAllRecords, getPaperItemByNoteIdOrTitle} from "./lib/base/paperDB";
 import { debounce } from "ts-debounce";
 import {panelHtml} from "./panelHtml";
 import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
@@ -68,6 +68,15 @@ class ReadCubePlugin extends SidebarPlugin {
                     }
                 }
                 return true;
+            case 'sidebar_paper_selector_changed':
+                for (const paper of this.paperList) {
+                    if (paper.id === msg.id) {
+                        this.currPaper = paper;
+                        break;
+                    }
+                }
+                await this.listCacheUpdate();
+                return true;
             case 'sidebar_papers_anno_search_changed':
                 this.annoSearchStr = msg.id;
                 await this.cacheUpdate();
@@ -109,12 +118,35 @@ class ReadCubePlugin extends SidebarPlugin {
 
     update = debounce(async () => {
         const currNote = await joplin.workspace.selectedNote();
+        this.paperList = [];
+        const paperIdSet = new Set();
         if (currNote) {
             this.currPaper = await getPaperItemByNoteIdOrTitle(currNote.id, currNote.title);
+            if (this.currPaper) {
+                paperIdSet.add(this.currPaper.id);
+                this.paperList.push(this.currPaper);
+            }
+
+            for (const paperCandidate of await getAllRecords()) {
+                if (paperIdSet.has(paperCandidate.id)) {
+                    continue;
+                }
+
+                if (currNote.body.includes(paperCandidate.title) || currNote.body.includes(paperCandidate.id)) {
+                    this.paperList.push(paperCandidate);
+                }
+            }
+            if (this.paperList.length > 0) {
+                this.currPaper = this.paperList[0];
+            }
         } else {
             this.currPaper = null;
         }
 
+        await this.listCacheUpdate();
+    }, 100);
+
+    listCacheUpdate = debounce(async () => {
         await this.updateHtml();
         if (this.currPaper) {
             paperSvc.getAnnotation(this.currPaper).then(async annos => {
@@ -132,7 +164,7 @@ class ReadCubePlugin extends SidebarPlugin {
                 await this.updateHtml();
             });
         }
-    }, 100);
+    })
 
     cacheUpdate = debounce(async () => {
         await this.updateHtml();
