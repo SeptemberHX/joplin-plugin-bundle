@@ -39,6 +39,13 @@ function annotationExternalLinkClicked(annotation_link) {
     });
 }
 
+function annotationCopyLinkClicked(annotation_id) {
+    webviewApi.postMessage({
+        name: 'sidebar_annotation_copy_link_clicked',
+        id: annotation_id
+    });
+}
+
 function annotationCopyClicked(annotation_id) {
     webviewApi.postMessage({
         name: 'sidebar_annotation_copy_clicked',

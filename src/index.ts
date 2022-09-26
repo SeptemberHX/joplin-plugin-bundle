@@ -20,12 +20,13 @@ import {
 	RELATED_NOTES_DEFAULT_OPEN_DIRS,
 	HISTORY_DEFAULT_OPEN_DIRS,
 	WRITING_MARKER_DEFAULT_OPEN_DIRS,
-	DAILY_NOTE_DEFAULT_OPEN_DIRS, TODO_DEFAULT_OPEN_DIRS, OUTLINE_DEFAULT_OPEN_DIRS
+	DAILY_NOTE_DEFAULT_OPEN_DIRS, TODO_DEFAULT_OPEN_DIRS, OUTLINE_DEFAULT_OPEN_DIRS, ENABLE_GROUPS
 } from "./common";
 import {settings} from "./settings";
 import readCubePlugin from "./readcube";
 import relatedNotesPlugin from "./relatedNotes";
 import noteUpdateNotify from "./utils/noteUpdateNotify";
+import groupsPlugin from "./groups";
 
 joplin.plugins.register({
 	onStart: async function() {
@@ -72,6 +73,10 @@ joplin.plugins.register({
 			plugins.push(relatedNotesPlugin);
 		}
 
+		if (pluginConfig.groups) {
+			plugins.push(groupsPlugin);
+		}
+
 		await sidebar.init(plugins);
 	},
 });
@@ -98,6 +103,8 @@ export async function getConfig(): Promise<SideBarConfig> {
 
 	config.relatedNotes = await joplin.settings.value(ENABLE_RELATED_NOTES);
 	config.relatedNotesDefaultDirs = await getFolderSetting(RELATED_NOTES_DEFAULT_OPEN_DIRS)
+
+	config.groups = await joplin.settings.value(ENABLE_GROUPS);
 
 	config.charCount = await joplin.settings.value(ENABLE_CHAR_COUNT);
 	return config;

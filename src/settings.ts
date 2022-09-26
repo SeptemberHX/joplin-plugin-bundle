@@ -12,7 +12,11 @@ import {
     PAPERS_DEFAULT_OPEN_DIRS,
     RELATED_NOTES_DEFAULT_OPEN_DIRS,
     OUTLINE_DEFAULT_OPEN_DIRS,
-    TODO_DEFAULT_OPEN_DIRS, WRITING_MARKER_DEFAULT_OPEN_DIRS, HISTORY_DEFAULT_OPEN_DIRS, DAILY_NOTE_DEFAULT_OPEN_DIRS
+    TODO_DEFAULT_OPEN_DIRS,
+    WRITING_MARKER_DEFAULT_OPEN_DIRS,
+    HISTORY_DEFAULT_OPEN_DIRS,
+    DAILY_NOTE_DEFAULT_OPEN_DIRS,
+    ENABLE_GROUPS
 } from "./common";
 import {SettingItemType} from "../api/types";
 import {localeString, MsgType} from "./locale";
@@ -154,6 +158,15 @@ export namespace settings {
             type: SettingItemType.String,
             label: 'Switch to Related Note tab when the any parent folders are set',
             description: "folder name1|folder name2|folder name3, Requires restart",
+        }
+
+        PLUGIN_SETTINGS[ENABLE_GROUPS] = {
+            value: false,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Enable Groups in bundle',
+            description: "Create/manage groups consist of multiple notes. Still under development. Requires restart",
         }
 
         PLUGIN_SETTINGS[LAST_NOTE_UPDATE_DATE] = {

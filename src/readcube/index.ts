@@ -41,6 +41,14 @@ class ReadCubePlugin extends SidebarPlugin {
             case 'sidebar_paper_tab_item_clicked':
                 this.currTabIndex = msg.id;
                 return true;
+            case 'sidebar_annotation_copy_link_clicked':
+                for (const anno of this.currAnnotations) {
+                    if (anno.id === msg.id) {
+                        await joplin.clipboard.writeText(`[](${paperSvc.externalAnnotationLink(anno)})`);
+                        break;
+                    }
+                }
+                return true;
             case 'sidebar_annotation_copy_clicked':
                 for (const anno of this.currAnnotations) {
                     if (anno.id === msg.id) {

@@ -14,6 +14,7 @@ export const ENABLE_RELATED_NOTES = 'bundle_enable_related_notes';
 export const RELATED_NOTES_DEFAULT_OPEN_DIRS = 'bundle_related_notes_default_open_dirs';
 export const LAST_NOTE_UPDATE_DATE = 'bundle_last_note_update_date';
 export const ENABLE_CHAR_COUNT = 'bundle_status_enable_char_count';
+export const ENABLE_GROUPS = 'bundle_enable_groups';
 
 
 export const PAPERS_PLUGIN_ID = 'papers';
@@ -23,6 +24,7 @@ export const TODO_PLUGIN_ID = 'inline-todo';
 export const OUTLINE_PLUGIN_ID = 'outline';
 export const RELATED_NOTE_PLUGIN_ID = 'relatedNotesPlugin';
 export const WRITING_MARKER_PLUGIN_ID = 'writingMarker';
+export const GROUPS_PLUGIN_ID = 'groups';
 
 export enum MsgType {
     SCROLL_CHANGE,
@@ -46,4 +48,5 @@ export class SideBarConfig {
     relatedNotes: boolean;
     relatedNotesDefaultDirs: string[];
     charCount: boolean;
+    groups: boolean;
 }
