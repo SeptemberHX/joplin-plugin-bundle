@@ -42,7 +42,6 @@ export class ZoteroPaperSvc extends PaperSvc {
             this.version = response.getVersion();
             this.items = items;
         }
-        console.log('Papers:', this.items);
         return this.items;
     }
 

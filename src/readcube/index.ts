@@ -21,6 +21,7 @@ class ReadCubePlugin extends SidebarPlugin {
     refSearchStr: string = '';
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
+    paperNote: boolean = false;
 
     constructor() {
         super();
@@ -105,6 +106,11 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currAnnotations = [];
             this.currMetadata = null;
             this.currNotes = [];
+            this.paperNote = false;
+            await this.update();
+        });
+
+        await joplin.workspace.onNoteChange(async () => {
             await this.update();
         });
 
@@ -125,6 +131,9 @@ class ReadCubePlugin extends SidebarPlugin {
             if (this.currPaper) {
                 paperIdSet.add(this.currPaper.id);
                 this.paperList.push(this.currPaper);
+                this.paperNote = true;
+            } else {
+                this.paperNote = false;
             }
 
             for (const paperCandidate of await getAllRecords()) {
