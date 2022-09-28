@@ -119,8 +119,10 @@ export class ZoteroPaperSvc extends PaperSvc {
         item.abstract = jsonObject.data.abstractNote;
         item.annotations = [];
         item.authors = [];
-        for (const creator of jsonObject.data.creators) {
-            item.authors.push(`${creator.firstName} ${creator.lastName}`)
+        if ('creators' in jsonObject.data) {
+            for (const creator of jsonObject.data.creators) {
+                item.authors.push(`${creator.firstName} ${creator.lastName}`)
+            }
         }
         item.collection_id = null;
         item.issn = jsonObject.data.ISSN;
@@ -128,11 +130,13 @@ export class ZoteroPaperSvc extends PaperSvc {
         item.journal_abbrev = jsonObject.data.journalAbbreviation;
         item.tags = [];
         item.rating = -1;
-        for (const tag of jsonObject.data.tags) {
-            if (tag.tag.includes('★')) {
-                item.rating = tag.tag.lastIndexOf('★') + 1;
-            } else {
-                item.tags.push(tag.tag);
+        if ('tags' in jsonObject.data) {
+            for (const tag of jsonObject.data.tags) {
+                if (tag.tag.includes('★')) {
+                    item.rating = tag.tag.lastIndexOf('★') + 1;
+                } else {
+                    item.tags.push(tag.tag);
+                }
             }
         }
         item.notes = '';
