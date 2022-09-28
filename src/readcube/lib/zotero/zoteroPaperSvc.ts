@@ -126,8 +126,20 @@ export class ZoteroPaperSvc extends PaperSvc {
         }
         item.collection_id = null;
         item.issn = jsonObject.data.ISSN;
-        item.journal = jsonObject.data.publicationTitle;
-        item.journal_abbrev = jsonObject.data.journalAbbreviation;
+
+        switch (jsonObject.data.itemType) {
+            case 'conferencePaper':
+                item.journal = jsonObject.data.conferenceName;
+                item.journal_abbrev = jsonObject.data.conferenceName;
+                break;
+            case 'journalArticle':
+                item.journal = jsonObject.data.publicationTitle;
+                item.journal_abbrev = jsonObject.data.journalAbbreviation;
+                break;
+            case 'book':
+            default:break;
+        }
+
         item.tags = [];
         item.rating = -1;
         if ('tags' in jsonObject.data) {
