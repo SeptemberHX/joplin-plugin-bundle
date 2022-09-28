@@ -113,6 +113,8 @@ export class ZoteroPaperSvc extends PaperSvc {
             const date = chrono.parseDate(jsonObject.data.date);
             if (date) {
                 item.year = date.getFullYear();
+            } else {
+                item.year = Number.parseInt(jsonObject.data.date);
             }
         }
 
@@ -136,8 +138,13 @@ export class ZoteroPaperSvc extends PaperSvc {
                 item.journal = jsonObject.data.publicationTitle;
                 item.journal_abbrev = jsonObject.data.journalAbbreviation;
                 break;
+            case 'bookSection':
+                item.journal = jsonObject.data.bookTitle;
+                item.journal_abbrev = jsonObject.data.bookTitle;
+                break;
             case 'book':
-            default:break;
+            default:
+                break;
         }
 
         item.tags = [];
