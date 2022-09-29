@@ -9,6 +9,7 @@ import {
 } from "../common";
 import {getConfig} from "../index";
 import {getPath} from "../utils/noteUtils";
+import {ToolbarButtonLocation} from "../../api/types";
 
 
 export abstract class SidebarPlugin {
@@ -72,6 +73,27 @@ export class Sidebars {
             totalCharCount: 0,
             selectedCharCount: 0
         };
+
+        await joplin.commands.register({
+            name: 'toggleBundleSidebar',
+            label: 'Toggle Bundle Sidebar',
+            iconName: 'fas fa-boxes',
+            execute: async () => {
+                const visibility = await joplin.views.panels.visible(this.panel);
+                if (visibility) {
+                    await joplin.views.panels.hide(this.panel);
+                } else {
+                    await joplin.views.panels.show(this.panel);
+                    await this.render();
+                }
+            },
+        })
+
+        await joplin.views.toolbarButtons.create(
+            'bundle_toggle_sidebar',
+            'toggleBundleSidebar',
+            ToolbarButtonLocation.NoteToolbar
+        )
 
         await joplin.workspace.onNoteSelectionChange(async () => {
             const currNote = await joplin.workspace.selectedNote();
