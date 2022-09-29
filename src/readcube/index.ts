@@ -22,6 +22,7 @@ class ReadCubePlugin extends SidebarPlugin {
     paperList: PaperItem[] = [];
     currTabIndex: number = 1;
     paperNote: boolean = false;
+    selectedPaperId: string;
 
     constructor() {
         super();
@@ -73,6 +74,7 @@ class ReadCubePlugin extends SidebarPlugin {
                 for (const paper of this.paperList) {
                     if (paper.id === msg.id) {
                         this.currPaper = paper;
+                        this.selectedPaperId = msg.id;
                         break;
                     }
                 }
@@ -107,6 +109,7 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currMetadata = null;
             this.currNotes = [];
             this.paperNote = false;
+            this.selectedPaperId = null;
             await this.update();
         });
 
@@ -145,8 +148,15 @@ class ReadCubePlugin extends SidebarPlugin {
                     this.paperList.push(paperCandidate);
                 }
             }
-            if (this.paperList.length > 0) {
+            if (!this.selectedPaperId && this.paperList.length > 0) {
                 this.currPaper = this.paperList[0];
+            } else if (this.selectedPaperId && this.paperList.length > 0) {
+                for (const paperCandidate of this.paperList) {
+                    if (paperCandidate.id === this.selectedPaperId) {
+                        this.currPaper = paperCandidate;
+                        break;
+                    }
+                }
             }
         } else {
             this.currPaper = null;
