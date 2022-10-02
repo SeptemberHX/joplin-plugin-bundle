@@ -142,6 +142,10 @@ export class ZoteroPaperSvc extends PaperSvc {
                 item.journal = jsonObject.data.bookTitle;
                 item.journal_abbrev = jsonObject.data.bookTitle;
                 break;
+            case 'preprint':
+                item.journal = jsonObject.data.repository;
+                item.journal_abbrev = jsonObject.data.repository;
+                break;
             case 'book':
             default:
                 break;
