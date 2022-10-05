@@ -148,6 +148,7 @@ export class ZoteroPaperSvc extends PaperSvc {
                 break;
             case 'book':
             default:
+                item.journal = '';
                 break;
         }
 
@@ -165,7 +166,7 @@ export class ZoteroPaperSvc extends PaperSvc {
         item.notes = '';
         item.pagination = jsonObject.data.pages;
         item.volume = jsonObject.data.volume;
-        item.title = jsonObject.data.title;
+        item.title = jsonObject.data.title ? jsonObject.data.title : 'Missing Title';
         return item;
     }
 }

@@ -88,13 +88,33 @@ export async function buildCitationForItem(item: PaperItem, noteId) {
 }
 
 export async function buildRefName(item: PaperItem) {
-    let name = item.authors[0].split(/\s/)[0];
-    name += item.year;
-    for (const t of item.journal.split(/\s/)) {
-        if (t[0] >= 'A' && t[0] <= 'Z') {
-            name += t[0];
+    let name = '';
+    if (item.authors && item.authors.length > 0) {
+        name += item.authors[0].split(/\s/)[0];
+    }
+
+    if (item.year) {
+        name += item.year;
+    }
+
+    if (item.journal) {
+        for (const t of item.journal.split(/\s/)) {
+            if (t[0] >= 'A' && t[0] <= 'Z') {
+                name += t[0];
+            }
         }
     }
+
+    if (name.length === 0) {
+        if (item.title) {
+            for (const t of item.title.split(/\s/)) {
+                name += t[0];
+            }
+        } else {
+            name = item.id;
+        }
+    }
+
     return name;
 }
 

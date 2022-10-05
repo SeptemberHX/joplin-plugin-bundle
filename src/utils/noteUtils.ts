@@ -65,6 +65,9 @@ export async function getPath(noteParentId: string) {
     let folder;
     do {
         folder = await getFolder(noteParentId);
+        if (!folder) {
+            break;
+        }
         results.push(folder.title);
         noteParentId = folder.parent_id;
     } while (noteParentId);
