@@ -24,7 +24,7 @@ export abstract class SidebarPlugin {
         this.html = `
             <div class="card"><div class="card-body">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Loading...</span>
             </div>
             </div></div>
         `;

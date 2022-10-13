@@ -1,16 +1,17 @@
 import {getAllNotes, getFolder, getNoteTags} from "../utils/noteUtils";
 import noteUpdateNotify from "../utils/noteUpdateNotify";
 import wordsCount from 'words-count';
+import {lineOfString} from "../utils/stringUtils";
 
 
 const ignoreTitles = ['default-history'];
 
-
+// do not change the order and value
 export enum RelationshipType {
-    NULL,
-    MENTION,
-    MENTIONED,
-    BIDIRECTION,
+    NULL = 0,
+    MENTION = 1,
+    MENTIONED = 2,
+    BIDIRECTION = 3,
 }
 
 
@@ -18,6 +19,8 @@ export class Relationship {
     elementId: string;      // note id
     type: RelationshipType;
     score: number;          // relationship score. High is better
+    line: number;           // the first line where it appears
+    lineR: number;          // the first line where it is referred
 }
 
 
@@ -75,31 +78,52 @@ export class NoteElement {
         relationship.score = 0;
 
         if (!ignoreTitles.includes(this.title) && this.id !== noteId) {
-            const mentionId = this.body.includes(noteId);
-            const mentionFlag = this.body.includes(title) || mentionId;
-            const mentionedId = text.includes(this.id);
-            const mentionedFlag = text.includes(this.title) || mentionedId;
+            const lines = this.body.split('\n');
+            const otherLines = text.split('\n');
+
+            // check references
+            const mentionIdLineNumber = lineOfString(noteId, lines);
+            relationship.line = mentionIdLineNumber;
+
+            const mentionTitleLineNumber = lineOfString(title, lines);
+            if (mentionTitleLineNumber > 0 && mentionIdLineNumber <= 0 || mentionTitleLineNumber < mentionIdLineNumber) {
+                relationship.line = mentionTitleLineNumber;
+            }
+            const mentionFlag = mentionTitleLineNumber > 0 || mentionIdLineNumber > 0;
+
+            // check cited
+            const mentionedIdLineNumber = lineOfString(this.id, otherLines);
+            relationship.lineR = mentionedIdLineNumber;
+
+            const mentionedTitleLineNumber = lineOfString(this.title, otherLines);
+            if (mentionedTitleLineNumber > 0 && mentionedIdLineNumber <= 0 || mentionedTitleLineNumber < mentionedIdLineNumber) {
+                relationship.lineR = mentionedTitleLineNumber;
+            }
+
+            const mentionedFlag = mentionedTitleLineNumber > 0 || mentionedIdLineNumber;
+
+            // calculate score
             if (mentionFlag && !mentionedFlag) {
                 relationship.type = RelationshipType.MENTION;
-                if (mentionId) {
+                if (mentionIdLineNumber > 0) {
                     relationship.score = 100;
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(title));
                 }
             } else if (!mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.MENTIONED;
-                if (mentionedId) {
+                if (mentionedIdLineNumber > 0) {
                     relationship.score = 100;
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(this.title));
                 }
             } else if (mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.BIDIRECTION;
-                if (mentionId && mentionedId) {
+                if (mentionIdLineNumber > 0 && mentionedIdLineNumber > 0) {
                     relationship.score = 200;
-                } else if (!mentionId && mentionedId) {
+                } else if (mentionIdLineNumber <= 0 && mentionedIdLineNumber > 0) {
                     relationship.score = 100 + 10 * Math.min(10, wordsCount(this.title));
-                } else if (mentionId && !mentionedId) {
+                } else if (mentionIdLineNumber > 0 && mentionedIdLineNumber <= 0) {
                     relationship.score = 100 + 10 * Math.min(10, wordsCount(title));
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(this.title))

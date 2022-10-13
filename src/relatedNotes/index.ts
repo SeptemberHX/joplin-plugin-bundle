@@ -27,6 +27,14 @@ class RelatedNotesPlugin extends SidebarPlugin {
         switch (msg.name) {
             case 'sidebar_related_notes_item_clicked':
                 await joplin.commands.execute('openItem', `:/${msg.id}`);
+                if (msg.line > 0) {
+                    await this.debounceScrollToLine(msg.line - 1);
+                }
+                return true;
+            case 'sidebar_related_notes_arrow_clicked':
+                if (msg.lineR > 0) {
+                    await this.debounceScrollToLine(msg.lineR - 1);
+                }
                 return true;
             default:
                 return false
@@ -54,6 +62,13 @@ class RelatedNotesPlugin extends SidebarPlugin {
             await this.sidebar.updateHtml(this.id, panelHtml(relatedEngine.related(note.body, note.id, note.title)));
         }
     }, 100);
+
+    debounceScrollToLine = debounce(async (line) => {
+        await joplin.commands.execute('editor.execCommand', {
+            name: 'sidebar_cm_scrollToLine',
+            args: [line]
+        });
+    }, 500);
 }
 
 

@@ -9,8 +9,8 @@ export function panelHtml(relatedEls: NoteElement[]) {
         result.push('<li class="list-group-item">');
         result.push(`<div class="related-element">`);
         result.push(`<div class="related-element-title">`);
-        result.push(`<span class="related-element-title" onclick="onRelatedTitleClicked('${related.id}')">${related.title}</span>`);
-        result.push(`<span class="related-element-type">${renderRelationshipType(related.id)}</span>`)
+        result.push(`<span class="related-element-title" onclick="onRelatedTitleClicked('${related.id}', ${relatedEngine.getRelationShip(related.id).line})">${related.title}</span>`);
+        result.push(`<span class="related-element-type" onclick="onRelatedArrowClicked('${related.id}', ${relatedEngine.getRelationShip(related.id).lineR})">${renderRelationshipType(related.id)}</span>`)
         result.push(`</div>`);
         result.push(`<div class="related-element-body">${related.body.replace('\n', '<br>')}</div>`);
         result.push(`<div class="related-element-info">`);
