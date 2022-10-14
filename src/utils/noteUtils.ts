@@ -69,7 +69,11 @@ export async function getPath(noteParentId: string) {
             break;
         }
         results.push(folder.title);
-        noteParentId = folder.parent_id;
+        if (folder) {
+            noteParentId = folder.parent_id;
+        } else {
+            noteParentId = null;
+        }
     } while (noteParentId);
     return results.reverse();
 }

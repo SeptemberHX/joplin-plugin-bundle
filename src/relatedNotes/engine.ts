@@ -50,8 +50,10 @@ export class NoteElement {
         noteEl.tags = [];
         noteEl.parentId = folder.id;
         noteEl.parentTitle = folder.title;
-        for (const tag of tags) {
-            noteEl.tags.push(tag.title);
+        if (tags) {
+            for (const tag of tags) {
+                noteEl.tags.push(tag.title);
+            }
         }
         return noteEl;
     }
