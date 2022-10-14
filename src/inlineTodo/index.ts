@@ -8,12 +8,14 @@ import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 import {INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
 import {TODO_PLUGIN_ID} from "../common";
+import {TodoEngine} from "./todoEngine";
 
 class TodolistPlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
     summary_map: Summary;
     builder: SummaryBuilder;
+    engine: TodoEngine;
     todoTypeClicked: number = 3;
     filterProject: string = allProjectsStr;
     filterTag: string = allTagsStr;
@@ -45,6 +47,7 @@ class TodolistPlugin extends SidebarPlugin {
         const note = await joplin.data.get(['notes', noteId], { fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'] });
         if (note) {
             await this.builder.update_from_note(note);
+            await this.engine.search_in_note(note);
             await this.update_summary(this.builder.summary, this.builder.settings);
         }
     }
@@ -67,6 +70,7 @@ class TodolistPlugin extends SidebarPlugin {
         this.sidebar = sidebar;
         await settings.register();
         this.builder = new SummaryBuilder(await this.getSettings());
+        this.engine = new TodoEngine(await this.getSettings());
         await joplin.settings.onChange(async (_) => {
             this.builder.settings = await this.getSettings();
             await this.debounceRefresh();
