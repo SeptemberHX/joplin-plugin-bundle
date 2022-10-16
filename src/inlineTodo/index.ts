@@ -2,19 +2,17 @@ import {SidebarPlugin, Sidebars} from "../sidebars/sidebarPage";
 import {Settings, Summary} from "./types";
 import joplin from "api";
 import {regexes} from "./common";
-import {SummaryBuilder} from "./builder";
 import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 import {INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
 import {TODO_PLUGIN_ID} from "../common";
-import {TodoEngine} from "./todoEngine";
+import TodoEngine from "./todoEngine";
 
 class TodolistPlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
     summary_map: Summary;
-    builder: SummaryBuilder;
     engine: TodoEngine;
     todoTypeClicked: number = 3;
     filterProject: string = allProjectsStr;
@@ -27,8 +25,8 @@ class TodolistPlugin extends SidebarPlugin {
     }, 100);
 
     refresh = async () => {
-        await this.builder.search_in_all();
-        await this.update_summary(this.builder.summary, this.builder.settings);
+        await this.engine.search_in_all();
+        await this.update_summary(this.engine.summary, this.engine.settings);
     };
 
     debounceCacheRefresh = debounce(async () => {
@@ -36,7 +34,7 @@ class TodolistPlugin extends SidebarPlugin {
     }, 100);
 
     cacheRefresh = async () => {
-        await this.update_summary(this.builder.summary, this.builder.settings);
+        await this.update_summary(this.engine.summary, this.engine.settings);
     }
 
     debounceRefreshNote = debounce(async (noteId: string) => {
@@ -46,9 +44,9 @@ class TodolistPlugin extends SidebarPlugin {
     refreshNote = async (noteId: string) => {
         const note = await joplin.data.get(['notes', noteId], { fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'] });
         if (note) {
-            await this.builder.update_from_note(note);
+            await this.engine.update_from_note(note);
             await this.engine.search_in_note(note);
-            await this.update_summary(this.builder.summary, this.builder.settings);
+            await this.update_summary(this.engine.summary, this.engine.settings);
         }
     }
 
@@ -69,10 +67,9 @@ class TodolistPlugin extends SidebarPlugin {
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
         await settings.register();
-        this.builder = new SummaryBuilder(await this.getSettings());
         this.engine = new TodoEngine(await this.getSettings());
         await joplin.settings.onChange(async (_) => {
-            this.builder.settings = await this.getSettings();
+            this.engine.settings = await this.getSettings();
             await this.debounceRefresh();
         });
 

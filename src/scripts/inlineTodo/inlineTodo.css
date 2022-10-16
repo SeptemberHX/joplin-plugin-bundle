@@ -119,3 +119,10 @@ div.inline-todo-div div.search-input {
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
+
+div.inline-todo-div div.task-description {
+    font-size: small;
+    opacity: 0.8;
+    margin-left: 1em;
+    margin-top: 0.3em;
+}

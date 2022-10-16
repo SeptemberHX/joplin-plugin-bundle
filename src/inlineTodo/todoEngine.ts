@@ -8,7 +8,7 @@ const dateStrReg = /^\d{4}-\d{2}-\d{2}$/;
 /**
  * New version builder engine that supports task description and sub-tasks
  */
-export class TodoEngine {
+export default class TodoEngine {
 
     _summary: Summary = {};
     // Maps folder ids to folder name
@@ -16,12 +16,14 @@ export class TodoEngine {
     _folders: Record<string, string> = {};
     // The plugin settings
     _settings: Settings;
+    // Don't overwrite the summary note unless all notes have been checked
+    _initialized: boolean = false;
 
     constructor (s: Settings) {
         this._settings = s;
     }
 
-    async search_in_note(note: Note) {
+    async search_in_note(note: Note) : Promise<boolean> {
         // Conflict notes are duplicates usually
         if (note.is_conflict) { return; }
         let matches = [];
@@ -71,7 +73,7 @@ export class TodoEngine {
                     priority: todo_type.priority(match),
                     line: lineNumber,
                     description: [],
-                    indent: match.index
+                    indent: line.length - line.trimStart().length
                 };
                 matches.push(task);
 
@@ -144,8 +146,6 @@ export class TodoEngine {
             lineNumber += 1;
         }
 
-        console.log(matches);
-
         if (matches.length > 0 || this._summary[note.id]?.length > 0) {
             // Check if the matches actually changed
             const dirty = JSON.stringify(this._summary[note.id]) != JSON.stringify(matches);
@@ -166,5 +166,45 @@ export class TodoEngine {
         }
 
         return this._folders[id];
+    }
+
+    // This function scans all notes, but it's rate limited to it from crushing Joplin
+    async search_in_all() {
+        this._summary = {};
+        let page = 0;
+        let r;
+        do {
+            page += 1;
+            // I don't know how the basic search is implemented, it could be that it runs a regex
+            // query on each note under the hood. If that is the case and this behaviour crushed
+            // some slow clients, I should consider reverting this back to searching all notes
+            // (with the rate limiter)
+            r = await joplin.data.get(['search'], { query: this._settings.todo_type.query,  fields: ['id', 'body', 'title', 'parent_id', 'is_conflict'], page: page });
+            if (r.items) {
+                for (let note of r.items) {
+                    await this.search_in_note(note);
+                }
+            }
+        } while(r.has_more);
+
+        this._initialized = true;
+    }
+
+    async update_from_note(note: Note, note_title_date?: boolean) {
+        if (note.id in this._summary) {
+            delete this._summary[note.id];
+        }
+        await this.search_in_note(note);
+    }
+
+    get summary(): Summary {
+        return this._summary;
+    }
+
+    get settings(): Settings {
+        return this._settings;
+    }
+    set settings(s: Settings) {
+        this._settings = s;
     }
 }

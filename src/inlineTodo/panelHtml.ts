@@ -346,6 +346,15 @@ function createHTMLForTodoItem(todoItem: Todo) {
                 <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">
                 <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
+    if (todoItem.description.length > 0) {
+        result += `<div class="task-description">`;
+        const descriptionMDText = [];
+        for (const line of todoItem.description) {
+            descriptionMDText.push(line.substr(todoItem.indent + 1));
+        }
+        result += md.render(descriptionMDText.join('\n'));
+        result += `</div>`;
+    }
 
     result += `<div class="task-badge">`
     result += `<div class="task-tags">`;

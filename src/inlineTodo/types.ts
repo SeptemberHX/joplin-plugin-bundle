@@ -18,6 +18,8 @@ export interface Todo {
 	tags: string[];
 	index: number;
 	priority: number;
+	description: string[];
+	indent: number;
 
 	fromDate: Date;
 	toDate: Date;
