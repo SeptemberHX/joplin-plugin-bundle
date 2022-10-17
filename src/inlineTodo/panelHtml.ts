@@ -32,7 +32,9 @@ const emptyTaskCheer = () => {
         `;
 }
 
-export default async function panelHtml(summary: Summary, activedTab: number, selectedProject, selectedTag, selectedDue, searchCondition) {
+export default async function panelHtml(summary: Summary, activedTab: number, selectedProject,
+                                        selectedTag, selectedDue, searchCondition,
+                                        showDescription: boolean) {
     let todoItems = [];
     for (const noteId in summary) {
         for (const todoItem of summary[noteId]) {
@@ -166,11 +168,11 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     let searchDiv = `<div class="tab-pane fade show ${activedTab === 5 ? 'active' : ''}" id="pills-search" role="tabpanel" aria-labelledby="pills-search-tab" tabindex="0">`;
 
     for (const todoItem of todayItems) {
-        result += createHTMLForTodoItem(todoItem);
+        result += createHTMLForTodoItem(todoItem, showDescription);
     }
 
     for (const inboxItem of inboxItems) {
-        inboxDiv += createHTMLForTodoItem(inboxItem);
+        inboxDiv += createHTMLForTodoItem(inboxItem, showDescription);
     }
 
     function createTaskCollapse(typeStr: string, displayText, items: any[]) {
@@ -187,7 +189,7 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
 
         result += `<ul class="list-group">`;
         for (const item of items) {
-            result += createHTMLForTodoItem(item);
+            result += createHTMLForTodoItem(item, showDescription);
         }
         result += `</ul></div></div></div>`;
         return result;
@@ -222,8 +224,8 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
         inboxDiv += emptyTaskCheer();
     }
 
-    filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag, selectedDue);
-    searchDiv += createSearchPanel(todoItems, searchCondition);
+    filterDiv += createFilterPanel(todoItems, selectedProject, selectedTag, selectedDue, showDescription);
+    searchDiv += createSearchPanel(todoItems, searchCondition, showDescription);
 
     inboxDiv += `</ul></div>`;
     scheduledDiv += `</div>`;
@@ -236,28 +238,28 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     return result;
 }
 
-function createSearchPanel(items: any[], searchStr: string) {
+function createSearchPanel(items: any[], searchStr: string, showDescription) {
     let result = [`<div id ="taskSearchDiv">`];
     result.push(`<div class="input-group input-group-sm mb-2 search-input">
           <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
           <input class="form-control" type="text" id="floatingTaskSearchInput" onkeydown="onSearchChanged()" value="${searchStr}">
         </div>`
     );
-    result.push(createSearchPanelBody(items, searchStr));
+    result.push(createSearchPanelBody(items, searchStr, showDescription));
     result.push('</div>');
     return result.join('');
 }
 
-function createSearchPanelBody(items: Todo[], searchStr: string) {
+function createSearchPanelBody(items: Todo[], searchStr: string, showDescription) {
     let result = '<ul class="list-group">';
     for (const item of filterItemsBySearchStr(items, searchStr)) {
-        result += createHTMLForTodoItem(item);
+        result += createHTMLForTodoItem(item, showDescription);
     }
     result += `</ul>`;
     return result;
 }
 
-function createFilterPanel(items: Todo[], selectedProject, selectedTag, selectedDue) {
+function createFilterPanel(items: Todo[], selectedProject, selectedTag, selectedDue, showDescription) {
     let result = `<div id="taskSelectorsDiv">`;
     let assigneeSelector = `<select id="assignee-selector" class="form-select form-select-sm" onchange="onFilterProjectChanged()" aria-label="Assignee Selector">`;
     let tagSelector = `<select id="tag-selector" class="form-select form-select-sm" onchange="onFilterTagChanged()" aria-label="Tag Selector">`;
@@ -300,10 +302,11 @@ function createFilterPanel(items: Todo[], selectedProject, selectedTag, selected
     tagSelector += `</select>`;
     dueSelector += `</select>`;
 
-    return result + assigneeSelector + tagSelector + dueSelector + `</div>` + createFilterPanelBody(selectedProject, selectedTag, selectedDue, items);
+    return result + assigneeSelector + tagSelector + dueSelector
+        + `</div>` + createFilterPanelBody(selectedProject, selectedTag, selectedDue, items, showDescription);
 }
 
-function createFilterPanelBody(project: string, tag: string, due: string, items: Todo[]) {
+function createFilterPanelBody(project: string, tag: string, due: string, items: Todo[], showDescription: boolean) {
     let result = '<ul class="list-group">';
     for (const item of items) {
         if (project !== allProjectsStr && project !== noProjectStr && project !== withProjectStr && ((item.assignee && item.assignee !== project) || !item.assignee)) {
@@ -334,19 +337,19 @@ function createFilterPanelBody(project: string, tag: string, due: string, items:
             continue;
         }
 
-        result += createHTMLForTodoItem(item);
+        result += createHTMLForTodoItem(item, showDescription);
     }
     result += `</ul>`;
     return result;
 }
 
-function createHTMLForTodoItem(todoItem: Todo) {
+function createHTMLForTodoItem(todoItem: Todo, showDescription: boolean) {
     let result = `
             <li class="list-group-item priority-${todoItem.priority}">
                 <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">
                 <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
-    if (todoItem.description.length > 0) {
+    if (showDescription && todoItem.description.length > 0) {
         result += `<div class="task-description">`;
         const descriptionMDText = [];
         for (const line of todoItem.description) {

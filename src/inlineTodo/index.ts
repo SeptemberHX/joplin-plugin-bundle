@@ -5,7 +5,7 @@ import {regexes} from "./common";
 import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
-import {INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
+import {INLINE_TODO_ITEM_DESCRIPTION, INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
 import {TODO_PLUGIN_ID} from "../common";
 import TodoEngine from "./todoEngine";
 
@@ -19,6 +19,7 @@ class TodolistPlugin extends SidebarPlugin {
     filterTag: string = allTagsStr;
     filterDue: string = allDue;
     searchCondition: string = '';
+    settings: Settings;
 
     debounceRefresh = debounce(async () => {
         await this.refresh();
@@ -67,9 +68,11 @@ class TodolistPlugin extends SidebarPlugin {
     public async init(sidebar: Sidebars) {
         this.sidebar = sidebar;
         await settings.register();
-        this.engine = new TodoEngine(await this.getSettings());
+        this.settings = await this.getSettings();
+        this.engine = new TodoEngine(this.settings);
         await joplin.settings.onChange(async (_) => {
-            this.engine.settings = await this.getSettings();
+            this.settings = await this.getSettings();
+            this.engine.settings = this.settings;
             await this.debounceRefresh();
         });
 
@@ -169,12 +172,14 @@ class TodolistPlugin extends SidebarPlugin {
             summary_type: 'Table',
             force_sync: true,
             note_title_date: await joplin.settings.value(INLINE_TODO_NOTE_TITLE_AS_DATE),
+            showDescription: await joplin.settings.value(INLINE_TODO_ITEM_DESCRIPTION)
         };
     }
 
     private async update_summary(summary_map: Summary, settings: Settings) {
         this.summary_map = summary_map;
-        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked, this.filterProject, this.filterTag, this.filterDue, this.searchCondition));
+        await this.sidebar.updateHtml(this.id, await panelHtml(this.summary_map, this.todoTypeClicked,
+            this.filterProject, this.filterTag, this.filterDue, this.searchCondition, this.settings.showDescription));
     }
 }
 
