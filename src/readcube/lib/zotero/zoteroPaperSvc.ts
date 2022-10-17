@@ -121,7 +121,7 @@ export class ZoteroPaperSvc extends PaperSvc {
         item.abstract = jsonObject.data.abstractNote;
         item.annotations = [];
         item.authors = [];
-        if ('creators' in jsonObject.data) {
+        if ('creators' in jsonObject.data && Symbol.iterator in Object(jsonObject.data.creators)) {
             for (const creator of jsonObject.data.creators) {
                 item.authors.push(`${creator.firstName} ${creator.lastName}`)
             }
