@@ -120,22 +120,24 @@ export async function buildRefName(item: PaperItem) {
 
 async function buildCitation(item, title, authors, from, volume, page, year, itemId, collectionId) {
     let showText = "";
-    showText += authors.slice(0, authors.length - 1).join(', ') + `, and ${authors[authors.length - 1]}.`;
-    showText += ` "[${title}](${paperSvc.externalLink(item)})."`;
+    if (authors && authors.length > 0) {
+        showText += authors.slice(0, authors.length - 1).join(', ') + `, and ${authors[authors.length - 1]}.`;
+        showText += ` "[${title}](${paperSvc.externalLink(item)})."`;
+    }
 
-    if (from.length > 0) {
+    if (from && from.length > 0) {
         showText += ` In *${from}*.`;
     }
 
-    if (volume.length > 0) {
+    if (volume && volume.length > 0) {
         showText += ` vol. ${volume}.`;
     }
 
-    if (page.length > 0) {
+    if (page && page.length > 0) {
         showText += ` pp. ${page}.`;
     }
 
-    if (year.length > 0) {
+    if (year && year.length > 0) {
         showText += ` ${year}.`;
     }
 

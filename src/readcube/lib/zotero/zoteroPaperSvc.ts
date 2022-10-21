@@ -30,18 +30,49 @@ export class ZoteroPaperSvc extends PaperSvc {
 
     async getAllItems(): Promise<PaperItem[]> {
         console.log('Papers: Get all items in zotero...');
-        const response = await this.myapi.version(this.version).items().top().get();
+        const limit = 50;
+        let currIndex = 0;
+        this.items = [];
+        let nextVersion = null;
 
-        if (!response.getVersion() || this.version === response.getVersion()) {
-            ;
-        } else {
-            const items = [];
-            for (const item of response.raw) {
-                items.push(this.parseItemJson(item));
+        do {
+            console.log(`Papers: Fetching items ${currIndex}-${currIndex + limit}...`);
+            const response = await this.myapi.version(this.version).items().top().get({
+                start: currIndex,
+                limit: limit
+            });
+
+            if (!response.raw) {
+                console.log('Papers: Warning, due to some unknown errors, plugin fails to fetch all items with wrong version number');
+                break;
             }
-            this.version = response.getVersion();
-            this.items = items;
+
+            if ((!response.getVersion() || this.version === response.getVersion()) && currIndex === 0) {
+                break;
+            } else {
+                let items = [];
+                for (const item of response.raw) {
+                    items.push(this.parseItemJson(item));
+                }
+
+                nextVersion = response.getVersion();
+                if (items.length > 0) {
+                    this.items = this.items.concat(items);
+                }
+
+                if (items.length < limit) {
+                    break;
+                }
+                currIndex += limit;
+            }
+        } while (true);
+
+        // we need update version header until all the items are fetched, otherwise response.raw is null
+        if (nextVersion) {
+            this.version = nextVersion;
         }
+
+        console.log('Papers: All item size:', this.items.length);
         return this.items;
     }
 
