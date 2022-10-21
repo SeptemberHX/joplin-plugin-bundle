@@ -2,14 +2,17 @@ import joplin from "../../api";
 import {
     DAILY_NOTE_PLUGIN_ID,
     HISTORY_PLUGIN_ID,
-    MsgType, OUTLINE_PLUGIN_ID,
+    MsgType,
+    OUTLINE_PLUGIN_ID,
     PAPERS_PLUGIN_ID,
     RELATED_NOTE_PLUGIN_ID,
-    SideBarConfig, TODO_PLUGIN_ID, WRITING_MARKER_PLUGIN_ID
+    SideBarConfig,
+    TODO_PLUGIN_ID,
+    WRITING_MARKER_PLUGIN_ID
 } from "../common";
 import {getConfig} from "../index";
 import {getPath} from "../utils/noteUtils";
-import {ToolbarButtonLocation} from "../../api/types";
+import {MenuItemLocation, ToolbarButtonLocation} from "../../api/types";
 
 
 export abstract class SidebarPlugin {
@@ -87,13 +90,19 @@ export class Sidebars {
                     await this.render();
                 }
             },
-        })
+        });
 
         await joplin.views.toolbarButtons.create(
             'bundle_toggle_sidebar',
             'toggleBundleSidebar',
             ToolbarButtonLocation.NoteToolbar
-        )
+        );
+
+        await joplin.views.menuItems.create(
+            "bundle_toggle_sidebar_menu_item",
+            "toggleBundleSidebar",
+            MenuItemLocation.View
+        );
 
         await joplin.workspace.onNoteSelectionChange(async () => {
             const currNote = await joplin.workspace.selectedNote();
