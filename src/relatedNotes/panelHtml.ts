@@ -1,5 +1,8 @@
 import relatedEngine, {NoteElement, RelationshipType} from "./engine";
 
+var md = require('markdown-it')()
+    .use(require('markdown-it-mark'));
+
 export function panelHtml(relatedEls: NoteElement[]) {
     let result = [];
     result.push(`<div class="related-notes-div">`);
@@ -12,7 +15,21 @@ export function panelHtml(relatedEls: NoteElement[]) {
         result.push(`<span class="related-element-title" onclick="onRelatedTitleClicked('${related.id}', ${relatedEngine.getRelationShip(related.id).line})">${related.title}</span>`);
         result.push(`<span class="related-element-type" onclick="onRelatedArrowClicked('${related.id}', ${relatedEngine.getRelationShip(related.id).lineR})">${renderRelationshipType(related.id)}</span>`)
         result.push(`</div>`);
-        result.push(`<div class="related-element-body">${related.body.replace('\n', '<br>')}</div>`);
+
+        let renderBodyLine = [];
+        let nonEmptyLineCount = 0;
+        for (const line of related.body.split('\n')) {
+            if (line.trim().length > 0) {
+                nonEmptyLineCount += 1;
+
+                if (nonEmptyLineCount > 5) {
+                    break;
+                }
+            }
+            renderBodyLine.push(line);
+        }
+
+        result.push(`<div class="related-element-body">${md.render(renderBodyLine.join('\n'))}</div>`);
         result.push(`<div class="related-element-info">`);
         result.push(`<span class="related-element-parent badge text-bg-primary">${related.parentTitle}</span>`);
         result.push(`<span class="related-element-tags">`);

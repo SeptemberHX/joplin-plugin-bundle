@@ -48,3 +48,31 @@ span.related-element-parent.badge.text-bg-light {
     margin-left: 0.5em;
     opacity: 0.5;
 }
+
+.related-element-body {
+    margin-left: 1em;
+}
+
+.related-element-body h1 {
+    font-size: 1.5em;
+}
+
+.related-element-body h2 {
+    font-size: 1.35em;
+}
+
+.related-element-body h3 {
+    font-size: 1.3em;
+}
+
+.related-element-body h4 {
+    font-size: 1.25em;
+}
+
+.related-element-body h5 {
+    font-size: 1.2em;
+}
+
+.related-element-body h6 {
+    font-size: 1.15em;
+}
