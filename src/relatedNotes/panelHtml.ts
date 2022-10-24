@@ -6,6 +6,26 @@ var md = require('markdown-it')()
 export function panelHtml(relatedEls: NoteElement[]) {
     let result = [];
     result.push(`<div class="related-notes-div">`);
+    result.push(`<div class="related-notes-option">`);
+    result.push(`<div class="related-notes-option-filter">
+                    <input class="form-check-input" type="checkbox" id="left-check" name="Left" value="something" checked>
+                    <label class="form-check-label"><i class="fas fa-arrow-left"></i></label>
+                    
+                    <input class="form-check-input" type="checkbox" id="right-check" name="Right" value="something" checked>
+                    <label class="form-check-label"><i class="fas fa-arrow-right"></i></label>
+                    
+                    <input class="form-check-input" type="checkbox" id="bidirection-check" name="Left & Right" value="something" checked>
+                    <label class="form-check-label"><i class="fas fa-arrows-alt-h"></i></label>
+                 </div>
+                 <div class="related-notes-option-sorter">
+                    <select id="related-notes-sorter-selector" class="form-select form-select-sm" aria-label="Sorter Selector">;
+                        <option value="Score">Score</option>
+                        <option value="Alphabet">Alphabet</option>
+                        <option value="LineNumber">LineNumber</option>
+                    </select>
+                 </div>
+    `);
+    result.push(`</div>`);
     result.push('<ul class="list-group">');
 
     for (const related of relatedEls) {
