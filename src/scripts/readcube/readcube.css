@@ -225,3 +225,7 @@ div.paper-refs-list .ref-info-title {
     margin-top: 1em;
     padding-bottom: 1em;
 }
+
+ul.list-group.paper-list {
+    border: transparent;
+}

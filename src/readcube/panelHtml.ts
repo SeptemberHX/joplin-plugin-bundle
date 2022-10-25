@@ -45,7 +45,7 @@ export function panelHtml(currItem: PaperItem, currAnnos: AnnotationItem[], pape
     result.push('</ul>')
 
     result.push(`<div class="tab-content" id="pills-tabContent">`);
-    result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info" role="tabpanel" aria-labelledby="pills-paper-info-tab" tabindex="0"><ul class="list-group">`);
+    result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-paper-info" role="tabpanel" aria-labelledby="pills-paper-info-tab" tabindex="0"><ul class="list-group paper-list">`);
     result.push(generatePaperInfoPage(currItem, currNotes));
     result.push('</ul></div>');
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-paper-anno" role="tabpanel" aria-labelledby="pills-paper-anno-tab" tabindex="0">`);

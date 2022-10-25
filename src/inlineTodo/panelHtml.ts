@@ -346,6 +346,7 @@ function createFilterPanelBody(project: string, tag: string, due: string, items:
 function createHTMLForTodoItem(todoItem: Todo, showDescription: boolean) {
     let result = `
             <li class="list-group-item priority-${todoItem.priority}">
+            <div class="todo-item">
                 <input class="form-check-input me-1" type="checkbox" value="" id="${todoItem.note}-${todoItem.index}" onchange="todoItemChanged(this.id, this.checked)">
                 <p class="form-check-label" for="${todoItem.note}-${todoItem.index}" onclick="todoItemClicked('${todoItem.note}-${todoItem.index}')">${md.renderInline(todoItem.msg)}</p>
         `;
@@ -399,6 +400,6 @@ function createHTMLForTodoItem(todoItem: Todo, showDescription: boolean) {
         result += `<span class="badge bg-primary">${dateString}</span>`
     }
     result += `</div>`;
-    result += `</div></li>`;
+    result += `</div></div></li>`;
     return result;
 }

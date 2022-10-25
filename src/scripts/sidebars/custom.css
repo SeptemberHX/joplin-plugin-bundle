@@ -55,8 +55,16 @@ div.spinner-border {
 }
 
 .list-group {
+    --bs-list-group-border-color: var(--joplin-divider-color);
     --bs-list-group-color: var(--joplin-color);
     --bs-list-group-bg: var(--joplin-background-color);
+    border: 1px solid var(--bs-list-group-border-color);
+}
+
+.list-group-item {
+    border-right: none;
+    border-top: none;
+    --bs-list-group-border-color: var(--joplin-divider-color);
 }
 
 html {
@@ -105,4 +113,19 @@ div.info-line .info-line-spans {
 
 div.info-line span {
     padding-left: 0.25em;
+}
+
+.card {
+    --bs-card-bg: var(--joplin-background-color);
+    --bs-card-border-color: var(--joplin-divider-color);
+}
+
+input.form-control, input.form-control:focus {
+    background-color: var(--joplin-background-color);
+    color: var(--joplin-color);
+}
+
+select.form-select {
+    background-color: var(--joplin-background-color);
+    color: var(--joplin-color);
 }
