@@ -54,9 +54,13 @@ export async function initPapers() {
 
     // init the database and paper service
     await setupDatabase();
-    await paperSvc.init(settings);
 
-    await syncAllPaperItems();
+    // we do not need to wait for it here
+    paperSvc.init(settings).then(t => {
+        syncAllPaperItems().then(r => {
+            console.log('Papers: Sync complete');
+        });
+    });
 
     await joplin.contentScripts.onMessage(
         'enhancement_paper_fence_renderer',
