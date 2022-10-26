@@ -223,8 +223,5 @@ export async function appendPaperBlockIfMissing() {
 }
 
 function createPaperBlockContent(paperItem: PaperItem) {
-    return `
-\`\`\`paper
-id: ${paperItem.id}
-\`\`\``
+    return `${paperItem.title}`;
 }

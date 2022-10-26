@@ -51,7 +51,7 @@ export function panelHtml(relatedEls: NoteElement[]) {
 
         result.push(`<div class="related-element-body">${md.render(renderBodyLine.join('\n'))}</div>`);
         result.push(`<div class="related-element-info">`);
-        result.push(`<span class="related-element-parent badge text-bg-primary">${related.parentTitle}</span>`);
+        result.push(`<span class="related-element-parent badge text-bg-primary"><i class="fas fa-folder-open"></i>${related.parentTitle}</span>`);
         result.push(`<span class="related-element-tags">`);
         for (const tag of related.tags) {
             result.push(`<span class="related-element-tag badge rounded-pill text-bg-info">${tag}</span>`);

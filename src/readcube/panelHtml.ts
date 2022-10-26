@@ -256,7 +256,7 @@ export function generatePaperInfoPage(item: PaperItem, currNotes: string[]) {
         }
         let result = ['<div class="paper-info">'];
         if (item.journal) {
-            result.push(`<div class="journal" onclick="onPaperTitleClicked('${item.url}')">${item.journal} ${item.year && !item.journal.includes(item.year.toString()) ? item.year : ''}</div>`);
+            result.push(`<div class="journal ${item.url ? 'with-url' : ''}" onclick="onPaperTitleClicked('${item.url}')">${item.journal} ${item.year && !item.journal.includes(item.year.toString()) ? item.year : ''}</div>`);
         }
         if (item.title) {
             result.push(`<div class="title" lang="en" onclick="onPaperTitleClicked('${paperSvc.externalLink(item)}')">${item.title}</div>`);

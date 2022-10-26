@@ -5,6 +5,11 @@
     font-family: Times New Roman;
 }
 
+.readcube-paper-div div.journal.with-url {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .readcube-paper-div div.title {
     font-weight: bold;
     font-size: smaller;

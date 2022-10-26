@@ -21,6 +21,10 @@ span.related-element-parent.badge.text-bg-light {
     cursor: pointer;
 }
 
+.related-element-parent .fa-folder-open {
+    margin-right: 0.25em;
+}
+
 .related-notes-div {
     font-size: 0.9em;
 }
