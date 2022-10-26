@@ -20,7 +20,8 @@ table.dailynote-table .day {
 }
 
 table.dailynote-table .curr-day {
-    background-color: antiquewhite !important;
+    background-color: khaki !important;
+    color: dimgrey;
 }
 
 table.dailynote-table div.dot-container {
@@ -66,9 +67,11 @@ button.button-current {
     width: 50%;
     color: cornflowerblue;
     vertical-align: middle;
+    font-weight: bold;
 }
 
 button.btn.button-next,
 button.btn.button-previous {
-    color: dimgray;
+    color: cornflowerblue;
+    font-weight: bold;
 }
