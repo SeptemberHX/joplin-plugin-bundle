@@ -129,3 +129,8 @@ select.form-select {
     background-color: var(--joplin-background-color);
     color: var(--joplin-color);
 }
+
+.btn-light {
+    --bs-btn-bg: var(--joplin-background-color);
+    --bs-btn-border-color: var(--joplin-divider-color);
+}
