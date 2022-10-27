@@ -13,3 +13,19 @@ function onRelatedArrowClicked(noteId, lineR) {
         lineR: lineR
     })
 }
+
+function onSorterChanged() {
+    var x = document.getElementById("related-notes-sorter-selector").value;
+    webviewApi.postMessage({
+        name: 'sidebar_related_notes_sorter_changed',
+        id: x
+    });
+}
+
+function onFilterChanged() {
+    webviewApi.postMessage({
+        name: 'sidebar_related_notes_filter_changed',
+        id: event.currentTarget.checked,
+        type: event.currentTarget.name
+    });
+}

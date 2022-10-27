@@ -4,10 +4,14 @@ import joplin from "../../api";
 import {panelHtml} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {RELATED_NOTE_PLUGIN_ID} from "../common";
+import {SidebarStatus} from "./types";
+
 
 class RelatedNotesPlugin extends SidebarPlugin {
 
     sidebar: Sidebars;
+    relatedNotesSidebarStatus: SidebarStatus;
+    currRelatedNotes: any[];
 
     constructor() {
         super();
@@ -21,6 +25,13 @@ class RelatedNotesPlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/relatedNotes/relatedNotes.js',
         ];
+        this.relatedNotesSidebarStatus = {
+            mentionFilter: true,
+            mentionedFilter: true,
+            bidirectionFilter: true,
+            sortFilter: 'Default'
+        };
+        this.currRelatedNotes = [];
     }
 
     async panelMsgProcess(msg: any): Promise<boolean> {
@@ -34,6 +45,41 @@ class RelatedNotesPlugin extends SidebarPlugin {
             case 'sidebar_related_notes_arrow_clicked':
                 if (msg.lineR > 0) {
                     await this.debounceScrollToLine(msg.lineR - 1);
+                }
+                return true;
+            case 'sidebar_related_notes_sorter_changed':
+                if (this.relatedNotesSidebarStatus.sortFilter !== msg.id) {
+                    this.relatedNotesSidebarStatus.sortFilter = msg.id;
+                    await this.cachedUpdateHtml();
+                }
+                return true;
+            case 'sidebar_related_notes_filter_changed':
+                let changed = false;
+                switch (msg.type) {
+                    case 'mention':
+                        if (this.relatedNotesSidebarStatus.mentionFilter !== msg.id) {
+                            changed = true;
+                            this.relatedNotesSidebarStatus.mentionFilter = msg.id;
+                        }
+                        break;
+                    case 'mentioned':
+                        if (this.relatedNotesSidebarStatus.mentionedFilter !== msg.id) {
+                            changed = true;
+                            this.relatedNotesSidebarStatus.mentionedFilter = msg.id;
+                        }
+                        break;
+                    case 'bidirection':
+                        if (this.relatedNotesSidebarStatus.bidirectionFilter !== msg.id) {
+                            changed = true;
+                            this.relatedNotesSidebarStatus.bidirectionFilter = msg.id;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (changed) {
+                    await this.cachedUpdateHtml();
                 }
                 return true;
             default:
@@ -56,10 +102,17 @@ class RelatedNotesPlugin extends SidebarPlugin {
         await this.updateHtml();
     }
 
+    cachedUpdateHtml = debounce(async () => {
+        await this.sidebar.updateHtml(this.id, panelHtml(this.currRelatedNotes, this.relatedNotesSidebarStatus));
+    }, 100);
+
     updateHtml = debounce(async () => {
         const note = await joplin.workspace.selectedNote();
         if (note) {
-            await this.sidebar.updateHtml(this.id, panelHtml(relatedEngine.related(note.body, note.id, note.title)));
+            this.currRelatedNotes = relatedEngine.related(note.body, note.id, note.title);
+            await this.sidebar.updateHtml(this.id, panelHtml(this.currRelatedNotes, this.relatedNotesSidebarStatus));
+        } else {
+            this.currRelatedNotes = [];
         }
     }, 100);
 
