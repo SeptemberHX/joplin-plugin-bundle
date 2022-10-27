@@ -92,19 +92,24 @@ export async function initPapers() {
         '<p>After clicking the "Ok" button, this dialog disappears, and the dialog will show again when the synchronization is finished.</p>' +
         '<p>It can spend several minutes, depending on your library size and network condition.</p>' +
         '<p><mark>Please DO NOT try to sync again until next dialog appears again!</mark></p>');
+    await dialogs.addScript(beforeHandle, './scripts/readcube/popup.css');
+
     await dialogs.setButtons(beforeHandle, [{id: 'ok'}, {id: 'cancel'}]);
 
     const errHandle = await dialogs.create('errSyncDialog');
     await dialogs.setHtml(errHandle, '<p>Error happens during sync with your Papers library. Please check your papers cookie and network connection.</p>');
     await dialogs.setButtons(errHandle, [{id: 'ok'}]);
+    await dialogs.addScript(errHandle, './scripts/readcube/popup.css');
 
     const finishHandle = await dialogs.create('finishSyncDialog');
     await dialogs.setHtml(finishHandle, '<p>Syncing with your Papers library finished.</p>')
     await dialogs.setButtons(finishHandle, [{id: 'ok'}]);
+    await dialogs.addScript(finishHandle, './scripts/readcube/popup.css');
 
     const copyErrHandle = await dialogs.create('copyErrDialog');
     await dialogs.setHtml(copyErrHandle, '<p>Ops. It seems you tried to operate on a non-paper note!</p>');
     await dialogs.setButtons(copyErrHandle, [{id: 'ok'}]);
+    await dialogs.addScript(copyErrHandle, './scripts/readcube/popup.css');
 
     await joplin.contentScripts.register(
         ContentScriptType.CodeMirrorPlugin,
@@ -114,7 +119,7 @@ export async function initPapers() {
 
     await joplin.commands.register({
         name: "enhancement_papers_syncAll",
-        label: "Sync All Files from Papers",
+        label: "Sync All Papers",
         execute: async () => {
             try {
                 const result = await dialogs.open(beforeHandle);
@@ -221,18 +226,14 @@ export async function initPapers() {
     const commandsSubMenu: MenuItem[] = [
         {
             commandName: 'enhancement_papers_syncAll',
-            label: 'Sync All Files from Papers'
+            label: 'Sync All Files'
         },
         {
             commandName: 'enhancement_papers_createNoteForPaper',
             label: 'Create notes for papers'
-        },
-        {
-            commandName: 'enhancement_append_paper_block',
-            label: 'Fix missing paper blocks'
         }
     ];
-    await joplin.views.menus.create('enhancementToolMenu', 'ReadCube Papers', commandsSubMenu, MenuItemLocation.Tools);
+    await joplin.views.menus.create('enhancementToolMenu', 'Papers', commandsSubMenu, MenuItemLocation.Tools);
 
     await joplin.views.toolbarButtons.create(
         'enhancementCitePapers',
