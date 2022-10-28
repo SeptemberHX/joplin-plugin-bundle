@@ -8,3 +8,30 @@ export function lineOfString(target: string, lines: string[]) : number {
     }
     return 0;
 }
+
+
+/**
+ * We need to replace href=":/noteId" with webapi calls
+ * @param source
+ */
+export function htmlConvert(source: string) {
+    let result = source;
+    const noteIdHrefReg = /href="(:\/\w{32})"/g;
+    const hrefReg = /href="(.*?)"/g;
+    let match;
+    while ((match = noteIdHrefReg.exec(result)) !== null) {
+        noteIdHrefReg.lastIndex = 0;
+        result = result.replace(match[0], `href="#" onclick="onJoplinNoteLinkClicked('${match[1]}')"`);
+    }
+
+    let lastIndex = 0;
+    while ((match = hrefReg.exec(result)) !== null) {
+        if (match[1] === '#') {
+            lastIndex = match.lastIndex;
+        } else {
+            match.lastIndex = lastIndex;
+            result = result.replace(match[0], `href="#" onclick="onJoplinNoteLinkClicked('${match[1]}')"`);
+        }
+    }
+    return result;
+}

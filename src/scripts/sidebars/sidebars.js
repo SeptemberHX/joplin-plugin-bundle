@@ -5,6 +5,13 @@ function tabItemClicked(id) {
     });
 }
 
+function onJoplinNoteLinkClicked(noteId) {
+    webviewApi.postMessage({
+        name: 'sidebar_open_item',
+        id: noteId
+    });
+}
+
 webviewApi.onMessage((data) => {
     if (data.message.type === 'update') {
         const element = document.getElementById(data.message.elementId);

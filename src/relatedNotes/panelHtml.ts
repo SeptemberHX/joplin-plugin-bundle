@@ -1,5 +1,6 @@
 import relatedEngine, {NoteElement, RelationshipType} from "./engine";
 import {SidebarStatus} from "./types";
+import {htmlConvert} from "../utils/stringUtils";
 
 var md = require('markdown-it')()
     .use(require('markdown-it-mark'));
@@ -74,7 +75,7 @@ export function panelHtml(relatedEls: NoteElement[], status: SidebarStatus) {
             renderBodyLine.push(line);
         }
 
-        result.push(`<div class="related-element-body">${md.render(renderBodyLine.join('\n'))}</div>`);
+        result.push(`<div class="related-element-body">${htmlConvert(md.render(renderBodyLine.join('\n')))}</div>`);
         result.push(`<div class="related-element-info">`);
         result.push(`<span class="related-element-parent badge text-bg-primary"><i class="fas fa-folder-open"></i>${related.parentTitle}</span>`);
         result.push(`<span class="related-element-tags">`);

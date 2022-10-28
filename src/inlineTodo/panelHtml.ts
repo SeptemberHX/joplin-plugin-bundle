@@ -1,6 +1,7 @@
 import {Summary, Todo} from "./types";
 import dateFormat  from "dateformat";
 import {daysDifference, durationComparedToToday, filterItemsBySearchStr, isTodayIncluded} from "./utils";
+import {htmlConvert} from "../utils/stringUtils";
 const stc = require('string-to-color');
 
 var md = require('markdown-it')()
@@ -356,7 +357,7 @@ function createHTMLForTodoItem(todoItem: Todo, showDescription: boolean) {
         for (const line of todoItem.description) {
             descriptionMDText.push(line.substr(todoItem.indent + 1));
         }
-        result += md.render(descriptionMDText.join('\n'));
+        result += htmlConvert(md.render(descriptionMDText.join('\n')));
         result += `</div>`;
     }
 
