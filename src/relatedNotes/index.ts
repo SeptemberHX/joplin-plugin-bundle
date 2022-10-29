@@ -29,7 +29,8 @@ class RelatedNotesPlugin extends SidebarPlugin {
             mentionFilter: true,
             mentionedFilter: true,
             bidirectionFilter: true,
-            sortFilter: 'Default'
+            sortFilter: 'Default',
+            tabIndex: 1
         };
         this.currRelatedNotes = [];
     }
@@ -50,6 +51,12 @@ class RelatedNotesPlugin extends SidebarPlugin {
             case 'sidebar_related_notes_sorter_changed':
                 if (this.relatedNotesSidebarStatus.sortFilter !== msg.id) {
                     this.relatedNotesSidebarStatus.sortFilter = msg.id;
+                    await this.cachedUpdateHtml();
+                }
+                return true;
+            case 'sidebar_related_note_item_tab_clicked':
+                if (this.relatedNotesSidebarStatus.tabIndex !== msg.id) {
+                    this.relatedNotesSidebarStatus.tabIndex = msg.id;
                     await this.cachedUpdateHtml();
                 }
                 return true;

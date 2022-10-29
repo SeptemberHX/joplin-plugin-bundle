@@ -14,18 +14,9 @@ function onRelatedArrowClicked(noteId, lineR) {
     })
 }
 
-function onSorterChanged() {
-    var x = document.getElementById("related-notes-sorter-selector").value;
+function paperTabClicked(id) {
     webviewApi.postMessage({
-        name: 'sidebar_related_notes_sorter_changed',
-        id: x
-    });
-}
-
-function onFilterChanged() {
-    webviewApi.postMessage({
-        name: 'sidebar_related_notes_filter_changed',
-        id: event.currentTarget.checked,
-        type: event.currentTarget.name
+        name: 'sidebar_related_note_item_tab_clicked',
+        id: id
     });
 }

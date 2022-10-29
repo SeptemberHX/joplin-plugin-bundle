@@ -53,23 +53,6 @@ span.related-element-parent.badge.text-bg-light {
     opacity: 0.5;
 }
 
-.related-notes-div .related-notes-option-filter {
-    display: inline;
-    margin: auto;
-    font-size: 1.1em;
-}
-
-.related-notes-div .related-notes-option {
-    display: grid;
-    grid-template-columns: auto auto;
-    justify-content: space-between;
-    padding: 0.25em 1em;
-}
-
-.related-notes-div .related-notes-option-filter label.form-check-label {
-    margin-right: 0.5em;
-}
-
 .related-element-body {
     margin-left: 1em;
 }
@@ -115,4 +98,9 @@ span.related-element-parent.badge.text-bg-light {
 .related-notes-div li.nav-item {
     margin-left: 1em;
     margin-right: 1em;
+}
+
+ul#pills-related-notes-tab {
+    padding-top: 1em;
+    padding-bottom: 1em;
 }

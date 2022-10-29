@@ -10,26 +10,6 @@ var md = require('markdown-it')()
 export function panelHtml(relatedEls: NoteElement[], status: SidebarStatus) {
     let result = [];
     result.push(`<div class="related-notes-div">`);
-    result.push(`<div class="related-notes-option">`);
-    result.push(`<div class="related-notes-option-filter">
-                    <input class="form-check-input" type="checkbox" onchange="onFilterChanged()" id="left-check" name="mention" value="something" ${status.mentionFilter ? 'checked' : ''}>
-                    <label class="form-check-label"><i class="fas fa-arrow-left"></i></label>
-                    
-                    <input class="form-check-input" type="checkbox" onchange="onFilterChanged()" id="right-check" name="mentioned" value="something" ${status.mentionedFilter ? 'checked' : ''}>
-                    <label class="form-check-label"><i class="fas fa-arrow-right"></i></label>
-                    
-                    <input class="form-check-input" type="checkbox" onchange="onFilterChanged()" id="bidirection-check" name="bidirection" value="something" ${status.bidirectionFilter ? 'checked' : ''}>
-                    <label class="form-check-label"><i class="fas fa-arrows-alt-h"></i></label>
-                 </div>
-                 <div class="related-notes-option-sorter">
-                    <select id="related-notes-sorter-selector" onchange="onSorterChanged()" class="form-select form-select-sm" aria-label="Sorter Selector">;
-                        <option value="Default" ${status.sortFilter === 'Default' ? 'selected' : ''}>Default</option>
-                        <option value="Alphabet" ${status.sortFilter === 'Alphabet' ? 'selected' : ''}>Alphabet</option>
-                    </select>
-                 </div>
-    `);
-    result.push(`</div>`);
-
     const sortedRelatedEls = [...relatedEls];
     if (status.sortFilter === 'Alphabet') {
         sortedRelatedEls.sort((a, b) => {
@@ -43,42 +23,67 @@ export function panelHtml(relatedEls: NoteElement[], status: SidebarStatus) {
         });
     }
 
-    let currTabIndex = 1;
+    const currTabIndex = status.tabIndex;
+    let type0Count = getItemsWithType(sortedRelatedEls, 0).length;
+    let type1Count = getItemsWithType(sortedRelatedEls, 1).length;
+    let type2Count = getItemsWithType(sortedRelatedEls, 2).length;
+    let type3Count = getItemsWithType(sortedRelatedEls, 3).length;
+
     result.push(`<ul class="nav nav-pills mb-1 justify-content-center" id="pills-related-notes-tab" role="tablist">`);
     result.push(`
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" onclick="paperTabClicked(1)" id="pills-related-0-tab" data-bs-toggle="pill" data-bs-target="#pills-related-0" type="button" role="tab" aria-controls="pills-related-0" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 1 ? 'active' : ''}" onclick="relatedNoteTabClicked(1)" id="pills-related-0-tab" data-bs-toggle="pill" data-bs-target="#pills-related-0" type="button" role="tab" aria-controls="pills-related-0" aria-selected="true">
           <i class="fas fa-hand-point-left"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${type0Count === 0 ? 'invisible' : ''}">
+            ${type0Count}
+            <span class="visually-hidden">unread messages</span>
+          </span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" onclick="paperTabClicked(2)" id="pills-related-1-tab" data-bs-toggle="pill" data-bs-target="#pills-related-1" type="button" role="tab" aria-controls="pills-related-1" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 2 ? 'active' : ''}" onclick="relatedNoteTabClicked(2)" id="pills-related-1-tab" data-bs-toggle="pill" data-bs-target="#pills-related-1" type="button" role="tab" aria-controls="pills-related-1" aria-selected="true">
           <i class="fas fa-arrow-left"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${type1Count === 0 ? 'invisible' : ''}">
+            ${type1Count}
+            <span class="visually-hidden">unread messages</span>
+          </span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="paperTabClicked(3)" id="pills-related-2-tab" data-bs-toggle="pill" data-bs-target="#pills-related-2" type="button" role="tab" aria-controls="pills-related-2" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 3 ? 'active' : ''}" onclick="relatedNoteTabClicked(3)" id="pills-related-2-tab" data-bs-toggle="pill" data-bs-target="#pills-related-2" type="button" role="tab" aria-controls="pills-related-2" aria-selected="true">
           <i class="fas fa-hand-point-right"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${type2Count === 0 ? 'invisible' : ''}">
+            ${type2Count}
+            <span class="visually-hidden">unread messages</span>
+          </span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="position-relative nav-link ${currTabIndex === 4 ? 'active' : ''}" onclick="paperTabClicked(4)" id="pills-related-3-tab" data-bs-toggle="pill" data-bs-target="#pills-related-3" type="button" role="tab" aria-controls="pills-related-3" aria-selected="true">
+        <button class="position-relative nav-link ${currTabIndex === 4 ? 'active' : ''}" onclick="relatedNoteTabClicked(4)" id="pills-related-3-tab" data-bs-toggle="pill" data-bs-target="#pills-related-3" type="button" role="tab" aria-controls="pills-related-3" aria-selected="true">
           <i class="fas fa-arrow-right"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${type3Count === 0 ? 'invisible' : ''}">
+            ${type3Count}
+            <span class="visually-hidden">unread messages</span>
+          </span>
         </button>
       </li>
     `);
     result.push('</ul>');
 
     result.push(`<div class="tab-content" id="pills-relatedNoteTabContent">`);
+
     result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-related-0" role="tabpanel" aria-labelledby="pills-related-0-tab" tabindex="0">`);
     result.push(renderItemAccordions('relatedNoteList0', sortedRelatedEls, 0));
     result.push('</div>');
+
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-related-1" role="tabpanel" aria-labelledby="pills-related-1-tab" tabindex="0">`);
     result.push(renderItemAccordions('relatedNoteList1', sortedRelatedEls, 1));
     result.push('</div>');
+
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-related-2" role="tabpanel" aria-labelledby="pills-related-2-tab" tabindex="0">`);
     result.push(renderItemAccordions('relatedNoteList2', sortedRelatedEls, 2));
     result.push('</div>');
+
     result.push(`<div class="tab-pane fade show ${currTabIndex === 4 ? 'active' : ''}" id="pills-related-3" role="tabpanel" aria-labelledby="pills-related-3-tab" tabindex="0">`);
     result.push(renderItemAccordions('relatedNoteList3', sortedRelatedEls, 3));
     result.push('</div>');
@@ -87,6 +92,37 @@ export function panelHtml(relatedEls: NoteElement[], status: SidebarStatus) {
 
     result.push(`</div>`);
     return result.join("");
+}
+
+function getItemsWithType(relatedEls: NoteElement[], type: number): NoteElement[] {
+    const result = [];
+    for (const relatedElement of relatedEls) {
+        const ship = relatedEngine.getRelationShip(relatedElement.id);
+        let contexts = [];
+        switch (type) {
+            case 0:
+                contexts = ship.mentionIdContexts;
+                break;
+            case 1:
+                contexts = ship.mentionTitleContexts;
+                break;
+            case 2:
+                contexts = ship.mentionedIdContexts;
+                break;
+            case 3:
+                contexts = ship.mentionedTitleContexts;
+                break;
+            default:
+                break;
+        }
+
+        if (contexts.length === 0) {
+            continue;
+        }
+        result.push(relatedElement);
+    }
+
+    return result;
 }
 
 /*
