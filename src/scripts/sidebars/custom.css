@@ -134,3 +134,8 @@ select.form-select {
     --bs-btn-bg: var(--joplin-background-color);
     --bs-btn-border-color: var(--joplin-divider-color);
 }
+
+.accordion-button {
+    --bs-accordion-btn-padding-y: 0.3em;
+    --bs-accordion-btn-padding-x: 1em;
+}

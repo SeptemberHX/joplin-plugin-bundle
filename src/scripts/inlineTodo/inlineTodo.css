@@ -80,10 +80,6 @@ div.inline-todo-div span.badge.assignee {
     opacity: 0.75;
 }
 
-div.inline-todo-div button.accordion-button {
-    height: 2.5em;
-}
-
 div.inline-todo-div .accordion-body {
     padding: 0;
 }
