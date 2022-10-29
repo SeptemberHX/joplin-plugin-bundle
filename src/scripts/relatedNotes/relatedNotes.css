@@ -97,3 +97,22 @@ span.related-element-parent.badge.text-bg-light {
 .related-element-body h6 {
     font-size: 1.15em;
 }
+
+.relatedNoteList button.accordion-button {
+    font-weight: bold;
+}
+
+.accordion-body.related-element-contexts {
+    padding: 0.4em;
+}
+
+.relatedNoteList span.badge.rounded-pill.text-bg-secondary {
+    font-size: xx-small;
+    margin-left: -1em;
+    margin-right: 0.5em;
+}
+
+.related-notes-div li.nav-item {
+    margin-left: 1em;
+    margin-right: 1em;
+}

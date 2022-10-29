@@ -10,6 +10,24 @@ export function lineOfString(target: string, lines: string[]) : number {
 }
 
 
+/*
+ * Find all the appearance of target in lines
+ */
+export function contextOfAppearance(target: string, lines: string[]) {
+    let lineNumber = 0;
+    let results = [];
+    for (const line of lines) {
+        lineNumber += 1;
+        let index = line.indexOf(target);
+        while (index > 0) {
+            results.push([lineNumber, line]);
+            index = line.indexOf(target, index + target.length);
+        }
+    }
+    return results;
+}
+
+
 /**
  * We need to replace href=":/noteId" with webapi calls
  * @param source

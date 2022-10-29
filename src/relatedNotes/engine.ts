@@ -1,7 +1,7 @@
 import {getAllNotes, getFolder, getNoteTags} from "../utils/noteUtils";
 import noteUpdateNotify from "../utils/noteUpdateNotify";
 import wordsCount from 'words-count';
-import {lineOfString} from "../utils/stringUtils";
+import {contextOfAppearance, lineOfString} from "../utils/stringUtils";
 
 
 const ignoreTitles = ['default-history'];
@@ -21,6 +21,11 @@ export class Relationship {
     score: number;          // relationship score. High is better
     line: number;           // the first line where it appears
     lineR: number;          // the first line where it is referred
+    mentionTitleContexts: any[] = [];
+    mentionIdContexts: any[] = [];
+
+    mentionedTitleContexts: any[] = [];
+    mentionedIdContexts: any[] = [];
 }
 
 
@@ -84,48 +89,44 @@ export class NoteElement {
             const otherLines = text.split('\n');
 
             // check references
-            const mentionIdLineNumber = lineOfString(noteId, lines);
-            relationship.line = mentionIdLineNumber;
+            const mentionIdContexts = contextOfAppearance(noteId, lines);
+            relationship.mentionIdContexts = mentionIdContexts;
 
-            const mentionTitleLineNumber = lineOfString(title, lines);
-            if (mentionTitleLineNumber > 0 && mentionIdLineNumber <= 0 || mentionTitleLineNumber < mentionIdLineNumber) {
-                relationship.line = mentionTitleLineNumber;
-            }
-            const mentionFlag = mentionTitleLineNumber > 0 || mentionIdLineNumber > 0;
+            const mentionTitleContexts = contextOfAppearance(title, lines);
+            relationship.mentionTitleContexts = mentionTitleContexts;
+
+            const mentionFlag = mentionTitleContexts.length > 0 || mentionIdContexts.length > 0;
 
             // check cited
-            const mentionedIdLineNumber = lineOfString(this.id, otherLines);
-            relationship.lineR = mentionedIdLineNumber;
+            const mentionedIdContexts = contextOfAppearance(this.id, otherLines);
+            relationship.mentionedIdContexts = mentionedIdContexts;
 
-            const mentionedTitleLineNumber = lineOfString(this.title, otherLines);
-            if (mentionedTitleLineNumber > 0 && mentionedIdLineNumber <= 0 || mentionedTitleLineNumber < mentionedIdLineNumber) {
-                relationship.lineR = mentionedTitleLineNumber;
-            }
-
-            const mentionedFlag = mentionedTitleLineNumber > 0 || mentionedIdLineNumber;
+            const mentionedTitleContexts = contextOfAppearance(this.title, otherLines);
+            relationship.mentionedTitleContexts = mentionedTitleContexts;
+            const mentionedFlag = mentionedTitleContexts.length > 0 || mentionedIdContexts.length;
 
             // calculate score
             if (mentionFlag && !mentionedFlag) {
                 relationship.type = RelationshipType.MENTION;
-                if (mentionIdLineNumber > 0) {
+                if (mentionIdContexts.length > 0) {
                     relationship.score = 100;
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(title));
                 }
             } else if (!mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.MENTIONED;
-                if (mentionedIdLineNumber > 0) {
+                if (mentionedIdContexts.length > 0) {
                     relationship.score = 100;
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(this.title));
                 }
             } else if (mentionFlag && mentionedFlag) {
                 relationship.type = RelationshipType.BIDIRECTION;
-                if (mentionIdLineNumber > 0 && mentionedIdLineNumber > 0) {
+                if (mentionIdContexts.length > 0 && mentionedIdContexts.length > 0) {
                     relationship.score = 200;
-                } else if (mentionIdLineNumber <= 0 && mentionedIdLineNumber > 0) {
+                } else if (mentionIdContexts.length <= 0 && mentionedIdContexts.length > 0) {
                     relationship.score = 100 + 10 * Math.min(10, wordsCount(this.title));
-                } else if (mentionIdLineNumber > 0 && mentionedIdLineNumber <= 0) {
+                } else if (mentionIdContexts.length > 0 && mentionedIdContexts.length <= 0) {
                     relationship.score = 100 + 10 * Math.min(10, wordsCount(title));
                 } else {
                     relationship.score = 10 * Math.min(10, wordsCount(this.title))
