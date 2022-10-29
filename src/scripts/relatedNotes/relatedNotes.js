@@ -14,9 +14,17 @@ function onRelatedArrowClicked(noteId, lineR) {
     })
 }
 
-function paperTabClicked(id) {
+function relatedNoteTabClicked(id) {
     webviewApi.postMessage({
         name: 'sidebar_related_note_item_tab_clicked',
         id: id
+    });
+}
+
+function jumpToNoteLine(noteId, lineNumber) {
+    webviewApi.postMessage({
+        name: 'sidebar_related_note_context_clicked',
+        id: noteId,
+        line: lineNumber - 1
     });
 }

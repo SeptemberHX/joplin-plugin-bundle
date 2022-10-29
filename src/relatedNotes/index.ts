@@ -60,6 +60,13 @@ class RelatedNotesPlugin extends SidebarPlugin {
                     await this.cachedUpdateHtml();
                 }
                 return true;
+            case 'sidebar_related_note_context_clicked':
+                const currentNote = await joplin.workspace.selectedNote();
+                if (currentNote.id !== msg.id) {
+                    await joplin.commands.execute('openItem', ':/' + msg.id);
+                }
+                await this.debounceScrollToLine(msg.line);
+                return true;
             case 'sidebar_related_notes_filter_changed':
                 let changed = false;
                 switch (msg.type) {

@@ -180,7 +180,7 @@ function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], ty
             result.push('<ul class="list-group">');
             for (const context of contexts) {
                 result.push('<li class="list-group-item">');
-                result.push(`<div class="related-item-context">`);
+                result.push(`<div class="related-item-context" onclick="jumpToNoteLine('${relatedEl.id}', ${context[0]})">`);
                 result.push(context[1]);
                 result.push(`</div>`);
                 result.push('</li>');
