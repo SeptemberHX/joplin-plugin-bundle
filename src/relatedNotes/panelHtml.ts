@@ -166,7 +166,7 @@ function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], ty
         hasElements = true;
         result.push(`
             <h2 class="accordion-header" id="${h2Id}">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseName}" aria-expanded="true" aria-controls="${collapseName}">
+              <button class="accordion-button" oncontextmenu="onJoplinNoteLinkClicked('${':/' + relatedEl.id}')" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseName}" aria-expanded="true" aria-controls="${collapseName}">
                 <span class="badge rounded-pill text-bg-secondary">${contexts.length}</span>
                 ${relatedEl.title}
               </button>
@@ -180,7 +180,7 @@ function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], ty
             result.push('<ul class="list-group">');
             for (const context of contexts) {
                 result.push('<li class="list-group-item">');
-                result.push(`<div class="related-item-context" onclick="jumpToNoteLine('${relatedEl.id}', ${context[0]})">`);
+                result.push(`<div class="related-item-context" onclick="jumpToNoteLine('${(type === 0 || type === 1) ? relatedEl.id : ''}', ${context[0]})">`);
                 result.push(context[1]);
                 result.push(`</div>`);
                 result.push('</li>');

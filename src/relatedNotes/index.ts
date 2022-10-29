@@ -61,9 +61,11 @@ class RelatedNotesPlugin extends SidebarPlugin {
                 }
                 return true;
             case 'sidebar_related_note_context_clicked':
-                const currentNote = await joplin.workspace.selectedNote();
-                if (currentNote.id !== msg.id) {
-                    await joplin.commands.execute('openItem', ':/' + msg.id);
+                if (msg.id && msg.id.length > 0) {
+                    const currentNote = await joplin.workspace.selectedNote();
+                    if (currentNote.id !== msg.id) {
+                        await joplin.commands.execute('openItem', ':/' + msg.id);
+                    }
                 }
                 await this.debounceScrollToLine(msg.line);
                 return true;
