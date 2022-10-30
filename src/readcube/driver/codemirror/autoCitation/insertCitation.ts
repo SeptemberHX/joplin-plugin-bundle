@@ -32,10 +32,12 @@ export default class InsertCitation {
             text += appendRefsText;
         }
 
+        const info = this.editor.getScrollInfo();
         this.doc.setValue(text);
 
         const refNameStr = insertRefNames.join('');
         this.doc.replaceRange(refNameStr, currSelection.to());
+        this.editor.scrollTo(info.left, info.top);
         this.editor.setCursor({line: currSelection.head.line, ch: currSelection.head.ch + refNameStr.length});
 
         this.editor.focus();
