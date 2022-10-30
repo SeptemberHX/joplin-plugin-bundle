@@ -33,8 +33,11 @@ export default class InsertCitation {
         }
 
         this.doc.setValue(text);
-        this.doc.replaceRange(insertRefNames.join(''), currSelection.to());
-        // this.doc.setSelection(currSelection);
+
+        const refNameStr = insertRefNames.join('');
+        this.doc.replaceRange(refNameStr, currSelection.to());
+        this.editor.setCursor({line: currSelection.head.line, ch: currSelection.head.ch + refNameStr.length});
+
         this.editor.focus();
     }
 
@@ -70,6 +73,7 @@ export default class InsertCitation {
         }
         insertedText += '!!!\n';
         this.doc.replaceRange(insertedText, currSelection.to());
+        this.editor.setCursor({line: currSelection.head.line, ch: currSelection.head.ch + insertedText.length});
         this.editor.focus();
     }
 }
