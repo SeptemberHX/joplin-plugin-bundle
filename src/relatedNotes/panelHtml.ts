@@ -73,19 +73,19 @@ export function panelHtml(relatedEls: NoteElement[], status: SidebarStatus) {
     result.push(`<div class="tab-content" id="pills-relatedNoteTabContent">`);
 
     result.push(`<div class="tab-pane fade show ${currTabIndex === 1 ? 'active' : ''}" id="pills-related-0" role="tabpanel" aria-labelledby="pills-related-0-tab" tabindex="0">`);
-    result.push(renderItemAccordions('relatedNoteList0', sortedRelatedEls, 0));
+    result.push(renderItemAccordions('relatedNoteList0', sortedRelatedEls, 0, status));
     result.push('</div>');
 
     result.push(`<div class="tab-pane fade show ${currTabIndex === 2 ? 'active' : ''}" id="pills-related-1" role="tabpanel" aria-labelledby="pills-related-1-tab" tabindex="0">`);
-    result.push(renderItemAccordions('relatedNoteList1', sortedRelatedEls, 1));
+    result.push(renderItemAccordions('relatedNoteList1', sortedRelatedEls, 1, status));
     result.push('</div>');
 
     result.push(`<div class="tab-pane fade show ${currTabIndex === 3 ? 'active' : ''}" id="pills-related-2" role="tabpanel" aria-labelledby="pills-related-2-tab" tabindex="0">`);
-    result.push(renderItemAccordions('relatedNoteList2', sortedRelatedEls, 2));
+    result.push(renderItemAccordions('relatedNoteList2', sortedRelatedEls, 2, status));
     result.push('</div>');
 
     result.push(`<div class="tab-pane fade show ${currTabIndex === 4 ? 'active' : ''}" id="pills-related-3" role="tabpanel" aria-labelledby="pills-related-3-tab" tabindex="0">`);
-    result.push(renderItemAccordions('relatedNoteList3', sortedRelatedEls, 3));
+    result.push(renderItemAccordions('relatedNoteList3', sortedRelatedEls, 3, status));
     result.push('</div>');
     result.push('</div>');
     result.push('</div>');
@@ -132,7 +132,7 @@ function getItemsWithType(relatedEls: NoteElement[], type: number): NoteElement[
  *   2: other note id appears in current note
  *   3: other note title appears in current note
  */
-function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], type: number) {
+function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], type: number, status: SidebarStatus) {
     const result = [`<div class="accordion relatedNoteList" id="${accordionId}">`];
     let index = 0;
     let hasElements = false;
@@ -166,12 +166,13 @@ function renderItemAccordions(accordionId: string, relatedEls: NoteElement[], ty
         hasElements = true;
         result.push(`
             <h2 class="accordion-header" id="${h2Id}">
-              <button class="accordion-button" oncontextmenu="onJoplinNoteLinkClicked('${':/' + relatedEl.id}')" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseName}" aria-expanded="true" aria-controls="${collapseName}">
+              <button class="accordion-button ${status.settings.collapsed ? 'collapsed' : 'show'}" oncontextmenu="onJoplinNoteLinkClicked('${':/' + relatedEl.id}')" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseName}" aria-expanded="true" aria-controls="${collapseName}">
                 <span class="badge rounded-pill text-bg-secondary">${contexts.length}</span>
                 ${relatedEl.title}
+                <span class="badge text-bg-primary folder"><i class="fas fa-folder-open"></i>${relatedEl.parentTitle}</span>
               </button>
             </h2>
-            <div id="${collapseName}" class="accordion-collapse collapse show" aria-labelledby="${collapseName}">
+            <div id="${collapseName}" class="accordion-collapse collapse ${status.settings.collapsed ? 'collapsed' : 'show'}" aria-labelledby="${collapseName}">
               <div class="accordion-body related-element-contexts">
         `);
 

@@ -109,3 +109,17 @@ ul#pills-related-notes-tab {
 #relatedNoteList3 .accordion-button:not(.collapsed) {
     color: lightseagreen;
 }
+
+.related-notes-div .fa-folder-open {
+    margin-right: 0.3em;
+}
+
+.related-notes-div span.badge.text-bg-primary.folder {
+    margin-left: auto;
+    opacity: 0.75;
+    font-size: x-small;
+}
+
+.related-notes-div .accordion-button::after {
+    margin-left: 0.5em;
+}

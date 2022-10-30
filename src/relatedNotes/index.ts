@@ -5,6 +5,7 @@ import {panelHtml} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {RELATED_NOTE_PLUGIN_ID} from "../common";
 import {SidebarStatus} from "./types";
+import {settings} from "./settings";
 
 
 class RelatedNotesPlugin extends SidebarPlugin {
@@ -25,13 +26,6 @@ class RelatedNotesPlugin extends SidebarPlugin {
         this.scripts = [
             './scripts/relatedNotes/relatedNotes.js',
         ];
-        this.relatedNotesSidebarStatus = {
-            mentionFilter: true,
-            mentionedFilter: true,
-            bidirectionFilter: true,
-            sortFilter: 'Default',
-            tabIndex: 1
-        };
         this.currRelatedNotes = [];
     }
 
@@ -105,6 +99,16 @@ class RelatedNotesPlugin extends SidebarPlugin {
 
     async init(sidebars: Sidebars): Promise<void> {
         this.sidebar = sidebars;
+        await settings.register();
+        this.relatedNotesSidebarStatus = {
+            mentionFilter: true,
+            mentionedFilter: true,
+            bidirectionFilter: true,
+            sortFilter: 'Default',
+            tabIndex: 1,
+            settings: await settings.getSettings()
+        };
+
         await relatedEngine.init();
 
         await joplin.workspace.onNoteSelectionChange(async () => {
@@ -114,6 +118,11 @@ class RelatedNotesPlugin extends SidebarPlugin {
         await relatedEngine.onRelatedUpdate(async () => {
             await this.updateHtml();
         });
+
+        await joplin.settings.onChange(async () => {
+            this.relatedNotesSidebarStatus.settings = await settings.getSettings();
+            await this.cachedUpdateHtml();
+        })
 
         await this.updateHtml();
     }
