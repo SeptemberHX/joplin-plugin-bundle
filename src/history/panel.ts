@@ -32,7 +32,7 @@ async function getHistHtml(maxItems: number, params: HistSettings): Promise<stri
         allHtml.push(statsHtml);
 
     if (maxItems < lines.length)
-        allHtml.push(`<p class="hist-loader"><a class="hist-loader" href="#">Load more items</a><br><br></p>`);
+        allHtml.push(`<p class="hist-loader" style="font-size: ${params.panelTextSize}rem"><a class="hist-loader" href="#">Load more items</a><br><br></p>`);
 
     allHtml.push(`</div>`);
 

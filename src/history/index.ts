@@ -182,7 +182,7 @@ class HistoryPlugin extends SidebarPlugin {
                 settings.currentLine = Number(message.line) - 1;
             return true;
         } else if (message.name === 'loadHistory') {
-            await this.sidebar.updateHtml(this.id, await updateHistView(settings, false));
+            await this.sidebar.updateHtml(this.id, await updateHistView(settings, true));
             return true;
         }
         return false;
