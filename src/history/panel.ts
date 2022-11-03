@@ -142,6 +142,7 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
     let strMonth = getMonthString(item.date);
     if (strMonth == getMonthString(now))
         strMonth = 'This month';
+    const idMonth = strMonth.replace(/\s/g, '');
     if (!dateScope.has(strMonth) && (dayDiff > 6)) {
         dateScope.add(strMonth);
         sectIndex.push(currentInd + 1);
@@ -149,11 +150,11 @@ function getFoldTag(item: HistItem, dateScope: Set<string>,
             </div></div></div>
             <div class="accordion-item" id="accordionMonth">
             <h2 class="accordion-header">
-              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonth" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
+              <button class="accordion-button ${state}" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${idMonth}" aria-expanded="true" aria-controls="collapseOne" style="font-size: ${params.panelTitleSize}rem">
                 ${strMonth}
               </button>
             </h2>
-            <div id="collapseMonth" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
+            <div id="collapse${idMonth}" class="accordion-collapse collapse ${state}" aria-labelledby="headingOne">
               <div class="accordion-body" style="font-size: ${params.panelTextSize}rem; padding: 0.25rem">
         `;
     }
