@@ -26,7 +26,7 @@ const settings: HistSettings = {
     markCurrentLine: false,
     secBetweenItems: 0,
     maxDays: 90,
-    panelTitleSize: 1,
+    panelTitleSize: 0.8,
     panelTextSize: 0.8,
     panelTextSpace: 1.4,
     panelMaxItems: 1000,
@@ -34,7 +34,7 @@ const settings: HistSettings = {
     trailRecords: 6,
     trailBacklinks: true,
     trailLength: 10,
-    trailWidth: 1,
+    trailWidth: 1.2,
     plotSize: [20, 16],
     trailColors: ['#e07a5f', '#81b29a', '#f2cc8f', '#6083c5', '#8e646b', '#858935'],
     trailFormat: trailFormat.beforeTitle,
@@ -182,7 +182,7 @@ class HistoryPlugin extends SidebarPlugin {
                 settings.currentLine = Number(message.line) - 1;
             return true;
         } else if (message.name === 'loadHistory') {
-            await this.sidebar.updateHtml(this.id, await updateHistView(settings, false));
+            await this.sidebar.updateHtml(this.id, await updateHistView(settings, true));
             return true;
         }
         return false;
