@@ -73,7 +73,7 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
         }
     });
 
-    const todayItems = [];
+    let todayItems = [];
     const scheduledItems = [];
     const scheduledExpiredItems = [];
     const scheduledIn7DaysItems = [];
@@ -168,6 +168,40 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     let filterDiv = `<div class="tab-pane fade show ${activedTab === 4 ? 'active' : ''}" id="pills-filter" role="tabpanel" aria-labelledby="pills-filter-tab" tabindex="0">`;
     let searchDiv = `<div class="tab-pane fade show ${activedTab === 5 ? 'active' : ''}" id="pills-search" role="tabpanel" aria-labelledby="pills-search-tab" tabindex="0">`;
 
+    todayItems = todayItems.sort((a, b) => {
+        if (a.toDate && b.toDate) {
+            let aDiff = daysDifference(a.toDate, b.toDate);
+            if (aDiff > 0) {
+                return -1;
+            } else if (aDiff < 0) {
+                return 1;
+            }
+        }
+
+        if (a.toDate && !b.toDate) {
+            if (!isToday(a.toDate)) {
+                return 1;
+            }
+        }
+
+        if (!a.toDate && b.toDate) {
+            if (!isToday(b.toDate)) {
+                return -1;
+            }
+        }
+
+        if (!a.toDate && !b.toDate) {
+            ;
+        }
+
+        if (a.priority < b.priority) {
+            return -1;
+        } else if (a.priority > b.priority) {
+            return 1;
+        }
+
+        return a.msg.localeCompare(b.msg);
+    });
     for (const todoItem of todayItems) {
         result += createHTMLForTodoItem(todoItem, showDescription);
     }
@@ -176,38 +210,18 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
         inboxDiv += createHTMLForTodoItem(inboxItem, showDescription);
     }
 
-    function createTaskCollapse(typeStr: string, displayText, items: any[]) {
-        let result = `
-          <div class="accordion-item" id="accordion${typeStr}">
-            <h2 class="accordion-header">
-              <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${typeStr}" aria-expanded="true" aria-controls="collapseOne">
-                ${displayText}
-              </button>
-            </h2>
-            <div id="collapse${typeStr}" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-              <div class="accordion-body">
-        `;
-
-        result += `<ul class="list-group">`;
-        for (const item of items) {
-            result += createHTMLForTodoItem(item, showDescription);
-        }
-        result += `</ul></div></div></div>`;
-        return result;
-    }
-
     if (scheduledItems.length > 0) {
         scheduledDiv += `<div class="accordion" id="scheduledTasksAccordion">`
         if (scheduledExpiredItems.length > 0) {
-            scheduledDiv += createTaskCollapse('ExpiredTask', 'Expired', scheduledExpiredItems);
+            scheduledDiv += createTaskCollapse('ExpiredTask', 'Expired', scheduledExpiredItems, showDescription);
         }
 
         if (scheduledIn7DaysItems.length > 0) {
-            scheduledDiv += createTaskCollapse('In7Days', 'In 7 Days', scheduledIn7DaysItems);
+            scheduledDiv += createTaskCollapse('In7Days', 'In 7 Days', scheduledIn7DaysItems, showDescription);
         }
 
         if (scheduledOtherItems.length > 0) {
-            scheduledDiv += createTaskCollapse('Future', 'Future', scheduledOtherItems);
+            scheduledDiv += createTaskCollapse('Future', 'Future', scheduledOtherItems, showDescription);
         }
 
         scheduledDiv += `</div>`
@@ -236,6 +250,26 @@ export default async function panelHtml(summary: Summary, activedTab: number, se
     result += scheduledDiv + inboxDiv + filterDiv + searchDiv;
 
     result += `</div></div>`;
+    return result;
+}
+
+function createTaskCollapse(typeStr: string, displayText, items: any[], showDescription: boolean) {
+    let result = `
+          <div class="accordion-item" id="accordion${typeStr}">
+            <h2 class="accordion-header">
+              <button class="accordion-button show" onclick="this.blur();" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${typeStr}" aria-expanded="true" aria-controls="collapseOne">
+                ${displayText}
+              </button>
+            </h2>
+            <div id="collapse${typeStr}" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+              <div class="accordion-body">
+        `;
+
+    result += `<ul class="list-group">`;
+    for (const item of items) {
+        result += createHTMLForTodoItem(item, showDescription);
+    }
+    result += `</ul></div></div></div>`;
     return result;
 }
 
