@@ -3,6 +3,7 @@ import {SettingItemType} from "../../api/types";
 
 export const INLINE_TODO_NOTE_TITLE_AS_DATE = 'bundle_inline_todo_note_title_as_date';
 export const INLINE_TODO_ITEM_DESCRIPTION = 'bundle_inline_todo_item_description';
+export const INLINE_TODO_AUTO_COMPLETION = 'bundle_inline_todo_auto_completion';
 
 export namespace settings {
     const SECTION = 'BundleInlineTodoSettings';
@@ -31,6 +32,14 @@ export namespace settings {
             type: SettingItemType.Bool,
             label: 'Show task description',
             description: "Show the text following tasks with one more indent as task description",
+        };
+
+        PLUGIN_SETTINGS[INLINE_TODO_AUTO_COMPLETION] = {
+            value: true,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Show hints for todo tags and project. Triggered by "+" and "@". Requires restart'
         };
 
         await joplin.settings.registerSettings(PLUGIN_SETTINGS);

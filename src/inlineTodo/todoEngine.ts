@@ -19,6 +19,22 @@ export default class TodoEngine {
     // Don't overwrite the summary note unless all notes have been checked
     _initialized: boolean = false;
 
+    public all_tags_projects() {
+        let tags: Set<string> = new Set();
+        let projects: Set<string> = new Set();
+        for (let noteId in this._summary) {
+            for (let todo_item of this._summary[noteId]) {
+                for (let tag of todo_item.tags) {
+                    tags.add(tag);
+                }
+                if (todo_item.assignee) {
+                    projects.add(todo_item.assignee);
+                }
+            }
+        }
+        return [tags, projects]
+    }
+
     constructor (s: Settings) {
         this._settings = s;
     }

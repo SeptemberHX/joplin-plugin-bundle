@@ -1,6 +1,7 @@
 {
 	"extraScripts": [
 		"./codemirror/commands/index.ts",
+		"./codemirror/autoCompletion/index.ts",
 		"./aggregateSearch/test.tsx",
 		"./writingMarker/htmlGenerator.tsx",
 		"./dailyNote/htmlGenerator.tsx",

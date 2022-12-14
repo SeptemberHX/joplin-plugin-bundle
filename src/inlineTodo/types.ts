@@ -51,7 +51,9 @@ export interface Settings {
 	summary_type: string;
 	force_sync: boolean;
 	note_title_date: boolean;
-	showDescription: boolean
+	showDescription: boolean;
+
+	auto_completion: boolean;
 }
 
 export interface TitleEntry {

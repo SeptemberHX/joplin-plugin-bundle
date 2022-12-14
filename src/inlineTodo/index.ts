@@ -5,9 +5,15 @@ import {regexes} from "./common";
 import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
-import {INLINE_TODO_ITEM_DESCRIPTION, INLINE_TODO_NOTE_TITLE_AS_DATE, settings} from "./settings";
-import {TODO_PLUGIN_ID} from "../common";
+import {
+    INLINE_TODO_AUTO_COMPLETION,
+    INLINE_TODO_ITEM_DESCRIPTION,
+    INLINE_TODO_NOTE_TITLE_AS_DATE,
+    settings
+} from "./settings";
+import {MsgType, TODO_PLUGIN_ID} from "../common";
 import TodoEngine from "./todoEngine";
+import {ContentScriptType} from "../../api/types";
 
 class TodolistPlugin extends SidebarPlugin {
 
@@ -92,6 +98,26 @@ class TodolistPlugin extends SidebarPlugin {
         });
 
         await this.debounceRefresh();
+
+        if (this.settings.auto_completion) {
+            await joplin.contentScripts.register(
+                ContentScriptType.CodeMirrorPlugin,
+                'cm_auto_completion',
+                './codemirror/autoCompletion/index.js'
+            );
+
+            // auto completion
+            // Message processing
+            await joplin.contentScripts.onMessage('cm_auto_completion', async (msg) => {
+                switch (msg.type) {
+                    case 'auto_completion':
+                        return this.engine.all_tags_projects();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
     }
 
     debounceScrollToLine = debounce(async (noteId, index) => {
@@ -172,7 +198,8 @@ class TodolistPlugin extends SidebarPlugin {
             summary_type: 'Table',
             force_sync: true,
             note_title_date: await joplin.settings.value(INLINE_TODO_NOTE_TITLE_AS_DATE),
-            showDescription: await joplin.settings.value(INLINE_TODO_ITEM_DESCRIPTION)
+            showDescription: await joplin.settings.value(INLINE_TODO_ITEM_DESCRIPTION),
+            auto_completion: await joplin.settings.value(INLINE_TODO_AUTO_COMPLETION)
         };
     }
 
