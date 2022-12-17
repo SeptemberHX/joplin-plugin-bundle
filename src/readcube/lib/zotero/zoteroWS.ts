@@ -65,31 +65,33 @@ export class ZoteroWS extends PaperNotify {
             oldItemIds.add(item.id);
         }
 
-        const items =  await this.papers.getAllItems();
-        let papersChanged = false;
-        const newItemIds = new Set();
-        for (const item of items) {
-            papersChanged = true;
-            newItemIds.add(item.id);
-            if (oldItemIds.has(item.id)) {
-                await updateRecord(item.id, item);
-            } else {
-                await createRecord(item.id, item);
+        this.papers.getAllItems().then(async (items) => {
+            const newItemIds = new Set();
+            for (const item of items) {
+                newItemIds.add(item.id);
+                if (oldItemIds.has(item.id)) {
+                    await updateRecord(item.id, item);
+                } else {
+                    await createRecord(item.id, item);
+                }
             }
-        }
 
-        for (const oldItemId of oldItemIds) {
-            if (!newItemIds.has(oldItemId)) {
-                papersChanged = true;
-                await deleteRecord(oldItemId);
-                await removeInvalidSourceUrlByItemId(oldItemId);
+            for (const oldItemId of oldItemIds) {
+                if (!newItemIds.has(oldItemId)) {
+                    await deleteRecord(oldItemId);
+                    await removeInvalidSourceUrlByItemId(oldItemId);
+                }
             }
-        }
 
-        if (papersChanged) {
+            // call the callback again because the paper list is changed
             for (const callback of this.onPaperChangeListeners) {
-                await callback();
+                callback();
             }
+        })
+
+        // call the callback immediately to update notes, tags, and other information as soon as possible
+        for (const callback of this.onPaperChangeListeners) {
+            callback();
         }
     }
 

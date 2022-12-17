@@ -24,6 +24,8 @@ class ReadCubePlugin extends SidebarPlugin {
     paperNote: boolean = false;
     selectedPaperId: string;
 
+    paperNotesCache = {};
+
     constructor() {
         super();
 
@@ -78,15 +80,15 @@ class ReadCubePlugin extends SidebarPlugin {
                         break;
                     }
                 }
-                await this.listCacheUpdate();
+                await this.updatePaperInfo();
                 return true;
             case 'sidebar_papers_anno_search_changed':
                 this.annoSearchStr = msg.id;
-                await this.cacheUpdate();
+                await this.debounceHtmlUpdate();
                 return true;
             case 'sidebar_papers_ref_search_changed':
                 this.refSearchStr = msg.id;
-                await this.cacheUpdate();
+                await this.debounceHtmlUpdate();
                 return true;
             case 'sidebar_copy_img_by_url':
                 await joplin.clipboard.writeImage(msg.id);
@@ -110,22 +112,24 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currNotes = [];
             this.paperNote = false;
             this.selectedPaperId = null;
-            await this.update();
+            this.paperNotesCache = {};
+            await this.fullUpdate();
         });
 
         await joplin.workspace.onNoteChange(async () => {
-            await this.update();
+            await this.fullUpdate();
         });
 
         if (paperSvc) {
             await paperSvc.onPaperChange(async () => {
-                await this.update();
+                this.paperNotesCache = {};
+                await this.fullUpdate();
             });
         }
-        await this.update();
+        await this.fullUpdate();
     }
 
-    update = debounce(async () => {
+    fullUpdate = debounce(async () => {
         const currNote = await joplin.workspace.selectedNote();
         this.paperList = [];
         const paperIdSet = new Set();
@@ -162,36 +166,38 @@ class ReadCubePlugin extends SidebarPlugin {
             this.currPaper = null;
         }
 
-        await this.listCacheUpdate();
+        await this.updatePaperInfo();
     }, 100);
 
-    listCacheUpdate = debounce(async () => {
-        await this.updateHtml();
+    updatePaperInfo = debounce(async () => {
+        await this.debounceHtmlUpdate();
         if (this.currPaper) {
+            if (this.currPaper.id in this.paperNotesCache) {
+                this.currNotes = this.paperNotesCache[this.currPaper.id];
+                await this.debounceHtmlUpdate();
+            } else {
+                paperSvc.extractNotes(this.currPaper).then(async notes => {
+                    this.paperNotesCache[this.currPaper.id] = notes;
+                    this.currNotes = notes;
+                    await this.debounceHtmlUpdate();
+                });
+            }
+
             paperSvc.getAnnotation(this.currPaper).then(async annos => {
                 this.currAnnotations = annos;
-                await this.updateHtml();
-            });
-
-            paperSvc.extractNotes(this.currPaper).then(async notes => {
-                this.currNotes = notes;
-                await this.updateHtml();
+                await this.debounceHtmlUpdate();
             });
 
             paperSvc.getMetadata(this.currPaper.doi).then(async metadata => {
                 this.currMetadata = metadata;
-                await this.updateHtml();
+                await this.debounceHtmlUpdate();
             });
         }
     })
 
-    cacheUpdate = debounce(async () => {
-        await this.updateHtml();
-    })
-
-    async updateHtml() {
+    debounceHtmlUpdate = debounce(async () => {
         await this.sidebar.partUpdateHtml(this.id, panelHtml(this.currPaper, this.currAnnotations, this.paperList, this.currMetadata, this.currNotes, this.currTabIndex, this.annoSearchStr, this.refSearchStr));
-    }
+    })
 }
 
 const readCubePlugin = new ReadCubePlugin();
