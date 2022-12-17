@@ -6,6 +6,8 @@ import {debounce} from "ts-debounce";
 import {RELATED_NOTE_PLUGIN_ID} from "../common";
 import {SidebarStatus} from "./types";
 import {settings} from "./settings";
+import {ContentScriptType} from "../../api/types";
+import {getAllNotes} from "../utils/noteUtils";
 
 
 class RelatedNotesPlugin extends SidebarPlugin {
@@ -108,6 +110,24 @@ class RelatedNotesPlugin extends SidebarPlugin {
             tabIndex: 1,
             settings: await settings.getSettings()
         };
+
+        await joplin.contentScripts.register(
+            ContentScriptType.CodeMirrorPlugin,
+            'cm_note_ref_completion',
+            './codemirror/noteRefCompletion/index.js'
+        );
+
+        // auto completion
+        // Message processing
+        await joplin.contentScripts.onMessage('cm_note_ref_completion', async (msg) => {
+            switch (msg.type) {
+                case 'cm_note_ref_completion':
+                    return await getAllNotes();
+                    break;
+                default:
+                    break;
+            }
+        });
 
         await relatedEngine.init();
 

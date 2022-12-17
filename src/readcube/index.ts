@@ -9,6 +9,8 @@ import {ENABLE_ENHANCED_BLOCKQUOTE} from "./common";
 import {AnnotationItem, PaperItem, PaperMetadata} from "./lib/base/paperType";
 import paperSvc from "./lib/PaperSvcFactory";
 import {PAPERS_PLUGIN_ID} from "../common";
+import {ContentScriptType} from "../../api/types";
+import {getAllNotes} from "../utils/noteUtils";
 
 class ReadCubePlugin extends SidebarPlugin {
 
@@ -103,6 +105,32 @@ class ReadCubePlugin extends SidebarPlugin {
 
         await settings.register();
         await initPapers();
+
+        await joplin.contentScripts.register(
+            ContentScriptType.CodeMirrorPlugin,
+            'cm_paper_cite_completion',
+            './codemirror/paperCiteCompletion/index.js'
+        );
+
+        // auto completion
+        // Message processing
+        await joplin.contentScripts.onMessage('cm_paper_cite_completion', async (msg) => {
+            switch (msg.type) {
+                case 'cm_paper_cite_completion':
+                    let items : PaperItem[] = await getAllRecords();
+                    let results = [];
+                    for (let item of items) {
+                        results.push({
+                            'title': item.title,
+                            'url': paperSvc.externalLink(item)
+                        });
+                    }
+                    return results;
+                    break;
+                default:
+                    break;
+            }
+        });
 
         await joplin.workspace.onNoteSelectionChange(async () => {
             this.annoSearchStr = '';
