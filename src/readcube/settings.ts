@@ -3,7 +3,7 @@ import { SettingItemType } from "api/types";
 import {
     ENABLE_CUSTOM_STYLE,
     ENABLE_ENHANCED_BLOCKQUOTE,
-    PAPERS_COOKIE, PAPERS_SERVICE_PROVIDER, PaperServiceType,
+    PAPERS_COOKIE, PAPERS_CREATE_PAPER_NOTE_IN_CURRENT_FOLDER, PAPERS_SERVICE_PROVIDER, PaperServiceType,
     ZOTERO_USER_API_KEY,
     ZOTERO_USER_ID
 } from "./common";
@@ -18,6 +18,14 @@ export namespace settings {
         });
 
         let PLUGIN_SETTINGS = {};
+
+        PLUGIN_SETTINGS[PAPERS_CREATE_PAPER_NOTE_IN_CURRENT_FOLDER] = {
+            value: true,
+            public: true,
+            section: SECTION,
+            type: SettingItemType.Bool,
+            label: 'Create paper notes in current folder by default (Restart required)',
+        }
 
         PLUGIN_SETTINGS[PAPERS_SERVICE_PROVIDER] = {
             value: 'Zotero',

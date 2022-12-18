@@ -12,7 +12,7 @@ import {selectAnnotationPopup, selectPapersPopup} from "./ui/citation-popup";
 import {
     ENABLE_ENHANCED_BLOCKQUOTE,
     PaperConfig,
-    PAPERS_COOKIE,
+    PAPERS_COOKIE, PAPERS_CREATE_PAPER_NOTE_IN_CURRENT_FOLDER,
     PAPERS_SERVICE_PROVIDER,
     PaperServiceType,
     ZOTERO_USER_API_KEY,
@@ -38,6 +38,7 @@ async function getSettings() {
     config.papersCookie = await joplin.settings.value(PAPERS_COOKIE);
     config.zoteroUserId = await joplin.settings.value(ZOTERO_USER_ID);
     config.zoteroApiKey = await joplin.settings.value(ZOTERO_USER_API_KEY);
+    config.paperNoteInCurrFolder = await joplin.settings.value(PAPERS_CREATE_PAPER_NOTE_IN_CURRENT_FOLDER);
     return config;
 }
 
@@ -152,7 +153,7 @@ export async function initPapers() {
             const selectedRefsIDs: string[] = await selectPapersPopup(items);
 
             if (selectedRefsIDs.length > 0) {
-                const noteIds = await createNewNotesForPapers(selectedRefsIDs, items);
+                const noteIds = await createNewNotesForPapers(selectedRefsIDs, items, settings.paperNoteInCurrFolder);
                 await joplin.commands.execute('openNote', noteIds[0]);
             }
         }

@@ -9,7 +9,7 @@ import {
 import {PaperItem} from "../base/paperType";
 import paperSvc from "../PaperSvcFactory";
 
-export async function createNewNotesForPapers(selectedItemIds: string[], paperItems: PaperItem[]) {
+export async function createNewNotesForPapers(selectedItemIds: string[], paperItems: PaperItem[], inCurrFolder: boolean) {
     let noteId2PaperId = await getNoteId2PaperId();
     let paperId2NoteId = {};
     for (let noteId in noteId2PaperId) {
@@ -21,17 +21,26 @@ export async function createNewNotesForPapers(selectedItemIds: string[], paperIt
         paperId2Items[item.id] = item;
     }
 
-    const rootPathId = await getOrCreatePaperRootFolder();
     let noteIds = [];
     for (let itemId of selectedItemIds) {
         if (itemId in paperId2NoteId) {
             noteIds.push(paperId2NoteId[itemId]);
         } else {
-            const yearDirs = await getOrCreatePaperYearFolder(rootPathId, [paperId2Items[itemId].year.toString()])
-            const targetYearDir = yearDirs[paperId2Items[itemId].year.toString()];
+            let targetFolder;
+            if (!inCurrFolder) {
+                const rootPathId = await getOrCreatePaperRootFolder();
+                const yearDirs = await getOrCreatePaperYearFolder(rootPathId, [paperId2Items[itemId].year.toString()])
+                targetFolder = yearDirs[paperId2Items[itemId].year.toString()];
+            } else {
+                const currFolder = await joplin.workspace.selectedFolder();
+                if (currFolder) {
+                    targetFolder = currFolder.id;
+                }
+            }
+
             const note = await joplin.data.post(['notes'], null, {
                     title: paperId2Items[itemId].title,
-                    parent_id: targetYearDir,
+                    parent_id: targetFolder,
                     body: createPaperBlockContent(paperId2Items[itemId]),
                     source_url: `${updateInfo('', SOURCE_URL_PAPERS_PREFIX, itemId)}`
                 }

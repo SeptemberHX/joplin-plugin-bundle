@@ -9,6 +9,7 @@ export const ENABLE_ENHANCED_BLOCKQUOTE = 'PapersPluginEnableEnhancedQuote';
 export const ZOTERO_USER_ID = 'PapersZoteroUserId';
 export const ZOTERO_USER_API_KEY = 'PapersZoteroUserApiKey';
 export const PAPERS_SERVICE_PROVIDER = 'PapersServiceProvider';
+export const PAPERS_CREATE_PAPER_NOTE_IN_CURRENT_FOLDER = 'PapersCreateNotePaperInCurrentFolder';
 
 export enum PaperServiceType {
     READCUBE,
@@ -21,6 +22,7 @@ export class PaperConfig {
     papersCookie: string;
     zoteroUserId: number;
     zoteroApiKey: string;
+    paperNoteInCurrFolder: boolean;
 }
 
 
