@@ -53,6 +53,8 @@ export interface Settings {
 	note_title_date: boolean;
 	showDescription: boolean;
 
+	filterTags: string[];
+
 	auto_completion: boolean;
 }
 

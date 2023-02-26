@@ -1,6 +1,7 @@
 import {Note, Settings, Summary} from "./types";
 import * as chrono from "chrono-node";
 import joplin from "../../api";
+import {getNoteTags} from "../utils/noteUtils";
 
 const dateStrReg = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -42,6 +43,16 @@ export default class TodoEngine {
     async search_in_note(note: Note) : Promise<boolean> {
         // Conflict notes are duplicates usually
         if (note.is_conflict) { return; }
+
+        if (this._settings.filterTags.length > 0) {
+            let noteTags = await getNoteTags(note.id);
+            for (let tag of noteTags) {
+                if (this._settings.filterTags.includes(tag.title)) {
+                    return false;
+                }
+            }
+        }
+
         let matches = [];
 
         let folder = await this.get_parent_title(note.parent_id);

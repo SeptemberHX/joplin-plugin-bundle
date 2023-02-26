@@ -6,7 +6,7 @@ import panelHtml, {allDue, allProjectsStr, allTagsStr} from "./panelHtml";
 import {debounce} from "ts-debounce";
 import {set_origin_todo} from "./mark_todo";
 import {
-    INLINE_TODO_AUTO_COMPLETION,
+    INLINE_TODO_AUTO_COMPLETION, INLINE_TODO_FILTER_TAG,
     INLINE_TODO_ITEM_DESCRIPTION,
     INLINE_TODO_NOTE_TITLE_AS_DATE,
     settings
@@ -199,7 +199,8 @@ class TodolistPlugin extends SidebarPlugin {
             force_sync: true,
             note_title_date: await joplin.settings.value(INLINE_TODO_NOTE_TITLE_AS_DATE),
             showDescription: await joplin.settings.value(INLINE_TODO_ITEM_DESCRIPTION),
-            auto_completion: await joplin.settings.value(INLINE_TODO_AUTO_COMPLETION)
+            auto_completion: await joplin.settings.value(INLINE_TODO_AUTO_COMPLETION),
+            filterTags: (await joplin.settings.value(INLINE_TODO_FILTER_TAG)).split('|')
         };
     }
 
