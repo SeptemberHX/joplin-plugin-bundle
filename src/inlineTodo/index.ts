@@ -118,6 +118,12 @@ class TodolistPlugin extends SidebarPlugin {
                 }
             });
         }
+
+        await joplin.contentScripts.register(
+            ContentScriptType.MarkdownItPlugin,
+            'conference_style_renderer',
+            './inlineTodo/todoRender/index.js'
+        );
     }
 
     debounceScrollToLine = debounce(async (noteId, index) => {

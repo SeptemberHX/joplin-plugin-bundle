@@ -9,6 +9,7 @@
 		"./dailyNote/htmlGenerator.tsx",
 		"./readcube/driver/markdownItRenderer/paperFence/index.ts",
 		"./readcube/driver/codemirror/autoCitation/index.ts",
-		"./readcube/driver/codemirror/paperBlockRender/index.ts"
+		"./readcube/driver/codemirror/paperBlockRender/index.ts",
+		"./inlineTodo/todoRender/index.ts"
 	]
 }

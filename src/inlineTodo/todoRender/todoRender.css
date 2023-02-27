@@ -1,0 +1,76 @@
+span.inline-todo {
+    font-size: 90%;
+    padding: 2px 3px;
+    color: white;
+    text-align: center;
+    opacity: 0.75;
+}
+
+
+span.inline-todo-assignee {
+    background-color: dodgerblue;
+    border-radius: 4px;
+}
+
+span.inline-todo-date {
+    background-color: orange;
+    border-radius: 4px;
+}
+
+span.inline-todo-priority-1 {
+    background: #e33e2f;
+}
+
+span.inline-todo-priority-2 {
+    background: #f8d15f;
+}
+
+span.inline-todo-priority-3 {
+    background: #549644;
+}
+
+span.inline-todo-priority-4 {
+    background: #ececec;
+    color: black;
+}
+
+span.inline-todo-date::before {
+    content: '🕰 ';
+}
+
+.tag {
+    position: relative;
+    top: 0;
+    z-index: 1;
+    text-align: center;
+    color: white;
+}
+
+.tag::before,
+.tag::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    transform: skew(-12deg);
+}
+
+.tag::after {
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    border-radius: 5px;
+    background: red;
+}
+
+.tag-left::after {
+    left: 0;
+}
+
+.tag-left::before {
+    left: -10px;
+}
+
+.tag-right::after {
+    background: #52C41B;
+    left: 0;
+}
