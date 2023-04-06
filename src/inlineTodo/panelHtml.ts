@@ -4,8 +4,10 @@ import {daysDifference, durationComparedToToday, filterItemsBySearchStr, isToday
 import {htmlConvert} from "../utils/stringUtils";
 const stc = require('string-to-color');
 
-var md = require('markdown-it')()
-            .use(require('markdown-it-mark'));
+var md = require('markdown-it')({
+    html: true
+}).use(require('markdown-it-mark'));
+
 
 const isToday = (someDate) => {
     const today = new Date()
