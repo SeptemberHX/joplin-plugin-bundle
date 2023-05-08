@@ -7,11 +7,13 @@ import {PapersWS} from "./papers/papersWS";
 import {ZoteroPaperSvc} from "./zotero/zoteroPaperSvc";
 import {ZoteroWS} from "./zotero/zoteroWS";
 import {PaperExtend} from "./base/paperExtend";
+import {debounce} from "ts-debounce";
 
 class PaperSvcFactory extends PaperSvc {
     paperSvc: PaperSvc;
     paperNotify: PaperNotify;
     paperExtend: PaperExtend;
+    debounceGetAllItems;
 
     async init(settings: PaperConfig) {
         console.log('Papers: Init paper service...');
@@ -34,6 +36,8 @@ class PaperSvcFactory extends PaperSvc {
         }
 
         await this.paperSvc.init(settings);
+
+        this.debounceGetAllItems = debounce(this.paperSvc.getAllItems, 10000);
     }
 
     externalLink(paperItem: PaperItem): String {
@@ -56,7 +60,7 @@ class PaperSvcFactory extends PaperSvc {
 
     async getAllItems(): Promise<PaperItem[]> {
         console.log('Papers: Get all items...');
-        return await this.paperSvc.getAllItems();
+        return await this.debounceGetAllItems();
     }
 
     async getAnnotation(paperItem: PaperItem): Promise<AnnotationItem[]> {
