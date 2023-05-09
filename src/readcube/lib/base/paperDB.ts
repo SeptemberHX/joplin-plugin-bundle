@@ -62,7 +62,7 @@ export async function getAllRecords() {
 }
 
 export async function createRecord(id: string, paperItem: PaperItem){
-    await runQuery('run', `INSERT INTO papers (id) VALUES ($id)`, {$id: id})
+    await runQuery('run', `INSERT OR REPLACE INTO papers (id) VALUES ($id)`, {$id: id})
     await updateRecord(id, paperItem);
 }
 
